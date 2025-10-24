@@ -61,7 +61,7 @@ class login_screen extends StatelessWidget {
                   Type: TextInputType.visiblePassword, 
                   Label: 'password', 
                   Prefix: Icon(Icons.lock),
-                  Postfix: Icon(Icons.remove_red_eye),
+                  Postfix: Icon(Icons.remove_red_eye_outlined),
               ),
               SizedBox(
                 height: 10,
