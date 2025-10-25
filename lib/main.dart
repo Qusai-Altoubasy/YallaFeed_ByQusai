@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:qusai/screens/logo_screen.dart';
 import 'package:qusai/screens/login_screen.dart';
+import 'package:qusai/screens/register/register_options.dart';
+import 'package:qusai/screens/register/user_register.dart';
 
 void main() {
   runApp(const MyApp());
@@ -14,7 +16,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: login_screen(),
+      home: user_register(),
     );
   }
 }
