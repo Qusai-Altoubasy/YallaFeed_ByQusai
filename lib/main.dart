@@ -1,6 +1,7 @@
 // Qusai Altoubasy
 
 import 'package:flutter/material.dart';
+import 'package:qusai/screens/charity/charity_main_screen.dart';
 import 'package:qusai/screens/logo_screen.dart';
 import 'package:qusai/screens/login_screen.dart';
 import 'package:qusai/screens/register/charity_register.dart';
@@ -19,7 +20,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: charity_register(),
+      home: charity_main_screen(),
     );
   }
 }

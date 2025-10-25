@@ -1,0 +1,1 @@
+String charity_name = 'Charity Name';
