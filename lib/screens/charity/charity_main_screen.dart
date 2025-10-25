@@ -39,7 +39,7 @@ class charity_main_screen extends StatelessWidget {
                   children: [
                     Text(
                       textAlign: TextAlign.center,
-                      'Welcome back, $charity_name !',
+                      'Welcome back,\n $charity_name !',
                       style: TextStyle(
                         fontSize:30,
                         color: Colors.white,
