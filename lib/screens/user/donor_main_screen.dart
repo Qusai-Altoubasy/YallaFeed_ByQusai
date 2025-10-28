@@ -1,28 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:qusai/shared/shared.dart';
 
-class charity_main_screen extends StatelessWidget {
+class donor_main_screen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
       backgroundColor: const Color(0xFFE8EEF5),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          onPressed: () {},
-          icon: const Icon(Icons.menu, color: Colors.black87),
-        ),
-        title: const Text(
-          'Charity Organization Dashboard',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-            color: Colors.black87,
-          ),
-        ),
-      ),
       body: Stack(
         children: [
           //  Gradient background
@@ -77,7 +61,7 @@ class charity_main_screen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'Welcome back,\n$charity_name!',
+                              'Welcome back,\n$user_name!',
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                 fontSize: 30,
@@ -88,8 +72,8 @@ class charity_main_screen extends StatelessWidget {
                             const SizedBox(height: 10),
                             const Text(
                               textAlign: TextAlign.center,
-                              'Together we are making a difference in our community\n'
-                                  'by connecting those in need with generous donors.',
+                              'Thank you for sharing your surplus food and '
+                                  'helping reduce waste in our community',
                               style: TextStyle(
                                 color: Colors.white70,
                                 fontWeight: FontWeight.w500,
@@ -138,8 +122,8 @@ class charity_main_screen extends StatelessWidget {
                             _buildModernButton(
                               color1: const Color(0xFF56AB2F),
                               color2: const Color(0xFFA8E063),
-                              icon: Icons.person_add_alt_1_rounded,
-                              text: 'Accept new recipients',
+                              icon: Icons.add_box_outlined,
+                              text: 'Add new donation',
                               onTap: () {},
                             ),
 
@@ -149,19 +133,8 @@ class charity_main_screen extends StatelessWidget {
                             _buildModernButton(
                               color1: const Color(0xFFED213A),
                               color2: const Color(0xFF93291E),
-                              icon: Icons.person_remove_alt_1_rounded,
-                              text: 'Block recipients',
-                              onTap: () {},
-                            ),
-
-                            const SizedBox(height: 25),
-
-                            // 🟦 Button 3 - Manage recipients
-                            _buildModernButton(
-                              color1: const Color(0xFF396afc),
-                              color2: const Color(0xFF2948ff),
-                              icon: Icons.group,
-                              text: 'Manage recipients',
+                              icon: Icons.list_alt,
+                              text: 'My donations',
                               onTap: () {},
                             ),
                           ],

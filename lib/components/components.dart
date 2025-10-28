@@ -13,6 +13,7 @@ Widget defaultFormField({
   bool isClickable=true,
   IconData? suffix,
   Function? suffixPressed,
+  Color textColor =Colors.white,
 }) =>
     TextFormField(
       controller: controller,
@@ -51,15 +52,21 @@ Widget defaultFormField({
 
 Widget defaultButton({
   double width = double.infinity,
-  Color? background ,
+  Color background =Colors.blue,
   bool isUpperCase = true,
-  double radius = 3.0,
+  double radius = 10.0,
+  double height=50.0,
+  Color textColor=Colors.white,
   required Function function,
   required String text,
 }) =>
     Container(
       width: width,
-      height: 50.0,
+      height: height,
+      decoration: BoxDecoration(
+        color: background,
+        borderRadius: BorderRadius.circular(radius),
+      ),
       child: MaterialButton(
         onPressed: (){
           function();
@@ -67,14 +74,10 @@ Widget defaultButton({
         child: Text(
           isUpperCase ? text.toUpperCase() : text,
           style: TextStyle(
-            color: Colors.white,
+            color: textColor, fontWeight: FontWeight.bold,
           ),
         ),
       ),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(
-          radius,
-        ),
-        color: background,
-      ),
+
+
     );
