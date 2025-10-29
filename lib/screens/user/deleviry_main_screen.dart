@@ -6,7 +6,7 @@ class deleviry_main_screen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: const Color(0xFFE8EEF5),
+      backgroundColor: const Color(0xFFE8F5E9),
       body: Stack(
         children: [
           //  Gradient background
@@ -14,9 +14,9 @@ class deleviry_main_screen extends StatelessWidget {
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Color(0xFF9BE7FF),
-                  Color(0xFFB3E5FC),
-                  Color(0xFFE1F5FE),
+                  Color(0xFF388E3C),
+                  Color(0xFF66BB6A),
+                  Color(0xFFA5D6A7),
                 ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -40,8 +40,8 @@ class deleviry_main_screen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(25),
                         gradient: const LinearGradient(
                           colors: [
-                            Color(0xFF4A90E2),
-                            Color(0xFF6FB1FC),
+                            Color(0xFF1B5E20),
+                            Color(0xFF388E3C),
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -119,8 +119,8 @@ class deleviry_main_screen extends StatelessWidget {
 
                             // 🟩 Button 1 - Accept new recipients
                             _buildModernButton(
-                              color1: const Color(0xFF56AB2F),
-                              color2: const Color(0xFFA8E063),
+                              color1: const Color(0xFFBF360C),
+                              color2: const Color(0xFFF4511E),
                               icon: Icons.directions_car_filled,
                               text: 'View available requests',
                               onTap: () {},
@@ -130,8 +130,8 @@ class deleviry_main_screen extends StatelessWidget {
 
                             // 🟥 Button 2 - Block recipients
                             _buildModernButton(
-                              color1: const Color(0xFFED213A),
-                              color2: const Color(0xFF93291E),
+                              color1: const Color(0xFF424242),
+                              color2: const Color(0xFFBDBDBD),
                               icon: Icons.history,
                               text: 'History',
                               onTap: () {},

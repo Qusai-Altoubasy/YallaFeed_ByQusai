@@ -52,7 +52,7 @@ class _charity_register extends State<charity_register> {
                     const SizedBox(height: 8.0),
                     //  Subtitle
                     Text(
-                      'Register now to donate or receive food easily',
+                      'Register now to accept people in need.',
                       textAlign: TextAlign.center,
                       style: Theme.of(context)
                           .textTheme

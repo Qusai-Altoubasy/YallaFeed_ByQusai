@@ -19,20 +19,6 @@ class user_cubit extends Cubit<user_states>{
     'Delivery Dashboard',
   ];
 
-  List<BottomNavigationBarItem> user_nav_bar= [
-    BottomNavigationBarItem(
-      icon: Icon(Icons.volunteer_activism),
-      label: 'Donate',
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(Icons.handshake),
-      label: 'Receive',
-    ),
-    BottomNavigationBarItem(
-      icon: Icon(Icons.drive_eta),
-      label: 'deliver',
-    ),
-  ];
   List<Widget> screens=[
     donor_main_screen(),
     receiver_main_screen(),

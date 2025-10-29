@@ -5,6 +5,8 @@ import 'package:qusai/screens/admin/admin_main_screen.dart';
 import 'package:qusai/screens/charity/charity_main_screen.dart';
 import 'package:qusai/screens/login_screen.dart';
 import 'package:qusai/screens/logo_screen.dart';
+import 'package:qusai/screens/register/charity_register.dart';
+import 'package:qusai/screens/register/register_options.dart';
 import 'package:qusai/screens/user/user_layout.dart';
 
 void main() {

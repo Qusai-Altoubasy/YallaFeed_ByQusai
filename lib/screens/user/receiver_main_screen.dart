@@ -6,7 +6,7 @@ class receiver_main_screen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
-      backgroundColor: const Color(0xFFE8EEF5),
+      backgroundColor: Color(0xFFF3E5F5),
       body: Stack(
         children: [
           //  Gradient background
@@ -14,9 +14,9 @@ class receiver_main_screen extends StatelessWidget {
             decoration: const BoxDecoration(
               gradient: LinearGradient(
                 colors: [
-                  Color(0xFF9BE7FF),
-                  Color(0xFFB3E5FC),
-                  Color(0xFFE1F5FE),
+                  Color(0xFFAB47BC),
+                  Color(0xFFE1BEE7),
+                  Color(0xFFF3E5F5),
                 ],
                 begin: Alignment.topCenter,
                 end: Alignment.bottomCenter,
@@ -40,8 +40,8 @@ class receiver_main_screen extends StatelessWidget {
                         borderRadius: BorderRadius.circular(25),
                         gradient: const LinearGradient(
                           colors: [
-                            Color(0xFF4A90E2),
-                            Color(0xFF6FB1FC),
+                            Color(0xFF6A1B9A),
+                            Color(0xFFAB47BC),
                           ],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
@@ -119,8 +119,8 @@ class receiver_main_screen extends StatelessWidget {
 
                             // 🟩 Button 1 - Accept new recipients
                             _buildModernButton(
-                              color1: const Color(0xFF56AB2F),
-                              color2: const Color(0xFFA8E063),
+                              color1: const Color(0xFFBF8A30),
+                              color2: const Color(0xFFF9A825),
                               icon: Icons.search_rounded,
                               text: 'View available donations',
                               onTap: () {},
@@ -130,8 +130,8 @@ class receiver_main_screen extends StatelessWidget {
 
                             // 🟥 Button 2 - Block recipients
                             _buildModernButton(
-                              color1: const Color(0xFFED213A),
-                              color2: const Color(0xFF93291E),
+                              color1: const Color(0xFF757575),
+                              color2: const Color(0xFF424242),
                               icon: Icons.history,
                               text: 'History',
                               onTap: () {},
