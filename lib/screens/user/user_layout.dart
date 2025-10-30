@@ -67,7 +67,6 @@ class user_layout extends StatelessWidget {
                           title: const Text('Log out'),
                           onTap: (){},
                         ),
-
                       ],
                     ),
                   ),

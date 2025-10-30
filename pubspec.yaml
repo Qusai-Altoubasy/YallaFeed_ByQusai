@@ -35,6 +35,8 @@ dependencies:
   bloc: ^9.1.0
   flutter_bloc:
   convex_bottom_bar:
+  flutter_slider_drawer: ^3.0.2
+
 
 
 

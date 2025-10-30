@@ -118,12 +118,15 @@ class receiver_main_screen extends StatelessWidget {
                             const SizedBox(height: 30),
 
                             // 🟩 Button 1 - Accept new recipients
-                            _buildModernButton(
-                              color1: const Color(0xFFBF8A30),
-                              color2: const Color(0xFFF9A825),
-                              icon: Icons.search_rounded,
-                              text: 'View available donations',
-                              onTap: () {},
+                            Container(
+                              width: double.infinity,
+                              child: _buildModernButton(
+                                color1: const Color(0xFFBF8A30),
+                                color2: const Color(0xFFF9A825),
+                                icon: Icons.search_rounded,
+                                text: 'View available donations',
+                                onTap: () {},
+                              ),
                             ),
 
                             const SizedBox(height: 25),
@@ -182,12 +185,14 @@ class receiver_main_screen extends StatelessWidget {
             const SizedBox(width: 15),
             Icon(icon, color: Colors.white, size: 40),
             const SizedBox(width: 15),
-            Text(
-              text,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 22,
-                fontWeight: FontWeight.w600,
+            Expanded(
+              child: Text(
+                text,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 22,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ],
