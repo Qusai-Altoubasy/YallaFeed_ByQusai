@@ -1,60 +1,16 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:qusai/screens/admin/admin_main_screen.dart';
 
-import '../login_screen.dart';
+class accept_reject_new_user extends StatelessWidget {
+  const accept_reject_new_user({super.key});
 
-class manage_accounts extends StatefulWidget {
-
-
-  @override
-  State<manage_accounts> createState() => _manage_accountsState();
-}
-
-class _manage_accountsState extends State<manage_accounts> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        //  backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
-        // leading: IconButton(
-          // icon: const Icon(Icons.arrow_back_outlined),
-          // onPressed: () {
-          //   Navigator.pop(context);
-          // },
-        // ),
       ),
       body: Column(
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(30),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.2),
-                    blurRadius: 8,
-                    offset: Offset(0, 3),
-                  ),
-                ],
-              ),
-              child: TextField(
-                decoration: InputDecoration(
-                  hintText: 'Search for users',
-                  hintStyle: TextStyle(color: Colors.grey[500]),
-                  prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
-                  border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(vertical: 15),
-                ),
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
           Expanded(
             child: ListView.separated(
                 itemBuilder:(context , index ) => buildChatItem(),
@@ -70,7 +26,6 @@ class _manage_accountsState extends State<manage_accounts> {
     );
   }
 }
-
 Widget buildChatItem() => Padding(
   padding: const EdgeInsets.all(8.0),
   child: Row(
@@ -99,8 +54,8 @@ Widget buildChatItem() => Padding(
         children: [
           ElevatedButton.icon(
             onPressed: () {},
-            icon: Icon(Icons.edit, size: 16),
-            label: Text('Edit'),
+            icon: Icon(Icons.check_box, size: 20),
+            label: Text('Accept'),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.blueAccent.withOpacity(0.5),
               foregroundColor: Colors.white,
@@ -114,8 +69,8 @@ Widget buildChatItem() => Padding(
           SizedBox(width: 8,),
           ElevatedButton.icon(
             onPressed: () {},
-            icon: Icon(Icons.delete, size: 16),
-            label: Text('Delete'),
+            icon: Icon(Icons.remove_circle, size: 20),
+            label: Text('Reject'),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.redAccent.withOpacity(0.5),
               foregroundColor: Colors.white,

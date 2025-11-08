@@ -7,6 +7,7 @@ import 'package:qusai/screens/admin/add_new_user.dart';
 import 'package:qusai/screens/admin/announcements.dart';
 import 'package:qusai/screens/admin/manage_accounts.dart';
 import 'package:qusai/screens/register/user_register.dart';
+import 'package:qusai/shared/common_screens/announcemnts.dart';
 import 'package:qusai/shared/common_screens/contact_us.dart';
 import 'package:qusai/shared/shared.dart';
 
@@ -20,63 +21,7 @@ class admin_main_screen extends StatelessWidget {
       create: (BuildContext context)=> admin_cubit(),
       child: BlocConsumer<admin_cubit, admin_state>(
         builder: (context, state)=>Scaffold(
-          drawer: Padding(
-            padding: EdgeInsetsDirectional.only(
-              top: 30,
-            ),
-            child: NavigationDrawer(
-              backgroundColor: Color(0xFF9BE7FF),
-              children:[
-                Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 30,
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.person, size: 30,),
-                        title: const Text('Profile'),
-                        onTap: (){},
-                      ),
-                      Container(
-                        color: Colors.grey,
-                        height: 1,
-                        width: double.infinity,
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.notifications, size: 30,),
-                        title: const Text('Announcements'),
-                        onTap: (){},
-                      ),
-                      Container(
-                        color: Colors.grey,
-                        height: 2,
-                        width: double.infinity,
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.group, size: 30,),
-                        title: const Text('Contact us'),
-                        onTap: (){
-                          navigateto(context, contact_us());
-                        },
-                      ),
-                      Container(
-                        color: Colors.grey,
-                        height: 2,
-                        width: double.infinity,
-                      ),
-                      ListTile(
-                        leading: const Icon(Icons.logout, size: 30,),
-                        title: const Text('Log out'),
-                        onTap: (){},
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
+          drawer: menu(context),
           extendBodyBehindAppBar: true,
           backgroundColor: Colors.transparent,
           appBar: AppBar(
@@ -197,7 +142,7 @@ class admin_main_screen extends StatelessWidget {
                             ),
                             _buildGlassCard(
                               icon: Icons.notifications_active,
-                              title: "Announcements",
+                              title: "Send announcements",
                               txt :'Broadcast message to all users ',
                               color1: const Color(0xff7F00FF),
                               color2: const Color(0xffE100FF),

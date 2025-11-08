@@ -2,10 +2,10 @@ import 'package:bloc/bloc.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:qusai/cubits/user/user_states.dart';
-import 'package:qusai/screens/user/deleviry_main_screen.dart';
-import 'package:qusai/screens/user/receiver_main_screen.dart';
+import 'package:qusai/screens/user/deleviry/deleviry_main_screen.dart';
+import 'package:qusai/screens/user/receiver/receiver_main_screen.dart';
 
-import '../../screens/user/donor_main_screen.dart';
+import '../../screens/user/donor/donor_main_screen.dart';
 
 class user_cubit extends Cubit<user_states>{
   user_cubit():super (user_init_state());

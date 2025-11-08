@@ -1,17 +1,8 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:qusai/screens/admin/admin_main_screen.dart';
 
-import '../login_screen.dart';
+class manage_accounts extends StatelessWidget {
+  const manage_accounts({super.key});
 
-class manage_accounts extends StatefulWidget {
-
-
-  @override
-  State<manage_accounts> createState() => _manage_accountsState();
-}
-
-class _manage_accountsState extends State<manage_accounts> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,10 +10,10 @@ class _manage_accountsState extends State<manage_accounts> {
         //  backgroundColor: theme.scaffoldBackgroundColor,
         elevation: 0,
         // leading: IconButton(
-          // icon: const Icon(Icons.arrow_back_outlined),
-          // onPressed: () {
-          //   Navigator.pop(context);
-          // },
+        // icon: const Icon(Icons.arrow_back_outlined),
+        // onPressed: () {
+        //   Navigator.pop(context);
+        // },
         // ),
       ),
       body: Column(
@@ -99,8 +90,8 @@ Widget buildChatItem() => Padding(
         children: [
           ElevatedButton.icon(
             onPressed: () {},
-            icon: Icon(Icons.edit, size: 16),
-            label: Text('Edit'),
+            icon: Icon(Icons.person, size: 16),
+            label: Text('profile'),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.blueAccent.withOpacity(0.5),
               foregroundColor: Colors.white,
@@ -114,8 +105,8 @@ Widget buildChatItem() => Padding(
           SizedBox(width: 8,),
           ElevatedButton.icon(
             onPressed: () {},
-            icon: Icon(Icons.delete, size: 16),
-            label: Text('Delete'),
+            icon: Icon(Icons.remove_circle, size: 16),
+            label: Text('Decline'),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.redAccent.withOpacity(0.5),
               foregroundColor: Colors.white,

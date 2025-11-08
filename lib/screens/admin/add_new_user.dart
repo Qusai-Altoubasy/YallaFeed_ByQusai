@@ -25,11 +25,11 @@ class _add_new_user extends State<add_new_user> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Color(0xFFB3E5FC),
-        leading: IconButton(
-            onPressed: (){
-              Navigator.pop(context);
-            },
-            icon: Icon(Icons.arrow_back_outlined,color: Colors.black,)),
+        // leading: IconButton(
+        //     onPressed: (){
+        //       Navigator.pop(context);
+        //     },
+        //     icon: Icon(Icons.arrow_back_outlined,color: Colors.black,)),
       ),
       body: Container(
         decoration: const BoxDecoration(
