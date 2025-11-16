@@ -1,4 +1,8 @@
+import 'dart:io';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../components/components.dart';
 
@@ -17,6 +21,8 @@ class _add_new_donation extends State<add_new_donation> {
   var confirmpasswordController = TextEditingController();
   var phoneController = TextEditingController();
   var IDController = TextEditingController();
+
+  File? _image;
 
   @override
   Widget build(BuildContext context) {
@@ -90,6 +96,7 @@ class _add_new_donation extends State<add_new_donation> {
                               if (value.isEmpty) {
                                 return 'please enter type of meal ';
                               }
+                              return null;
                             },
                             label: 'Type of meal',
                             prefix: Icons.fastfood_outlined,
@@ -100,15 +107,56 @@ class _add_new_donation extends State<add_new_donation> {
                             type: TextInputType.emailAddress,
                             validate: (String value) {
                               if (value.isEmpty) {
-                                return 'please enter your email address';
+                                return 'please enter number';
                               }
+                              return null;
                             },
                             label: 'How many people you will serve?',
                             prefix: Icons.group,
                           ),
-                          SizedBox(
-                            height: 30,
+                          const SizedBox(height: 15),
+                          CircleAvatar(
+                            radius: 150,
+                            backgroundImage:
+                            _image == null ? null : FileImage(_image!),
                           ),
+                          const SizedBox(height: 15),
+                          Container(
+                            width: 200,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [Color(0xFF757575), Color(0xFF424242)],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.blue.withOpacity(0.4),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 5),
+                                ),
+                              ],
+                            ),
+                            child: GestureDetector(
+                              onTap: getImage,
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 15.0),
+                                child: Center(
+                                  child: Text(
+                                    "Add photo",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 30),
                           Container(
                             width: double.infinity,
                             decoration: BoxDecoration(
@@ -127,7 +175,12 @@ class _add_new_donation extends State<add_new_donation> {
                               ],
                             ),
                             child: MaterialButton(
-                              onPressed: () {},
+                              onPressed: () {
+                                // تنفيذ إرسال النموذج
+                                if (formKey.currentState!.validate()) {
+                                  // حفظ البيانات + الصورة
+                                }
+                              },
                               child: const Padding(
                                 padding: EdgeInsets.symmetric(vertical: 15.0),
                                 child: Text(
@@ -152,5 +205,38 @@ class _add_new_donation extends State<add_new_donation> {
         ),
       ),
     );
+  }
+
+  // ============================
+  // دالة اختيار الصورة من الكاميرا
+  // ============================
+  Future<void> getImage() async {
+    try {
+      final ImagePicker picker = ImagePicker();
+      final XFile? pickedFile = await picker.pickImage(
+        source: ImageSource.camera,
+        imageQuality: 80, // اختياري لتقليل حجم الصورة
+        maxWidth: 1024,
+      );
+
+      if (pickedFile == null) {
+        // المستخدم ألغى الاختيار
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No image selected')),
+        );
+        return;
+      }
+
+      final File imageFile = File(pickedFile.path);
+
+      setState(() {
+        _image = imageFile;
+      });
+    } catch (e) {
+      // إدارة الأخطاء
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error picking image: $e')),
+      );
+    }
   }
 }
