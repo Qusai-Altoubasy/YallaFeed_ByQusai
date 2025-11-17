@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:qusai/screens/register/charity_register.dart';
-import 'package:qusai/screens/register/user_register.dart';
+import 'package:qusai/screens/admin/admin_main_screen.dart';
+import 'package:qusai/screens/charity/charity_main_screen.dart';
+import 'package:qusai/screens/user/user_layout.dart';
 import 'package:qusai/shared/shared.dart';
 
-class register_option extends StatelessWidget {
+class temp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text('Temp screen'),
         backgroundColor: Color(0xFFB3E5FC),
       ),
 
@@ -52,10 +54,10 @@ class register_option extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    navigateto(context, user_register());
+                    navigateto(context, admin_main_screen());
                   },
                   child: const Text(
-                    'Register as User',
+                    'Go to admin screen',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -94,10 +96,10 @@ class register_option extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    navigateto(context, charity_register());
+                    navigateto(context, charity_main_screen());
                   },
                   child: const Text(
-                    'Register as Charity Organization',
+                    'Go to Charity screen',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 20,
@@ -106,6 +108,48 @@ class register_option extends StatelessWidget {
                   ),
                 ),
               ),
+
+              const SizedBox(height: 25),
+              Container(
+                width: 350,
+                height: 60,
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFF56CCF2), Color(0xFF2F80ED)],
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.blue.withOpacity(0.4),
+                      blurRadius: 12,
+                      offset: const Offset(0, 5),
+                    ),
+                  ],
+                ),
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent,
+                    shadowColor: Colors.transparent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  onPressed: () {
+                    navigateto(context, user_layout());
+                  },
+                  child: const Text(
+                    'Go to user screen',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+
             ],
           ),
         ),

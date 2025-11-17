@@ -6,14 +6,10 @@ import 'package:qusai/cubits/admin/admin_states.dart';
 import 'package:qusai/screens/admin/add_new_user.dart';
 import 'package:qusai/screens/admin/announcements.dart';
 import 'package:qusai/screens/admin/manage_accounts.dart';
-import 'package:qusai/screens/register/user_register.dart';
-import 'package:qusai/shared/common_screens/announcemnts.dart';
-import 'package:qusai/shared/common_screens/contact_us.dart';
 import 'package:qusai/shared/shared.dart';
 
 class admin_main_screen extends StatelessWidget {
   const admin_main_screen({super.key});
-
 
   @override
   Widget build(BuildContext context) {
@@ -21,7 +17,7 @@ class admin_main_screen extends StatelessWidget {
       create: (BuildContext context)=> admin_cubit(),
       child: BlocConsumer<admin_cubit, admin_state>(
         builder: (context, state)=>Scaffold(
-          drawer: menu(context),
+          drawer: menu(context, Color(0xFF9BE7FF)),
           extendBodyBehindAppBar: true,
           backgroundColor: Colors.transparent,
           appBar: AppBar(

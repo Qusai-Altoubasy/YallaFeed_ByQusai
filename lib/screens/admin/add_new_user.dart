@@ -14,10 +14,10 @@ class _add_new_user extends State<add_new_user> {
   var firstnameController = TextEditingController();
   var lastnameController = TextEditingController();
   var emailController = TextEditingController();
-  var passwordController = TextEditingController();
-  var confirmpasswordController = TextEditingController();
   var phoneController = TextEditingController();
   var IDController = TextEditingController();
+  var passwordController = TextEditingController();
+
 
   @override
   Widget build(BuildContext context) {

@@ -22,6 +22,10 @@ class _user_register extends State<user_register> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color(0xFFB3E5FC),
+      ),
+
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(

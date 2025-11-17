@@ -1,9 +1,10 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:qusai/screens/common_screens/profile.dart';
 
-import 'common_screens/announcemnts.dart';
-import 'common_screens/contact_us.dart';
+import '../screens/common_screens/announcemnts.dart';
+import '../screens/common_screens/contact_us.dart';
 
 String charity_name = 'Charity Name';
 String admin_name = 'Admin Name';
@@ -18,12 +19,12 @@ void navigateto(context, Widget page) {
   );
 }
 
-Widget menu(context)=> Padding(
+Widget menu(context, Color color)=> Padding(
   padding: EdgeInsetsDirectional.only(
     top: 30,
   ),
   child: NavigationDrawer(
-    backgroundColor: Color(0xFF9BE7FF),
+    backgroundColor: color,
     children:[
       Padding(
         padding: const EdgeInsets.all(8.0),
@@ -35,7 +36,9 @@ Widget menu(context)=> Padding(
             ListTile(
               leading: const Icon(Icons.person, size: 30,),
               title: const Text('Profile'),
-              onTap: (){},
+              onTap: (){
+                navigateto(context, profile());
+              },
             ),
             Container(
               color: Colors.grey,

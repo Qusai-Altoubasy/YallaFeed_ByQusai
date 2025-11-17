@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:qusai/screens/base_screens/login_screen.dart';
+import 'package:qusai/shared/shared.dart';
 class logo_screen extends StatefulWidget {
   const logo_screen({super.key});
 
@@ -20,6 +22,14 @@ class _logo_screen extends State<logo_screen>
         AnimationController(vsync: this, duration: const Duration(seconds: 2));
     _fadeIn = CurvedAnimation(parent: _controller, curve: Curves.easeInOut);
     _controller.forward();
+    _controller.addStatusListener((status){
+        if(status.isCompleted){
+          Future.delayed(Duration(seconds: 0),(){
+            navigateto(context, login_screen());
+          });
+        }
+      }
+    );
   }
   @override
   void dispose() {

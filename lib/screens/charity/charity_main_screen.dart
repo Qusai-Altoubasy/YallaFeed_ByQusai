@@ -17,7 +17,7 @@ class charity_main_screen extends StatelessWidget {
       create: (BuildContext context)=> charity_cubit(),
       child: BlocConsumer<charity_cubit, charity_states>(
           builder: (context, state)=>Scaffold(
-            drawer: menu(context),
+            drawer: menu(context, Color(0xFF9BE7FF)),
             extendBodyBehindAppBar: true,
             backgroundColor: const Color(0xFFE8EEF5),
             appBar: AppBar(

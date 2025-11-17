@@ -15,13 +15,8 @@ class _add_new_donation extends State<add_new_donation> {
   bool ispassword = true;
 
   var formKey = GlobalKey<FormState>();
-  var nameController = TextEditingController();
-  var emailController = TextEditingController();
-  var passwordController = TextEditingController();
-  var confirmpasswordController = TextEditingController();
-  var phoneController = TextEditingController();
-  var IDController = TextEditingController();
-
+  var typeofmeal = TextEditingController();
+  var numberofpeople = TextEditingController();
   File? _image;
 
   @override
@@ -90,7 +85,7 @@ class _add_new_donation extends State<add_new_donation> {
                       child: Column(
                         children: [
                           defaultFormField(
-                            controller: nameController,
+                            controller: typeofmeal,
                             type: TextInputType.name,
                             validate: (String value) {
                               if (value.isEmpty) {
@@ -103,7 +98,7 @@ class _add_new_donation extends State<add_new_donation> {
                           ),
                           const SizedBox(height: 15.0),
                           defaultFormField(
-                            controller: emailController,
+                            controller: numberofpeople,
                             type: TextInputType.emailAddress,
                             validate: (String value) {
                               if (value.isEmpty) {
@@ -156,6 +151,42 @@ class _add_new_donation extends State<add_new_donation> {
                               ),
                             ),
                           ),
+                          const SizedBox(height: 15),
+                          Container(
+                            width: 200,
+                            height: 50,
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [Color(0xFF757575), Color(0xFF424242)],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              borderRadius: BorderRadius.circular(20),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.blue.withOpacity(0.4),
+                                  blurRadius: 12,
+                                  offset: const Offset(0, 5),
+                                ),
+                              ],
+                            ),
+                            child: GestureDetector(
+                              onTap: (){},
+                              child: const Padding(
+                                padding: EdgeInsets.symmetric(vertical: 15.0),
+                                child: Center(
+                                  child: Text(
+                                    "Location",
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
                           const SizedBox(height: 30),
                           Container(
                             width: double.infinity,
@@ -165,6 +196,8 @@ class _add_new_donation extends State<add_new_donation> {
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                               ),
+
+
                               borderRadius: BorderRadius.circular(20),
                               boxShadow: [
                                 BoxShadow(

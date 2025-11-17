@@ -20,6 +20,9 @@ class _charity_register extends State<charity_register> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color(0xFFB3E5FC),
+      ),
       body: Container(
         decoration: const BoxDecoration(
           // 🌟 Gradient background

@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
-import '../components/components.dart';
+import 'package:qusai/screens/register/register_options.dart';
+import 'package:qusai/screens/temp.dart';
+import 'package:qusai/shared/shared.dart';
+import '../../components/components.dart';
 
 class login_screen extends StatefulWidget {
   @override
@@ -162,13 +165,28 @@ class _login_screenState extends State<login_screen> {
                   SizedBox(
                     height: 20,
                   ),
+                  // temp for just showing work
+                  defaultButton(
+                      function: (){
+                        navigateto(context, temp());
+                      },
+                      text: "next  (temp.)",
+                  ),
                   Row(
                     mainAxisAlignment:MainAxisAlignment.center,
                     children: [
                       Text("Dont have an account ?",style:TextStyle(color:Colors.white70,fontSize:15),),
-                      TextButton(onPressed: (){}, child:
-                      Text("Register Now",style:TextStyle(color:Colors.white,fontSize:17,fontWeight: FontWeight.bold),
-
+                      TextButton(
+                          onPressed: (){
+                            navigateto(context, register_option());
+                            },
+                          child: Text(
+                            "Register Now",
+                            style:TextStyle(
+                                color:Colors.white,
+                                fontSize:17,
+                                fontWeight: FontWeight.bold,
+                            ),
                       )),
                     ],)
                 ],

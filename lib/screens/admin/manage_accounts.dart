@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:qusai/screens/admin/admin_main_screen.dart';
 
-import '../login_screen.dart';
+import '../base_screens/login_screen.dart';
 
 class manage_accounts extends StatefulWidget {
 
