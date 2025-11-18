@@ -38,6 +38,10 @@ dependencies:
   flutter_slider_drawer: ^3.0.2
   image_picker: ^1.2.1
   path: ^1.9.1
+  geolocator:
+  url_launcher:
+  dotted_border: ^2.0.0
+  google_maps_flutter:
 
 
 

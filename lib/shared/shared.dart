@@ -1,10 +1,9 @@
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:qusai/screens/common_screens/profile.dart';
-
 import '../screens/common_screens/announcemnts.dart';
 import '../screens/common_screens/contact_us.dart';
+import '../screens/common_screens/profile.dart';
 
 String charity_name = 'Charity Name';
 String admin_name = 'Admin Name';

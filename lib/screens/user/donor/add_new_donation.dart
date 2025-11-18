@@ -1,10 +1,13 @@
 import 'dart:io';
-import 'dart:math';
 
+import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import '../../../components/components.dart';
+import 'location.dart';
 
 class add_new_donation extends StatefulWidget {
   @override
@@ -12,12 +15,51 @@ class add_new_donation extends StatefulWidget {
 }
 
 class _add_new_donation extends State<add_new_donation> {
-  bool ispassword = true;
 
   var formKey = GlobalKey<FormState>();
-  var typeofmeal = TextEditingController();
-  var numberofpeople = TextEditingController();
+  var nameController = TextEditingController();
+  var descriptionController = TextEditingController();
+  var numberofpeopleController = TextEditingController();
+  String? category;
+  var timeController = TextEditingController();
+
   File? _image;
+
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> _pickImage() async {
+    final XFile? pickedFile =
+    await _picker.pickImage(source: ImageSource.camera, imageQuality: 80);
+
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+  }
+
+  TextEditingController locationController = TextEditingController();
+
+  Future<void> _openMap() async {
+    // افتح صفحة اختيار الموقع
+    final pickedLocation = await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => PickLocationPage()),
+    );
+
+    // رجع من صفحة الخريطة
+    if (pickedLocation != null) {
+      locationController.text =
+      "${pickedLocation.latitude}, ${pickedLocation.longitude}";
+
+      // فتح Google Maps على الموقع المختار
+      final Uri googleMapUrl = Uri.parse(
+          'https://www.google.com/maps/search/?api=1&query=${pickedLocation.latitude},${pickedLocation.longitude}');
+
+      await launchUrl(googleMapUrl, mode: LaunchMode.externalApplication);
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -83,12 +125,43 @@ class _add_new_donation extends State<add_new_donation> {
                         ],
                       ),
                       child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          Center(
+                            child: GestureDetector(
+                              onTap: _pickImage,
+                              child: DottedBorder(
+                                dashPattern: const [6, 3],
+                                color: Colors.blueAccent,
+                                strokeWidth: 2,
+                                borderType: BorderType.RRect,
+                                radius: const Radius.circular(18),
+                                child: Container(
+                                  height: 200,
+                                  width: 200,
+                                  decoration: BoxDecoration(
+                                    color: Colors.blue.withOpacity(0.1),
+                                    borderRadius: BorderRadius.circular(18),
+                                  ),
+                                  child: _image != null
+                                      ? ClipRRect(
+                                    borderRadius: BorderRadius.circular(18),
+                                    child: Image.file(_image!, fit: BoxFit.cover),
+                                  )
+                                      : const Center(
+                                    child:
+                                    Icon(Icons.add_a_photo, size: 50, color: Colors.blue),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(height: 15.0,),
                           defaultFormField(
-                            controller: typeofmeal,
+                            controller: nameController,
                             type: TextInputType.name,
                             validate: (String value) {
-                              if (value.isEmpty) {
+                              if (value.isEmpty || value == null) {
                                 return 'please enter type of meal ';
                               }
                               return null;
@@ -98,96 +171,91 @@ class _add_new_donation extends State<add_new_donation> {
                           ),
                           const SizedBox(height: 15.0),
                           defaultFormField(
-                            controller: numberofpeople,
-                            type: TextInputType.emailAddress,
+                            controller: numberofpeopleController,
+                            type: TextInputType.number,
                             validate: (String value) {
-                              if (value.isEmpty) {
-                                return 'please enter number';
+                              if (value.isEmpty || value == null) {
+                                return 'please enter the number of people';
                               }
                               return null;
                             },
                             label: 'How many people you will serve?',
                             prefix: Icons.group,
                           ),
-                          const SizedBox(height: 15),
-                          CircleAvatar(
-                            radius: 150,
-                            backgroundImage:
-                            _image == null ? null : FileImage(_image!),
-                          ),
-                          const SizedBox(height: 15),
+                          const SizedBox(height: 15.0,),
+                          Text("Category",
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                          const SizedBox(height: 6),
                           Container(
-                            width: 200,
-                            height: 50,
+                            padding: const EdgeInsets.symmetric(horizontal: 15),
                             decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [Color(0xFF757575), Color(0xFF424242)],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                              ),
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.blue.withOpacity(0.4),
-                                  blurRadius: 12,
-                                  offset: const Offset(0, 5),
-                                ),
-                              ],
+                              border: Border.all(color: Colors.grey),
+                              borderRadius: BorderRadius.circular(14),
                             ),
-                            child: GestureDetector(
-                              onTap: getImage,
-                              child: const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 15.0),
-                                child: Center(
-                                  child: Text(
-                                    "Add photo",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButton<String>(
+                                value: category,
+                                hint: const Text("Select category"),
+                                items: ["Bread", "Cooked Meal", "Fruits", "Vegetables"]
+                                    .map((e) => DropdownMenuItem(value: e, child: Text(e)))
+                                    .toList(),
+                                onChanged: (v) => setState(() => category = v),
                               ),
                             ),
                           ),
-                          const SizedBox(height: 15),
-                          Container(
-                            width: 200,
-                            height: 50,
-                            decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [Color(0xFF757575), Color(0xFF424242)],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
+                          SizedBox(height: 15.0,),
+                          const SizedBox(height: 15.0),
+                          Text("Location",
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                          const SizedBox(height: 6),
+                          TextFormField(
+                            controller: locationController,
+                            readOnly: true,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'The Location is required';
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              labelText: "Location",
+                              prefixIcon: const Icon(Icons.location_on),
+                              suffixIcon: IconButton(
+                                icon: const Icon(Icons.map, color: Colors.blue),
+                                onPressed: _openMap, // دالة فتح الخرائط والحصول على الموقع
                               ),
-                              borderRadius: BorderRadius.circular(20),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.blue.withOpacity(0.4),
-                                  blurRadius: 12,
-                                  offset: const Offset(0, 5),
-                                ),
-                              ],
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                              hintText: "Press map icon to get location",
                             ),
-                            child: GestureDetector(
-                              onTap: (){},
-                              child: const Padding(
-                                padding: EdgeInsets.symmetric(vertical: 15.0),
-                                child: Center(
-                                  child: Text(
-                                    "Location",
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 15,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ),
+                            onTap: () async {
+                              if (locationController.text.isNotEmpty) {
+                                // إذا الحقل يحتوي إحداثيات، افتحها مباشرة في Google Maps
+                                final coords = locationController.text; // "lat, long"
+                                final url =
+                                Uri.parse('https://www.google.com/maps/search/?api=1&query=$coords');
+                                if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+                                  throw 'Could not launch $url';
+                                }
+                              }
+                            },
+                          ),
+                          const SizedBox(height: 6),
+                          Text("Description",
+                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                          const SizedBox(height: 6),
+                          TextField(
+                            controller: descriptionController,
+                            maxLines: 4,
+                            decoration: InputDecoration(
+                              border: OutlineInputBorder(borderRadius: BorderRadius.circular(14)),
+                              hintText: "Write short description...",
                             ),
                           ),
-                          const SizedBox(height: 30),
+                          SizedBox(
+                            height: 30,
+                          ),
                           Container(
                             width: double.infinity,
                             decoration: BoxDecoration(
@@ -196,8 +264,6 @@ class _add_new_donation extends State<add_new_donation> {
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                               ),
-
-
                               borderRadius: BorderRadius.circular(20),
                               boxShadow: [
                                 BoxShadow(
@@ -209,9 +275,8 @@ class _add_new_donation extends State<add_new_donation> {
                             ),
                             child: MaterialButton(
                               onPressed: () {
-                                // تنفيذ إرسال النموذج
                                 if (formKey.currentState!.validate()) {
-                                  // حفظ البيانات + الصورة
+
                                 }
                               },
                               child: const Padding(
@@ -238,38 +303,5 @@ class _add_new_donation extends State<add_new_donation> {
         ),
       ),
     );
-  }
-
-  // ============================
-  // دالة اختيار الصورة من الكاميرا
-  // ============================
-  Future<void> getImage() async {
-    try {
-      final ImagePicker picker = ImagePicker();
-      final XFile? pickedFile = await picker.pickImage(
-        source: ImageSource.camera,
-        imageQuality: 80, // اختياري لتقليل حجم الصورة
-        maxWidth: 1024,
-      );
-
-      if (pickedFile == null) {
-        // المستخدم ألغى الاختيار
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No image selected')),
-        );
-        return;
-      }
-
-      final File imageFile = File(pickedFile.path);
-
-      setState(() {
-        _image = imageFile;
-      });
-    } catch (e) {
-      // إدارة الأخطاء
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error picking image: $e')),
-      );
-    }
   }
 }

@@ -12,9 +12,7 @@ class _logo_screen extends State<logo_screen>
     with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _fadeIn;
-
-
-
+  
   @override
   void initState() {
     super.initState();
@@ -24,7 +22,7 @@ class _logo_screen extends State<logo_screen>
     _controller.forward();
     _controller.addStatusListener((status){
         if(status.isCompleted){
-          Future.delayed(Duration(seconds: 0),(){
+          Future.delayed(Duration(seconds: 1),(){
             navigateto(context, login_screen());
           });
         }

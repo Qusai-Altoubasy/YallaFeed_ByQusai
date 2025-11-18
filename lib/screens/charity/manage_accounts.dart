@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:qusai/screens/common_screens/another_profile.dart';
+import 'package:qusai/shared/shared.dart';
 
 class manage_accounts extends StatelessWidget {
   const manage_accounts({super.key});
@@ -48,7 +50,7 @@ class manage_accounts extends StatelessWidget {
           ),
           Expanded(
             child: ListView.separated(
-                itemBuilder:(context , index ) => buildChatItem(),
+                itemBuilder:(context , index ) => buildChatItem(context),
                 separatorBuilder: (context , index ) => Container(
                   width: double.infinity,
                   height: 1,
@@ -62,7 +64,7 @@ class manage_accounts extends StatelessWidget {
   }
 }
 
-Widget buildChatItem() => Padding(
+Widget buildChatItem(BuildContext context) => Padding(
   padding: const EdgeInsets.all(8.0),
   child: Row(
     children: [
@@ -89,7 +91,9 @@ Widget buildChatItem() => Padding(
         mainAxisSize: MainAxisSize.min,
         children: [
           ElevatedButton.icon(
-            onPressed: () {},
+            onPressed: () {
+              navigateto(context, another_profile());
+            },
             icon: Icon(Icons.person, size: 16),
             label: Text('profile'),
             style: ElevatedButton.styleFrom(

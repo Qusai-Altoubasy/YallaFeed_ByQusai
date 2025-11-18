@@ -20,7 +20,7 @@ class _profileState extends State<profile> {
       appBar: AppBar(
         backgroundColor: Color(0xFFB3E5FC),
         title: Text(
-            'Your profile',
+          'Your profile',
           style: TextStyle(
             fontWeight: FontWeight.bold,
           ),
@@ -42,59 +42,59 @@ class _profileState extends State<profile> {
                 height: 30,
               ),
               Stack(
-                alignment: Alignment.bottomRight,
-                children: [
-                  CircleAvatar(
-                    radius: 150,
-                    backgroundImage:
-                    _image == null ? null : FileImage(_image!),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.camera_alt, size: 25,),
-                    onPressed: () {
-                      showModalBottomSheet(
-                        context: context,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-                        ),
-                        builder: (context) => Container(
-                          padding: EdgeInsets.all(20),
-                          height: 160,
-                          child: Column(
-                            children: [
-                              Text(
-                                "Select Image Source",
-                                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(height: 20),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  ElevatedButton.icon(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                      getImage(ImageSource.camera);
-                                    },
-                                    icon: Icon(Icons.camera_alt),
-                                    label: Text("Camera"),
-                                  ),
-                                  ElevatedButton.icon(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                      getImage(ImageSource.gallery);
-                                    },
-                                    icon: Icon(Icons.photo),
-                                    label: Text("Gallery"),
-                                  ),
-                                ],
-                              )
-                            ],
+                  alignment: Alignment.bottomRight,
+                  children: [
+                    CircleAvatar(
+                      radius: 150,
+                      backgroundImage:
+                      _image == null ? null : FileImage(_image!),
+                    ),
+                    IconButton(
+                      icon: Icon(Icons.camera_alt, size: 25,),
+                      onPressed: () {
+                        showModalBottomSheet(
+                          context: context,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
                           ),
-                        ),
-                      );
-                    },
-                  ),
-                ]
+                          builder: (context) => Container(
+                            padding: EdgeInsets.all(20),
+                            height: 160,
+                            child: Column(
+                              children: [
+                                Text(
+                                  "Select Image Source",
+                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                ),
+                                SizedBox(height: 20),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    ElevatedButton.icon(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        getImage(ImageSource.camera);
+                                      },
+                                      icon: Icon(Icons.camera_alt),
+                                      label: Text("Camera"),
+                                    ),
+                                    ElevatedButton.icon(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                        getImage(ImageSource.gallery);
+                                      },
+                                      icon: Icon(Icons.photo),
+                                      label: Text("Gallery"),
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ]
               ),
               SizedBox(
                 height: 30,
@@ -130,7 +130,7 @@ class _profileState extends State<profile> {
                         ),
                         Spacer(),
                         IconButton(
-                            onPressed: (){}, 
+                            onPressed: (){},
                             icon: Icon(Icons.edit)
                         ),
                       ],

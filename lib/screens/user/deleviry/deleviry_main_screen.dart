@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:qusai/screens/common_screens/history.dart';
+import 'package:qusai/screens/user/deleviry/view_available_requests.dart';
 import 'package:qusai/shared/shared.dart';
 
 class deleviry_main_screen extends StatelessWidget {
@@ -123,7 +125,9 @@ class deleviry_main_screen extends StatelessWidget {
                               color2: const Color(0xFFF4511E),
                               icon: Icons.directions_car_filled,
                               text: 'View available requests',
-                              onTap: () {},
+                              onTap: () {
+                                navigateto(context, view_available_requests());
+                              },
                             ),
 
                             const SizedBox(height: 25),
@@ -134,7 +138,9 @@ class deleviry_main_screen extends StatelessWidget {
                               color2: const Color(0xFFBDBDBD),
                               icon: Icons.history,
                               text: 'History',
-                              onTap: () {},
+                              onTap: () {
+                                navigateto(context, history());
+                              },
                             ),
                           ],
                         ),

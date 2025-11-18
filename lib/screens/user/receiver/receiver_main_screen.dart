@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:qusai/screens/common_screens/history.dart';
+import 'package:qusai/screens/user/receiver/view_available_donations.dart';
 import 'package:qusai/shared/shared.dart';
 
 class receiver_main_screen extends StatelessWidget {
@@ -125,7 +127,9 @@ class receiver_main_screen extends StatelessWidget {
                                 color2: const Color(0xFFF9A825),
                                 icon: Icons.search_rounded,
                                 text: 'View available donations',
-                                onTap: () {},
+                                onTap: () {
+                                  navigateto(context, view_available_donation());
+                                },
                               ),
                             ),
 
@@ -137,7 +141,9 @@ class receiver_main_screen extends StatelessWidget {
                               color2: const Color(0xFF424242),
                               icon: Icons.history,
                               text: 'History',
-                              onTap: () {},
+                              onTap: () {
+                                navigateto(context, history());
+                              },
                             ),
                           ],
                         ),

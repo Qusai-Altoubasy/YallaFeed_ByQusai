@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qusai/screens/user/donor/add_new_donation.dart';
+import 'package:qusai/screens/user/donor/my_donations.dart';
 import 'package:qusai/shared/shared.dart';
 
 class donor_main_screen extends StatelessWidget {
@@ -138,7 +139,9 @@ class donor_main_screen extends StatelessWidget {
                               color2: const Color(0xFF93291E),
                               icon: Icons.list_alt,
                               text: 'My donations',
-                              onTap: () {},
+                              onTap: () {
+                                navigateto(context, my_donations());
+                              },
                             ),
                           ],
                         ),
