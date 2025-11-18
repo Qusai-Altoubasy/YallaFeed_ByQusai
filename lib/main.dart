@@ -1,4 +1,3 @@
-// Qusai Altoubasy
 
 import 'package:flutter/material.dart';
 import 'package:qusai/screens/admin/admin_main_screen.dart';
