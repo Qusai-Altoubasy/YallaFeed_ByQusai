@@ -99,8 +99,8 @@ Widget buildChatItem() => Padding(
         children: [
           ElevatedButton.icon(
             onPressed: () {},
-            icon: Icon(Icons.edit, size: 16),
-            label: Text('Edit'),
+            icon: Icon(Icons.remove_red_eye, size: 16),
+            label: Text('View'),
             style: ElevatedButton.styleFrom(
               backgroundColor: Colors.blueAccent.withOpacity(0.5),
               foregroundColor: Colors.white,

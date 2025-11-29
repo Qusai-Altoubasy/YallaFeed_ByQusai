@@ -11,8 +11,7 @@ class _user_register extends State<user_register> {
 
   var formKey = GlobalKey<FormState>();
 
-  var firstnameController = TextEditingController();
-  var lastnameController = TextEditingController();
+  var nameController = TextEditingController();
   var emailController = TextEditingController();
   var passwordController = TextEditingController();
   var confirmpasswordController = TextEditingController();
@@ -77,26 +76,14 @@ class _user_register extends State<user_register> {
                       child: Column(
                         children: [
                           defaultFormField(
-                            controller: firstnameController,
+                            controller: nameController,
                             type: TextInputType.name,
                             validate: (String value) {
                               if (value.isEmpty) {
-                                return 'please enter your first name';
+                                return 'please enter your name';
                               }
                             },
-                            label: 'First Name',
-                            prefix: Icons.person,
-                          ),
-                          const SizedBox(height: 15),
-                          defaultFormField(
-                            controller: lastnameController,
-                            type: TextInputType.name,
-                            validate: (String value) {
-                              if (value.isEmpty) {
-                                return 'please enter your last name';
-                              }
-                            },
-                            label: 'Last Name',
+                            label: 'Your name',
                             prefix: Icons.person,
                           ),
                           const SizedBox(height: 15),

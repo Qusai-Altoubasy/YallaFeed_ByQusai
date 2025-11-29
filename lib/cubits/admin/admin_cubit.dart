@@ -6,6 +6,8 @@ class admin_cubit extends Cubit<admin_state>{
   admin_cubit():super (admin_init_state());
   static admin_cubit get(context)=> BlocProvider.of(context);
 
+  void send_announcement(String title, String message, String sendto){
 
+  }
 
 }
