@@ -143,6 +143,19 @@ class donor_main_screen extends StatelessWidget {
                                 navigateto(context, my_donations());
                               },
                             ),
+
+                            const SizedBox(height: 25),
+
+                            // 🟥 Button 2 - Block recipients
+                            _buildModernButton(
+                              color1: const Color(0xFF9BE7FF),
+                              color2: const Color(0xFFB3E5DC),
+                              icon: Icons.handshake_outlined,
+                              text: 'Request to receive',
+                              onTap: () {
+
+                              },
+                            ),
                           ],
                         ),
                       ),
