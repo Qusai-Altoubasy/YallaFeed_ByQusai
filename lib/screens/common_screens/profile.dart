@@ -36,193 +36,280 @@ class _profileState extends State<profile> {
           ),
         ),
         child: Center(
-          child: Column(
-            children: [
-              SizedBox(
-                height: 30,
-              ),
-              Stack(
-                  alignment: Alignment.bottomRight,
-                  children: [
-                    CircleAvatar(
-                      radius: 150,
-                      backgroundImage:
-                      _image == null ? null : FileImage(_image!),
+          child: SingleChildScrollView(
+            child: Column(
+              children: [
+                SizedBox(
+                  height: 30,
+                ),
+                Stack(
+                    alignment: Alignment.bottomRight,
+                    children: [
+                      CircleAvatar(
+                        radius: 150,
+                        backgroundImage:
+                        _image == null ? null : FileImage(_image!),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.camera_alt, size: 25,),
+                        onPressed: () {
+                          showModalBottomSheet(
+                            context: context,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+                            ),
+                            builder: (context) => Container(
+                              padding: EdgeInsets.all(20),
+                              height: 160,
+                              child: Column(
+                                children: [
+                                  Text(
+                                    "Select Image Source",
+                                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                                  ),
+                                  SizedBox(height: 20),
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    children: [
+                                      ElevatedButton.icon(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                          getImage(ImageSource.camera);
+                                        },
+                                        icon: Icon(Icons.camera_alt),
+                                        label: Text("Camera"),
+                                      ),
+                                      ElevatedButton.icon(
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                          getImage(ImageSource.gallery);
+                                        },
+                                        icon: Icon(Icons.photo),
+                                        label: Text("Gallery"),
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ]
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Container(
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(25),
                     ),
-                    IconButton(
-                      icon: Icon(Icons.camera_alt, size: 25,),
-                      onPressed: () {
-                        showModalBottomSheet(
-                          context: context,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-                          ),
-                          builder: (context) => Container(
-                            padding: EdgeInsets.all(20),
-                            height: 160,
-                            child: Column(
-                              children: [
-                                Text(
-                                  "Select Image Source",
-                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                                ),
-                                SizedBox(height: 20),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                  children: [
-                                    ElevatedButton.icon(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                        getImage(ImageSource.camera);
-                                      },
-                                      icon: Icon(Icons.camera_alt),
-                                      label: Text("Camera"),
-                                    ),
-                                    ElevatedButton.icon(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                        getImage(ImageSource.gallery);
-                                      },
-                                      icon: Icon(Icons.photo),
-                                      label: Text("Gallery"),
-                                    ),
-                                  ],
-                                )
-                              ],
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Row(
+                        children: [
+                          Text(
+                            'ID :',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
                             ),
                           ),
-                        );
-                      },
-                    ),
-                  ]
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Container(
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Row(
-                      children: [
-                        Text(
-                          'Name :',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
+                          SizedBox(
+                            width: 5,
                           ),
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Text(
-                          user_name,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
+                          Text(
+                            '765576446',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
                           ),
-                        ),
-                        Spacer(),
-                        IconButton(
-                            onPressed: (){},
-                            icon: Icon(Icons.edit)
-                        ),
-                      ],
+                          Spacer(),
+
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Container(
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Row(
-                      children: [
-                        Text(
-                          'Email :',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
+                SizedBox(
+                  height: 30,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Container(
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Row(
+                        children: [
+                          Text(
+                            'Name :',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Text(
-                          user_name,
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
+                          SizedBox(
+                            width: 5,
                           ),
-                        ),
-                        Spacer(),
-                        IconButton(
-                            onPressed: (){},
-                            icon: Icon(Icons.edit)
-                        ),
-                      ],
+                          Text(
+                            user_name,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          ),
+                          Spacer(),
+                          IconButton(
+                              onPressed: (){},
+                              icon: Icon(Icons.edit)
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(
-                height: 30,
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Container(
-                  height: 60,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(25),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Row(
-                      children: [
-                        Text(
-                          'Password :',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
+                SizedBox(
+                  height: 30,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Container(
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Row(
+                        children: [
+                          Text(
+                            'Email :',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
                           ),
-                        ),
-                        SizedBox(
-                          width: 5,
-                        ),
-                        Text(
-                          '***********',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            fontSize: 20,
+                          SizedBox(
+                            width: 5,
                           ),
-                        ),
-                        Spacer(),
-                        IconButton(
-                            onPressed: (){},
-                            icon: Icon(Icons.edit)
-                        ),
-                      ],
+                          Text(
+                            user_name,
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          ),
+                          Spacer(),
+                          IconButton(
+                              onPressed: (){},
+                              icon: Icon(Icons.edit)
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              )
-            ],
+                SizedBox(
+                  height: 30,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Container(
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Row(
+                        children: [
+                          Text(
+                            'Password :',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            '***********',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          ),
+                          Spacer(),
+                          IconButton(
+                              onPressed: (){},
+                              icon: Icon(Icons.edit)
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Container(
+                    height: 60,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(25),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Row(
+                        children: [
+                          Text(
+                            'phone :',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          ),
+                          SizedBox(
+                            width: 5,
+                          ),
+                          Text(
+                            '0282764633',
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 20,
+                            ),
+                          ),
+                          Spacer(),
+                          IconButton(
+                              onPressed: (){},
+                              icon: Icon(Icons.edit)
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 30,
+                ),
+
+              ],
+            ),
           ),
         ),
       ),

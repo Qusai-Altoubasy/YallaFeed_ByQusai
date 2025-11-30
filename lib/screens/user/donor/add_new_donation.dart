@@ -161,7 +161,7 @@ class _add_new_donation extends State<add_new_donation> {
                             controller: nameController,
                             type: TextInputType.name,
                             validate: (String value) {
-                              if (value.isEmpty || value == null) {
+                              if (value.isEmpty) {
                                 return 'please enter type of meal ';
                               }
                               return null;
@@ -174,7 +174,7 @@ class _add_new_donation extends State<add_new_donation> {
                             controller: numberofpeopleController,
                             type: TextInputType.number,
                             validate: (String value) {
-                              if (value.isEmpty || value == null) {
+                              if (value.isEmpty) {
                                 return 'please enter the number of people';
                               }
                               return null;

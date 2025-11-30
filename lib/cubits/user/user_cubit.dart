@@ -5,6 +5,7 @@ import 'package:qusai/cubits/user/user_states.dart';
 import 'package:qusai/screens/user/deleviry/deleviry_main_screen.dart';
 import 'package:qusai/screens/user/receiver/receiver_main_screen.dart';
 
+import '../../classes/user.dart';
 import '../../screens/user/donor/donor_main_screen.dart';
 
 class user_cubit extends Cubit<user_states>{
@@ -29,6 +30,21 @@ class user_cubit extends Cubit<user_states>{
     current_index= index;
     emit(change_user_bottom());
     }
+
+  bool _hasRequested = false;
+
+
+  bool get hasRequested => _hasRequested;
+
+
+  bool sendRequestOnce() {
+    if (_hasRequested) {
+      return false;
+    } else {
+      _hasRequested= true;
+      return true;
+    }
+  }
 
 
 }

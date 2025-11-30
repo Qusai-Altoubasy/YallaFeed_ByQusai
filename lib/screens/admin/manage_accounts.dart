@@ -1,6 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:path/path.dart';
 import 'package:qusai/screens/admin/admin_main_screen.dart';
+import 'package:qusai/screens/common_screens/another_profile.dart';
+import 'package:qusai/shared/shared.dart';
 
 import '../base_screens/login_screen.dart';
 
@@ -57,7 +60,7 @@ class _manage_accountsState extends State<manage_accounts> {
           ),
           Expanded(
             child: ListView.separated(
-                itemBuilder:(context , index ) => buildChatItem(),
+                itemBuilder:(context , index ) => buildChatItem(context),
                 separatorBuilder: (context , index ) => Container(
                   width: double.infinity,
                   height: 1,
@@ -71,7 +74,7 @@ class _manage_accountsState extends State<manage_accounts> {
   }
 }
 
-Widget buildChatItem() => Padding(
+Widget buildChatItem(context) => Padding(
   padding: const EdgeInsets.all(8.0),
   child: Row(
     children: [
@@ -98,7 +101,9 @@ Widget buildChatItem() => Padding(
         mainAxisSize: MainAxisSize.min,
         children: [
           ElevatedButton.icon(
-            onPressed: () {},
+            onPressed: () {
+              navigateto(context, another_profile());
+            },
             icon: Icon(Icons.remove_red_eye, size: 16),
             label: Text('View'),
             style: ElevatedButton.styleFrom(

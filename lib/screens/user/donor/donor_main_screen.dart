@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:qusai/cubits/user/user_cubit.dart';
 import 'package:qusai/screens/user/donor/add_new_donation.dart';
 import 'package:qusai/screens/user/donor/my_donations.dart';
 import 'package:qusai/shared/shared.dart';
@@ -153,7 +154,18 @@ class donor_main_screen extends StatelessWidget {
                               icon: Icons.handshake_outlined,
                               text: 'Request to receive',
                               onTap: () {
-
+                                if(user_cubit.get(context).sendRequestOnce()) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text(
+                                        'The request has been sent successfully')),
+                                  );
+                                }
+                                else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(content: Text(
+                                'The request has already sent')),
+                                );
+                                }
                               },
                             ),
                           ],

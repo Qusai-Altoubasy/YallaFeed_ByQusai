@@ -6,6 +6,7 @@ class donation {
   String ?tolocation;
   String ?description;
   String imagePath;
+  String status;
 
   donation({
     required this.mealType,
@@ -15,6 +16,7 @@ class donation {
     this.tolocation,
     this.description,
     required this.imagePath,
+    required this.status,
   });
 
 
