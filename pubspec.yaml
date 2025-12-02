@@ -42,6 +42,7 @@ dependencies:
   url_launcher:
   dotted_border: ^2.0.0
   google_maps_flutter:
+  firebase_core: ^4.2.1
 
 
 

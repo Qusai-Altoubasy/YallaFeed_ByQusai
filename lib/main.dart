@@ -1,5 +1,6 @@
 // Qusai Ayman Altoubasy
 
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:qusai/screens/admin/admin_main_screen.dart';
 import 'package:qusai/screens/base_screens/login_screen.dart';
@@ -8,8 +9,16 @@ import 'package:qusai/screens/charity/charity_main_screen.dart';
 import 'package:qusai/screens/common_screens/another_profile.dart';
 import 'package:qusai/screens/common_screens/profile.dart';
 
-void main() {
+import 'firebase_options.dart';
+
+void main() async{
   runApp(const MyApp());
+
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
 
 }
 class MyApp extends StatelessWidget {
