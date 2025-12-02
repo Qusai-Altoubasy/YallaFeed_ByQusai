@@ -43,6 +43,8 @@ dependencies:
   dotted_border: ^2.0.0
   google_maps_flutter:
   firebase_core: ^4.2.1
+  firebase_auth:
+  cloud_firestore:
 
 
 

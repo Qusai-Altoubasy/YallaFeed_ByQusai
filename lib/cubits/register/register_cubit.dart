@@ -1,25 +1,32 @@
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:qusai/cubits/register/register_states.dart';
+
+import '../../classes/charity.dart';
+import '../../classes/user.dart';
 
 class register_cubit extends Cubit<register_states> {
   register_cubit() : super(register_init_state());
 
   static register_cubit get(context) => BlocProvider.of(context);
 
-  void userRegister({
-    required String name,
-    required String email,
-    required String password,
-    required String phone,
-    required String id,
-  }) {
-    emit(register_loading_state());
-
-
+  Future<void> userRegister ({
+    required user User,
+  })  async {
+    User.signup();
   }
+
+  Future<void> charityRegister ({
+    required charity Charity,
+  })  async {
+    Charity.signup();
+  }
+
 
 
 

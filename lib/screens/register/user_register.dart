@@ -1,5 +1,7 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import '../../classes/user.dart';
 import '../../components/components.dart';
 import '../../cubits/register/register_cubit.dart';
 import '../../cubits/register/register_states.dart';
@@ -28,6 +30,7 @@ class user_register extends StatelessWidget {
       child: BlocConsumer<register_cubit , register_states>(
         listener: (context, state) {},
           builder: (context, state) {
+          var cubit = register_cubit.get(context);
           return Scaffold(
             appBar: AppBar(
               backgroundColor: Color(0xFFB3E5FC),
@@ -201,9 +204,32 @@ class user_register extends StatelessWidget {
                                     ],
                                   ),
                                   child: defaultButton(
-                                    function: () {
+                                    function: () async{
                                       if (formKey.currentState!.validate()) {
-                                        // Your login logic here
+                                        user User=user(
+                                          username: emailController.text,
+                                          name: nameController.text,
+                                          phone: phoneController.text,
+                                          id: IDController.text,
+                                          imageUrl: 'image path',
+                                          password: passwordController.text,
+                                        );
+                                        try {
+                                        await cubit.userRegister(User: User);
+                                        Navigator.pop(context); Navigator.pop(context);
+                                        ScaffoldMessenger.of(context).showSnackBar(
+                                          const SnackBar(content: Text(
+                                              'Signed up successfully')),
+                                        );
+                                        }
+
+                                            on FirebaseException catch(e) {
+
+                                              ScaffoldMessenger.of(context).showSnackBar(
+                                                const SnackBar(content: Text(
+                                                    'The informations are not valid')),
+                                              );
+                                            }
                                       }
                                     },
                                     text: "Register",

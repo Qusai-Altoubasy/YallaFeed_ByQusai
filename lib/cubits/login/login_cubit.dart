@@ -15,7 +15,7 @@ class login_cubit extends Cubit<login_states> {
   }) {
     emit(login_loading_state());
 
-   //
+
   }
 
   IconData suffix = Icons.visibility_outlined;
