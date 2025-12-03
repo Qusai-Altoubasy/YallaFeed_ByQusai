@@ -26,6 +26,7 @@ class user extends mainuser{
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
     email: this.username.trim(),
     password: this.password.trim(),);
+  String userid = usercred.user!.uid;
 
   await FirebaseFirestore.instance.collection('users').add(
       { "Id" : this.ID.trim(),
@@ -37,6 +38,7 @@ class user extends mainuser{
         "type" : this.type?.trim(),
         "havepermission" : this.havepermission,
         "nameofcharity" : this.nameofcharity,
+        "uid":userid,
       }
   );
   }

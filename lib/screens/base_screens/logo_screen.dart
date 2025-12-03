@@ -1,6 +1,11 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:qusai/screens/admin/admin_main_screen.dart';
 import 'package:qusai/screens/base_screens/login_screen.dart';
+import 'package:qusai/screens/charity/charity_main_screen.dart';
+import 'package:qusai/screens/user/user_layout.dart';
 import 'package:qusai/shared/shared.dart';
 class logo_screen extends StatefulWidget {
   const logo_screen({super.key});
@@ -23,7 +28,60 @@ class _logo_screen extends State<logo_screen>
     _controller.addStatusListener((status){
         if(status.isCompleted){
           Future.delayed(Duration(seconds: 1),(){
-            navigateto(context, login_screen());
+            navigateto(
+                context,
+                StreamBuilder(
+                    stream: FirebaseAuth.instance.authStateChanges(),
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      if(snapshot.data==null){
+                        return login_screen();
+                      }
+                      else {
+                        String uid = FirebaseAuth.instance.currentUser!.uid;
+                        return FutureBuilder(
+                            future: FirebaseFirestore.instance.collection('users').doc(uid).get(),
+                            builder: (context, userSnapshot){
+                              if (userSnapshot.connectionState == ConnectionState.waiting) {
+                                return const Center(child: CircularProgressIndicator());
+                              }
+                              if(userSnapshot.data!.exists){
+                                return user_layout();
+                              }
+                              else {
+                                return FutureBuilder(
+                                  future: FirebaseFirestore.instance.collection('users').doc(uid).get(),
+                                  builder: (context, userSnapshot){
+                                    if (userSnapshot.connectionState == ConnectionState.waiting) {
+                                      return const Center(child: CircularProgressIndicator());
+                                    }
+                                    if(userSnapshot.data!.exists){
+                                      return charity_main_screen();
+                                    }
+                                    else{
+                                      return FutureBuilder(
+                                        future: FirebaseFirestore.instance.collection('users').doc(uid).get(),
+                                        builder: (context, userSnapshot){
+                                          if (userSnapshot.connectionState == ConnectionState.waiting) {
+                                            return const Center(child: CircularProgressIndicator());
+                                          }
+                                          return admin_main_screen();
+                                        },
+                                      );
+                                    }
+                                  },
+                                );
+                              }
+                            }
+                        );
+                      }
+                    },
+                )
+            );
           });
         }
       }

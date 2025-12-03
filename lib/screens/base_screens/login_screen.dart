@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:qusai/cubits/login/login_cubit.dart';
@@ -28,7 +29,8 @@ class login_screen extends StatelessWidget {
        child: BlocConsumer<login_cubit , login_states>(
          listener: (context, state) {},
            builder: (context, state) {
-           return Scaffold(
+             var cubit = login_cubit.get(context);
+             return Scaffold(
              body: Container(
                width: double.infinity,
                height: double.infinity,
@@ -102,7 +104,8 @@ class login_screen extends StatelessWidget {
                          SizedBox(
                            height: 50,
                          ),
-                         defaultFormField(controller:EmailController,
+                         defaultFormField(
+                           controller:EmailController,
                            label:"Email Address",
                            prefix:Icons.email_outlined,
                            type:TextInputType.emailAddress,
@@ -148,7 +151,21 @@ class login_screen extends StatelessWidget {
 
 
                            child:
-                           TextButton(onPressed: (){},
+                           TextButton(
+                               onPressed: () async {
+                             if (formKey.currentState!.validate()) {
+                               try{
+                                 await cubit.userLogin(email: EmailController.text.trim(), password: PasswordController.text.trim());
+                               }
+                               on FirebaseException catch(e) {
+                                 ScaffoldMessenger.of(context).showSnackBar(
+                                   const SnackBar(content: Text(
+                                       'The username or password is incorrect. ')),
+                                 );
+
+                               }
+                             }
+                             },
                                child:Text(
                                  "Forget password?",
                                  style:TextStyle(color:Colors.white70,fontSize:14),
