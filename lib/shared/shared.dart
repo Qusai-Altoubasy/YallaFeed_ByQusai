@@ -1,4 +1,5 @@
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../screens/common_screens/announcemnts.dart';
@@ -71,7 +72,10 @@ Widget menu(context, Color color)=> Padding(
             ListTile(
               leading: const Icon(Icons.logout, size: 30,),
               title: const Text('Log out'),
-              onTap: (){},
+              onTap: ()async {
+                await FirebaseAuth.instance.signOut();
+                Navigator.pop(context);
+              },
             ),
           ],
         ),

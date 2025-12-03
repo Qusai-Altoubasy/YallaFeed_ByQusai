@@ -28,7 +28,7 @@ class user extends mainuser{
     password: this.password.trim(),);
   String userid = usercred.user!.uid;
 
-  await FirebaseFirestore.instance.collection('users').add(
+  await FirebaseFirestore.instance.collection('users').doc(userid).set(
       { "Id" : this.ID.trim(),
         "name" : this.name.trim(),
         "username" : this.username.trim(),

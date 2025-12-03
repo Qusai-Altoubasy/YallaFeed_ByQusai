@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:qusai/cubits/login/login_cubit.dart';
@@ -7,6 +8,9 @@ import 'package:qusai/screens/register/register_options.dart';
 import 'package:qusai/screens/temp.dart';
 import 'package:qusai/shared/shared.dart';
 import '../../components/components.dart';
+import '../admin/admin_main_screen.dart';
+import '../charity/charity_main_screen.dart';
+import '../user/user_layout.dart';
 
 
 class login_screen extends StatelessWidget {
@@ -153,18 +157,7 @@ class login_screen extends StatelessWidget {
                            child:
                            TextButton(
                                onPressed: () async {
-                             if (formKey.currentState!.validate()) {
-                               try{
-                                 await cubit.userLogin(email: EmailController.text.trim(), password: PasswordController.text.trim());
-                               }
-                               on FirebaseException catch(e) {
-                                 ScaffoldMessenger.of(context).showSnackBar(
-                                   const SnackBar(content: Text(
-                                       'The username or password is incorrect. ')),
-                                 );
-
-                               }
-                             }
+                             if (formKey.currentState!.validate()) {}
                              },
                                child:Text(
                                  "Forget password?",
@@ -180,9 +173,75 @@ class login_screen extends StatelessWidget {
                          // sign in
                          defaultButton(
                            text: "Sign In",
-                           function: () {
-                             if (formKey.currentState!.validate()) {
-                               // Your login logic here
+                           function: ()async {
+                             try{
+                               await cubit.userLogin(email: EmailController.text.trim(), password: PasswordController.text.trim());
+                               navigateto(
+                                   context,
+                                   StreamBuilder(
+                                     stream: FirebaseAuth.instance.authStateChanges(),
+                                     builder: (context, snapshot) {
+                                       if (snapshot.connectionState == ConnectionState.waiting) {
+                                         return const Center(
+                                           child: CircularProgressIndicator(),
+                                         );
+                                       }
+                                       if(snapshot.data==null){
+                                         return login_screen();
+                                       }
+                                       else {
+                                         String uid = FirebaseAuth.instance.currentUser!.uid;
+                                         return FutureBuilder(
+                                             future: FirebaseFirestore.instance.collection('users').doc(uid).get(),
+                                             builder: (context, userSnapshot){
+                                               if (userSnapshot.connectionState == ConnectionState.waiting) {
+                                                 return const Center(child: CircularProgressIndicator());
+                                               }
+                                               if(userSnapshot.data!.exists){
+                                                 return user_layout();
+                                               }
+                                               else {
+                                                 return FutureBuilder(
+                                                   future: FirebaseFirestore.instance.collection('charity').doc(uid).get(),
+                                                   builder: (context, userSnapshot){
+                                                     if (userSnapshot.connectionState == ConnectionState.waiting) {
+                                                       return const Center(child: CircularProgressIndicator());
+                                                     }
+                                                     if(userSnapshot.data!.exists){
+                                                       return charity_main_screen();
+                                                     }
+                                                     else{
+                                                       return FutureBuilder(
+                                                         future: FirebaseFirestore.instance.collection('admin').doc(uid).get(),
+                                                         builder: (context, userSnapshot){
+                                                           if (userSnapshot.connectionState == ConnectionState.waiting) {
+                                                             return const Center(child: CircularProgressIndicator());
+                                                           }
+                                                           if (userSnapshot.data!.exists) {
+                                                             return admin_main_screen();
+                                                           }
+                                                           return const Center(child: Text('User not found in any collection'));
+                                                         },
+                                                       );
+                                                     }
+                                                   },
+                                                 );
+                                               }
+                                             }
+                                         );
+                                       }
+                                     },
+                                   )
+                               );
+
+
+                             }
+                             on FirebaseException catch(e) {
+                               ScaffoldMessenger.of(context).showSnackBar(
+                                 const SnackBar(content: Text(
+                                     'The username or password is incorrect. ')),
+                               );
+
                              }
                            },
                            background: Colors.white,

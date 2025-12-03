@@ -54,7 +54,7 @@ class _logo_screen extends State<logo_screen>
                               }
                               else {
                                 return FutureBuilder(
-                                  future: FirebaseFirestore.instance.collection('users').doc(uid).get(),
+                                  future: FirebaseFirestore.instance.collection('charity').doc(uid).get(),
                                   builder: (context, userSnapshot){
                                     if (userSnapshot.connectionState == ConnectionState.waiting) {
                                       return const Center(child: CircularProgressIndicator());
@@ -64,12 +64,15 @@ class _logo_screen extends State<logo_screen>
                                     }
                                     else{
                                       return FutureBuilder(
-                                        future: FirebaseFirestore.instance.collection('users').doc(uid).get(),
+                                        future: FirebaseFirestore.instance.collection('admin').doc(uid).get(),
                                         builder: (context, userSnapshot){
                                           if (userSnapshot.connectionState == ConnectionState.waiting) {
                                             return const Center(child: CircularProgressIndicator());
                                           }
-                                          return admin_main_screen();
+                                          if (userSnapshot.data!.exists) {
+                                            return admin_main_screen();
+                                          }
+                                          return login_screen();
                                         },
                                       );
                                     }
