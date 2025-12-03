@@ -1,4 +1,5 @@
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -83,6 +84,32 @@ Widget menu(context, Color color)=> Padding(
     ],
   ),
 );
+
+Future<String?> getUserType(String uid) async {
+  // Check users collection
+  final userDoc = await FirebaseFirestore.instance
+      .collection('users')
+      .doc(uid)
+      .get();
+  if (userDoc.exists) return 'user';
+
+  // Check charity collection
+  final charityDoc = await FirebaseFirestore.instance
+      .collection('charity')
+      .doc(uid)
+      .get();
+  if (charityDoc.exists) return 'charity';
+
+  // Check admin collection
+  final adminDoc = await FirebaseFirestore.instance
+      .collection('admin')
+      .doc(uid)
+      .get();
+  if (adminDoc.exists) return 'admin';
+
+  return null; // Not found in any collection
+}
+
 
 
 

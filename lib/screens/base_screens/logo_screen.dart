@@ -31,58 +31,37 @@ class _logo_screen extends State<logo_screen>
             navigateto(
                 context,
                 StreamBuilder(
-                    stream: FirebaseAuth.instance.authStateChanges(),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const Center(
-                          child: CircularProgressIndicator(),
-                        );
-                      }
-                      if(snapshot.data==null){
-                        return login_screen();
-                      }
-                      else {
-                        String uid = FirebaseAuth.instance.currentUser!.uid;
-                        return FutureBuilder(
-                            future: FirebaseFirestore.instance.collection('users').doc(uid).get(),
-                            builder: (context, userSnapshot){
-                              if (userSnapshot.connectionState == ConnectionState.waiting) {
-                                return const Center(child: CircularProgressIndicator());
-                              }
-                              if(userSnapshot.data!.exists){
-                                return user_layout();
-                              }
-                              else {
-                                return FutureBuilder(
-                                  future: FirebaseFirestore.instance.collection('charity').doc(uid).get(),
-                                  builder: (context, userSnapshot){
-                                    if (userSnapshot.connectionState == ConnectionState.waiting) {
-                                      return const Center(child: CircularProgressIndicator());
-                                    }
-                                    if(userSnapshot.data!.exists){
-                                      return charity_main_screen();
-                                    }
-                                    else{
-                                      return FutureBuilder(
-                                        future: FirebaseFirestore.instance.collection('admin').doc(uid).get(),
-                                        builder: (context, userSnapshot){
-                                          if (userSnapshot.connectionState == ConnectionState.waiting) {
-                                            return const Center(child: CircularProgressIndicator());
-                                          }
-                                          if (userSnapshot.data!.exists) {
-                                            return admin_main_screen();
-                                          }
-                                          return login_screen();
-                                        },
-                                      );
-                                    }
-                                  },
-                                );
-                              }
-                            }
-                        );
-                      }
-                    },
+                  stream: FirebaseAuth.instance.authStateChanges(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+
+                    if (!snapshot.hasData) {
+                      return login_screen();
+                    }
+
+                    final uid = FirebaseAuth.instance.currentUser!.uid;
+
+                    return FutureBuilder<String?>(
+                      future: getUserType(uid),
+                      builder: (context, userSnapshot) {
+                        if (userSnapshot.connectionState == ConnectionState.waiting) {
+                          return const Center(child: CircularProgressIndicator());
+                        }
+
+                        final type = userSnapshot.data;
+
+                        if (type == 'user') {
+                          return user_layout();
+                        } else if (type == 'charity') {
+                          return charity_main_screen();
+                        } else {
+                          return admin_main_screen();
+                        }
+                      },
+                    );
+                  },
                 )
             );
           });

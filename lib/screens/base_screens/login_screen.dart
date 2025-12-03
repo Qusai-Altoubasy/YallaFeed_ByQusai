@@ -172,8 +172,9 @@ class login_screen extends StatelessWidget {
                          ),
                          // sign in
                          defaultButton(
-                           text: "Sign In",
+                           text: "log In",
                            function: ()async {
+                             if (formKey.currentState!.validate()){
                              try{
                                await cubit.userLogin(email: EmailController.text.trim(), password: PasswordController.text.trim());
                                navigateto(
@@ -182,54 +183,29 @@ class login_screen extends StatelessWidget {
                                      stream: FirebaseAuth.instance.authStateChanges(),
                                      builder: (context, snapshot) {
                                        if (snapshot.connectionState == ConnectionState.waiting) {
-                                         return const Center(
-                                           child: CircularProgressIndicator(),
-                                         );
+                                         return const Center(child: CircularProgressIndicator());
                                        }
-                                       if(snapshot.data==null){
-                                         return login_screen();
-                                       }
-                                       else {
-                                         String uid = FirebaseAuth.instance.currentUser!.uid;
-                                         return FutureBuilder(
-                                             future: FirebaseFirestore.instance.collection('users').doc(uid).get(),
-                                             builder: (context, userSnapshot){
-                                               if (userSnapshot.connectionState == ConnectionState.waiting) {
-                                                 return const Center(child: CircularProgressIndicator());
-                                               }
-                                               if(userSnapshot.data!.exists){
-                                                 return user_layout();
-                                               }
-                                               else {
-                                                 return FutureBuilder(
-                                                   future: FirebaseFirestore.instance.collection('charity').doc(uid).get(),
-                                                   builder: (context, userSnapshot){
-                                                     if (userSnapshot.connectionState == ConnectionState.waiting) {
-                                                       return const Center(child: CircularProgressIndicator());
-                                                     }
-                                                     if(userSnapshot.data!.exists){
-                                                       return charity_main_screen();
-                                                     }
-                                                     else{
-                                                       return FutureBuilder(
-                                                         future: FirebaseFirestore.instance.collection('admin').doc(uid).get(),
-                                                         builder: (context, userSnapshot){
-                                                           if (userSnapshot.connectionState == ConnectionState.waiting) {
-                                                             return const Center(child: CircularProgressIndicator());
-                                                           }
-                                                           if (userSnapshot.data!.exists) {
-                                                             return admin_main_screen();
-                                                           }
-                                                           return const Center(child: Text('User not found in any collection'));
-                                                         },
-                                                       );
-                                                     }
-                                                   },
-                                                 );
-                                               }
-                                             }
-                                         );
-                                       }
+
+                                       final uid = FirebaseAuth.instance.currentUser!.uid;
+
+                                       return FutureBuilder<String?>(
+                                         future: getUserType(uid),
+                                         builder: (context, userSnapshot) {
+                                           if (userSnapshot.connectionState == ConnectionState.waiting) {
+                                             return const Center(child: CircularProgressIndicator());
+                                           }
+
+                                           final type = userSnapshot.data;
+
+                                           if (type == 'user') {
+                                             return user_layout();
+                                           } else if (type == 'charity') {
+                                             return charity_main_screen();
+                                           } else {
+                                             return admin_main_screen();
+                                           }
+                                         },
+                                       );
                                      },
                                    )
                                );
@@ -243,7 +219,8 @@ class login_screen extends StatelessWidget {
                                );
 
                              }
-                           },
+                           }
+                             },
                            background: Colors.white,
                            textColor: const Color(0xFF4A90E2),
                            height: 55,
