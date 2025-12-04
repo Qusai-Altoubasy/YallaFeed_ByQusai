@@ -137,7 +137,7 @@ class temp extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    navigateto(context, user_layout());
+                    navigateto(context, user_layout(uid: 'uid',));
                   },
                   child: const Text(
                     'Go to user screen',

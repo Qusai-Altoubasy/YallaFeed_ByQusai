@@ -4,14 +4,19 @@ import 'package:qusai/classes/mainuser.dart';
 
 class user extends mainuser{
 
-  bool ?havepermission;
+  late bool havepermission;
   String ?nameofcharity;
+  late bool askpermission;
+  late String databaseID;
 
-  user({name, username, password, imageUrl, phone, id}) :
+  user({name, username, password, imageUrl, phone, id, databaseid}) :
         super(name: name, username: username, password: password,phone: phone,ID :id ,imageUrl: imageUrl, type: 'user'){
     havepermission = false;
     nameofcharity = 'nameofcharity';
+    askpermission=false;
+    this.databaseID=databaseid;
   }
+
 
   void letpermission(String n){
     havepermission=true;
@@ -38,6 +43,7 @@ class user extends mainuser{
         "type" : this.type?.trim(),
         "havepermission" : this.havepermission,
         "nameofcharity" : this.nameofcharity,
+        "askpermission" :this.askpermission,
         "uid":userid,
       }
   );

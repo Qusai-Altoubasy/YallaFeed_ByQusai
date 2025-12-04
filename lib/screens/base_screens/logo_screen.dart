@@ -53,7 +53,7 @@ class _logo_screen extends State<logo_screen>
                         final type = userSnapshot.data;
 
                         if (type == 'user') {
-                          return user_layout();
+                          return user_layout(uid: uid,);
                         } else if (type == 'charity') {
                           return charity_main_screen();
                         } else {

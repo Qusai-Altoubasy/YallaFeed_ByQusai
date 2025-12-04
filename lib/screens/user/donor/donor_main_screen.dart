@@ -4,7 +4,11 @@ import 'package:qusai/screens/user/donor/add_new_donation.dart';
 import 'package:qusai/screens/user/donor/my_donations.dart';
 import 'package:qusai/shared/shared.dart';
 
+import '../../../classes/user.dart';
+
 class donor_main_screen extends StatelessWidget {
+  late user ?User;
+  donor_main_screen({required this.User});
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,7 +68,7 @@ class donor_main_screen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'Welcome back,\n$user_name!',
+                              'Welcome back,\n${User?.name}!',
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                 fontSize: 30,
@@ -142,30 +146,6 @@ class donor_main_screen extends StatelessWidget {
                               text: 'My donations',
                               onTap: () {
                                 navigateto(context, my_donations());
-                              },
-                            ),
-
-                            const SizedBox(height: 25),
-
-                            // 🟥 Button 2 - Block recipients
-                            _buildModernButton(
-                              color1: const Color(0xFF9BE7FF),
-                              color2: const Color(0xFFB3E5DC),
-                              icon: Icons.handshake_outlined,
-                              text: 'Request to receive',
-                              onTap: () {
-                                if(user_cubit.get(context).sendRequestOnce()) {
-                                  ScaffoldMessenger.of(context).showSnackBar(
-                                    const SnackBar(content: Text(
-                                        'The request has been sent successfully')),
-                                  );
-                                }
-                                else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(content: Text(
-                                'The request has already sent')),
-                                );
-                                }
                               },
                             ),
                           ],

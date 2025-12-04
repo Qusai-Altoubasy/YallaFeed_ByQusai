@@ -1,4 +1,6 @@
 import 'package:bloc/bloc.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:qusai/cubits/user/user_states.dart';
@@ -14,16 +16,12 @@ class user_cubit extends Cubit<user_states>{
 
   int current_index=0;
 
+  user ?User ;
+
   List<String> titles = [
     'Donor Dashboard',
     'Receiver Dashboard',
     'Delivery Dashboard',
-  ];
-
-  List<Widget> screens=[
-    donor_main_screen(),
-    receiver_main_screen(),
-    deleviry_main_screen(),
   ];
 
   void change_bottom_nav_bar(int index){
@@ -31,20 +29,52 @@ class user_cubit extends Cubit<user_states>{
     emit(change_user_bottom());
     }
 
-  bool _hasRequested = false;
 
 
-  bool get hasRequested => _hasRequested;
-
-
-  bool sendRequestOnce() {
-    if (_hasRequested) {
-      return false;
-    } else {
-      _hasRequested= true;
-      return true;
+  Future<void> sendrequest(databaseID)async {
+    emit(loading());
+    try{
+      await FirebaseFirestore.instance
+          .collection("users")
+          .doc(databaseID)
+          .update({
+        // "havepermission":true,
+        "askpermission": true,
+      });
+      await FirebaseFirestore.instance.collection('requests').doc(databaseID).set(
+        {"uid" : databaseID,}
+      );
+      User?.askpermission=true;
     }
+    catch(e){
+      print(e);
+    }
+    emit(requestsended());
   }
+
+  Future<void> getuser(String uid)async{
+    emit(loading());
+    final userdoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(uid)
+        .get();
+    user User = user(
+      name: userdoc.data()?["name"],
+      username: userdoc.data()?["username"],
+      password: userdoc.data()?["password"],
+      id: userdoc.data()?["Id"],
+      phone: userdoc.data()?["phone"],
+      imageUrl: userdoc.data()?["image"],
+      databaseid: userdoc.data()?["uid"],
+    );
+    User.havepermission=userdoc.data()?["havepermission"];
+    User.askpermission= userdoc.data()?["askpermission"];
+    User.nameofcharity=userdoc.data()?["nameofcharity"];
+
+    this.User= User;
+    emit(loadeduser());
+  }
+
 
 
 }
