@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:qusai/classes/charity.dart';
 import 'package:qusai/screens/charity/accept_reject_new_user.dart';
 import 'package:qusai/cubits/charity/charity_cubit.dart';
 import 'package:qusai/cubits/charity/charity_states.dart';
@@ -9,14 +10,25 @@ import 'package:qusai/shared/shared.dart';
 import '../admin/announcements.dart';
 
 class charity_main_screen extends StatelessWidget {
-  const charity_main_screen({super.key});
+  final String uid;
+  const charity_main_screen({super.key, required this.uid});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context)=> charity_cubit(),
+      create: (BuildContext context){
+        var cubit = charity_cubit();
+        cubit.getcharity(uid);
+        return cubit;
+      },
       child: BlocConsumer<charity_cubit, charity_states>(
-          builder: (context, state)=>Scaffold(
+          builder: (context, state){
+            if(state is loading){
+              return Center(child: CircularProgressIndicator());
+            }
+            var cubit = charity_cubit.get(context);
+            charity? current_charity = cubit.Charity;
+            return Scaffold(
             drawer: menu(context, Color(0xFF9BE7FF)),
             extendBodyBehindAppBar: true,
             backgroundColor: const Color(0xFFE8EEF5),
@@ -85,7 +97,7 @@ class charity_main_screen extends StatelessWidget {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    'Welcome back,\n$charity_name!',
+                                    'Welcome back,\n ${current_charity.name} !',
                                     textAlign: TextAlign.center,
                                     style: const TextStyle(
                                       fontSize: 30,
@@ -187,7 +199,8 @@ class charity_main_screen extends StatelessWidget {
                 ),
               ],
             ),
-          ),
+          );
+            },
           listener: (context, state){},
       ),
     );

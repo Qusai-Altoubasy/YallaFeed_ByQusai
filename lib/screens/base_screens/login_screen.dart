@@ -185,7 +185,6 @@ class login_screen extends StatelessWidget {
                                        if (snapshot.connectionState == ConnectionState.waiting) {
                                          return const Center(child: CircularProgressIndicator());
                                        }
-
                                        final uid = FirebaseAuth.instance.currentUser!.uid;
 
                                        return FutureBuilder<String?>(
@@ -200,7 +199,7 @@ class login_screen extends StatelessWidget {
                                            if (type == 'user') {
                                              return user_layout(uid: uid,);
                                            } else if (type == 'charity') {
-                                             return charity_main_screen();
+                                             return charity_main_screen(uid: uid,);
                                            } else {
                                              return admin_main_screen();
                                            }

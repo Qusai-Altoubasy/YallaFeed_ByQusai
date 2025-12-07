@@ -31,7 +31,7 @@ class user_cubit extends Cubit<user_states>{
 
 
 
-  Future<void> sendrequest(databaseID)async {
+  Future<void> sendrequest(databaseID, name)async {
     emit(loading());
     try{
       await FirebaseFirestore.instance
@@ -42,7 +42,10 @@ class user_cubit extends Cubit<user_states>{
         "askpermission": true,
       });
       await FirebaseFirestore.instance.collection('requests').doc(databaseID).set(
-        {"uid" : databaseID,}
+        {
+          "uid" : databaseID,
+          "name" :name,
+        }
       );
       User?.askpermission=true;
     }

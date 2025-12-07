@@ -110,7 +110,7 @@ class user_layout extends StatelessWidget {
                                   );
                                 }
                                 else {
-                                  await cubit.sendrequest(current_user.databaseID);
+                                  await cubit.sendrequest(current_user.databaseID,current_user.name);
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(content: Text(
                                         'You have submitted a request. ')),

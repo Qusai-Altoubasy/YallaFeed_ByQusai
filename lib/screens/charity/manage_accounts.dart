@@ -92,7 +92,7 @@ Widget buildChatItem(BuildContext context) => Padding(
         children: [
           ElevatedButton.icon(
             onPressed: () {
-              navigateto(context, another_profile());
+              navigateto(context, another_profile(uid: '515'));
             },
             icon: Icon(Icons.person, size: 16),
             label: Text('profile'),

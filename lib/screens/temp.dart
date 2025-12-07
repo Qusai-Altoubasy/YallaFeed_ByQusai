@@ -96,7 +96,7 @@ class temp extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    navigateto(context, charity_main_screen());
+                    navigateto(context, charity_main_screen(uid: 'uid',));
                   },
                   child: const Text(
                     'Go to Charity screen',

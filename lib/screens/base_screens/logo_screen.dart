@@ -55,7 +55,7 @@ class _logo_screen extends State<logo_screen>
                         if (type == 'user') {
                           return user_layout(uid: uid,);
                         } else if (type == 'charity') {
-                          return charity_main_screen();
+                          return charity_main_screen(uid: uid,);
                         } else {
                           return admin_main_screen();
                         }

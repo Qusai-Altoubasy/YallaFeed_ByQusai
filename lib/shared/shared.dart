@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../screens/base_screens/login_screen.dart';
 import '../screens/common_screens/announcemnts.dart';
 import '../screens/common_screens/contact_us.dart';
 import '../screens/common_screens/profile.dart';
@@ -75,7 +76,12 @@ Widget menu(context, Color color)=> Padding(
               title: const Text('Log out'),
               onTap: ()async {
                 await FirebaseAuth.instance.signOut();
-                Navigator.pop(context);
+
+                Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => login_screen()),
+                        (route) => false,
+                );
               },
             ),
           ],
