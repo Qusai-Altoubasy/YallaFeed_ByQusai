@@ -216,9 +216,6 @@ class user_register extends StatelessWidget {
                                         );
                                         try {
                                         await cubit.userRegister(User: User);
-                                        if(state is loading){
-                                          return Center(child: CircularProgressIndicator());
-                                        }
                                         Navigator.pop(context); Navigator.pop(context);
                                         ScaffoldMessenger.of(context).showSnackBar(
                                           const SnackBar(content: Text(
