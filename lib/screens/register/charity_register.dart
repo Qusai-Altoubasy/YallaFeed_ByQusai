@@ -223,7 +223,7 @@ class charity_register extends StatelessWidget {
                                           );
                                         }
 
-                                        on FirebaseException catch(e) {
+                                        catch(e) {
 
                                           ScaffoldMessenger.of(context).showSnackBar(
                                             const SnackBar(content: Text(

@@ -9,7 +9,7 @@ class user extends mainuser{
   late bool askpermission;
   late String databaseID;
 
-  user({name, username, password, imageUrl, phone, id, databaseid}) :
+  user({name, username, password, imageUrl, phone, id, databaseid='fd'}) :
         super(name: name, username: username, password: password,phone: phone,ID :id ,imageUrl: imageUrl, type: 'user'){
     havepermission = false;
     nameofcharity = 'nameofcharity';
@@ -26,26 +26,25 @@ class user extends mainuser{
 
 @override
   Future<void> signup() async{
-
-  final usercred =
+      final usercred =
       await FirebaseAuth.instance.createUserWithEmailAndPassword(
-    email: this.username.trim(),
-    password: this.password.trim(),);
-  String userid = usercred.user!.uid;
+        email: this.username.trim(),
+        password: this.password.trim(),);
+      String userid = usercred.user!.uid;
 
-  await FirebaseFirestore.instance.collection('users').doc(userid).set(
-      { "Id" : this.ID.trim(),
-        "name" : this.name.trim(),
-        "username" : this.username.trim(),
-        "password" : this.password.trim(),
-        "phone" : this.phone.trim(),
-        "image" : this.imageUrl?.trim(),
-        "type" : this.type?.trim(),
-        "havepermission" : this.havepermission,
-        "nameofcharity" : this.nameofcharity,
-        "askpermission" :this.askpermission,
-        "uid":userid,
-      }
-  );
+      await FirebaseFirestore.instance.collection('users').doc(userid).set(
+          { "Id": this.ID.trim(),
+            "name": this.name.trim(),
+            "username": this.username.trim(),
+            "password": this.password.trim(),
+            "phone": this.phone.trim(),
+            "image": this.imageUrl?.trim(),
+            "type": this.type?.trim(),
+            "havepermission": this.havepermission,
+            "nameofcharity": this.nameofcharity,
+            "askpermission": this.askpermission,
+            "uid": userid,
+          }
+      );
   }
 }

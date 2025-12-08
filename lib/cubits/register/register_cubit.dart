@@ -18,13 +18,19 @@ class register_cubit extends Cubit<register_states> {
   Future<void> userRegister ({
     required user User,
   })  async {
+    emit(loading());
     User.signup();
+    emit(done());
   }
 
   Future<void> charityRegister ({
     required charity Charity,
   })  async {
+    emit(loading());
+
     Charity.signup();
+    emit(done());
+
   }
 
 

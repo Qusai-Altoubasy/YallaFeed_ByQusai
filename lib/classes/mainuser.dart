@@ -23,23 +23,23 @@ class mainuser{
 
   void login(){}
   Future<void> signup() async {
-    final usercred =
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
-      email: this.username.trim(),
-      password: this.password.trim(),);
-    String userid = usercred.user!.uid;
+      final usercred =
+      await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: this.username.trim(),
+        password: this.password.trim(),);
+      String userid = usercred.user!.uid;
 
-    await FirebaseFirestore.instance.collection('charity').doc(userid).set(
-        {
-          "Id" : this.ID.trim(),
-          "name" : this.name.trim(),
-          "username" : this.username.trim(),
-          "password" : this.password.trim(),
-          "phone" : this.phone.trim(),
-          "image" : this.imageUrl?.trim(),
-          "type" : this.type?.trim(),
-          "uid" : userid,
-        }
-    );
+      await FirebaseFirestore.instance.collection('charity').doc(userid).set(
+          {
+            "Id": this.ID.trim(),
+            "name": this.name.trim(),
+            "username": this.username.trim(),
+            "password": this.password.trim(),
+            "phone": this.phone.trim(),
+            "image": this.imageUrl?.trim(),
+            "type": this.type?.trim(),
+            "uid": userid,
+          }
+      );
   }
 }

@@ -14,3 +14,5 @@ class register_error_state extends register_states
 }
 
 class register_change_password_visibility_state extends register_states {}
+class loading extends register_states {}
+class done extends register_states {}
