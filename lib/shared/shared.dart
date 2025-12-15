@@ -12,7 +12,7 @@ String charity_name = 'Charity Name';
 String admin_name = 'Admin Name';
 String user_name = 'User Name';
 
-void navigateto(context, Widget page) {
+Future<void> navigateto(context, Widget page) async {
   Navigator.push(
       context,
       MaterialPageRoute(
@@ -50,8 +50,8 @@ Widget menu(context, Color color)=> Padding(
             ListTile(
               leading: const Icon(Icons.notifications, size: 30,),
               title: const Text('Announcements'),
-              onTap: (){
-                navigateto(context, announcemnts_shared());
+              onTap: () async {
+                await navigateto(context, announcemnts_shared());
               },
             ),
             Container(

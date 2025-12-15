@@ -5,7 +5,7 @@ import 'package:qusai/classes/user.dart';
 class admin extends mainuser {
 
 
-  admin(name, username, password,phone , id, imageUrl) :
+  admin(name, username, password, phone, id, imageUrl) :
         super(name: name, username: username, password: password,phone : phone,ID :id, imageUrl: imageUrl, type: 'admin');
 
   void add_new_user(name, username, password, phone, id, image){

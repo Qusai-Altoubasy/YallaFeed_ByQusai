@@ -57,7 +57,7 @@ class _logo_screen extends State<logo_screen>
                         } else if (type == 'charity') {
                           return charity_main_screen(uid: uid,);
                         } else {
-                          return admin_main_screen();
+                          return admin_main_screen(uid: uid,);
                         }
                       },
                     );

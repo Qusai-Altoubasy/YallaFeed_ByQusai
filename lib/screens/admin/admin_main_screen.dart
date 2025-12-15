@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:qusai/classes/admin.dart';
 import 'package:qusai/cubits/admin/admin_cubit.dart';
 import 'package:qusai/cubits/admin/admin_states.dart';
 import 'package:qusai/screens/admin/add_new_user.dart';
@@ -9,153 +10,166 @@ import 'package:qusai/screens/admin/manage_accounts.dart';
 import 'package:qusai/shared/shared.dart';
 
 class admin_main_screen extends StatelessWidget {
-  const admin_main_screen({super.key});
+  final String uid;
+  const admin_main_screen({super.key, required this.uid});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context)=> admin_cubit(),
+      create: (BuildContext context){
+        var cubit = admin_cubit();
+        cubit.getadmin(uid);
+        return cubit;
+      },
       child: BlocConsumer<admin_cubit, admin_state>(
-        builder: (context, state)=>Scaffold(
-          drawer: menu(context, Color(0xFF9BE7FF)),
-          extendBodyBehindAppBar: true,
-          backgroundColor: Colors.transparent,
-          appBar: AppBar(
+        builder: (context, state){
+          if(state is loading){
+            return Center(child: CircularProgressIndicator());
+          }
+          var cubit = admin_cubit.get(context);
+          admin? current_admin = cubit.Admin;
+          return Scaffold(
+            drawer: menu(context, Color(0xFF9BE7FF)),
+            extendBodyBehindAppBar: true,
             backgroundColor: Colors.transparent,
-            elevation: 0,
-            title: Text(
-              'Admin Dashboard',
-              style: GoogleFonts.poppins(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              title: Text(
+                'Admin Dashboard',
+                style: GoogleFonts.poppins(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
+              centerTitle: true,
             ),
-            centerTitle: true,
-          ),
-          body: Stack(
-            children: [
-              Container(
-                decoration: const BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [
-                      Color(0xFF9BE7FF),
-                      Color(0xFFB3E5FC),
-                      Color(0xFFE1F5FE),
-                    ],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+            body: Stack(
+              children: [
+                Container(
+                  decoration: const BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: [
+                        Color(0xFF9BE7FF),
+                        Color(0xFFB3E5FC),
+                        Color(0xFFE1F5FE),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
                   ),
                 ),
-              ),
 
 
-              SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.all(20.0),
-                  child: Column(
-                    children: [
-                      // 🧑‍💼 قسم الترحيب
-                      Hero(
-                        tag: "admin_header",
-                        child: Container(
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(25),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(25),
-                            color: Colors.white.withOpacity(0.15),
-                            border: Border.all(color: Colors.white30),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black26.withOpacity(0.1),
-                                blurRadius: 10,
-                                offset: const Offset(0, 4),
-                              ),
-                            ],
+                SafeArea(
+                  child: Padding(
+                    padding: const EdgeInsets.all(20.0),
+                    child: Column(
+                      children: [
+                        // 🧑‍💼 قسم الترحيب
+                        Hero(
+                          tag: "admin_header",
+                          child: Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.all(25),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(25),
+                              color: Colors.white.withOpacity(0.15),
+                              border: Border.all(color: Colors.white30),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black26.withOpacity(0.1),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: Column(
+                              children: [
+                                Text(
+                                  "Welcome, ${current_admin.name}👋",
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white,
+                                    fontSize: 26,
+
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 8),
+                                Text(
+                                  "Reducing food waste, fighting hunger",
+                                  textAlign: TextAlign.center,
+                                  style: GoogleFonts.poppins(
+                                    color: Colors.white70,
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                          child: Column(
+                        ),
+
+                        const SizedBox(height: 25),
+
+                        // ⚡ البطاقات
+                        Expanded(
+                          child: GridView.count(
+                            crossAxisCount: 2,
+                            crossAxisSpacing: 18,
+                            mainAxisSpacing: 18,
+                            childAspectRatio: 1.0,
                             children: [
-                              Text(
-                                "Welcome, $admin_name 👋",
-                                textAlign: TextAlign.center,
-                                style: GoogleFonts.poppins(
-                                  color: Colors.white,
-                                  fontSize: 26,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                              _buildGlassCard(
+                                icon: Icons.person_add_alt_1,
+                                title: "Add new user",
+                                txt :'Register a new donor,receiver, or driver',
+                                color1: const Color(0xff4FACFE),
+                                color2: const Color(0xff00F2FE),
+                                onTap: () {
+                                  navigateto(context, add_new_user());
+                                },
                               ),
-                              const SizedBox(height: 8),
-                              Text(
-                                "Reducing food waste, fighting hunger",
-                                textAlign: TextAlign.center,
-                                style: GoogleFonts.poppins(
-                                  color: Colors.white70,
-                                  fontSize: 15,
-                                  fontWeight: FontWeight.w400,
-                                ),
+                              // _buildGlassCard(
+                              //    icon: Icons.person_remove_alt_1,
+                              //    title: "Remove User",
+                              //    color1: const Color(0xffF85032),
+                              //    color2: const Color(0xffE73827),
+                              //    onTap: () {}, txt: '',
+                              //  ),
+                              _buildGlassCard(
+                                icon: Icons.group,
+                                title: "Manage Accounts",
+                                txt :'Remove user and edit profile ',
+                                color1: const Color(0xff11998e),
+                                color2: const Color(0xff38ef7d),
+                                onTap: () {
+                                  navigateto(context, manage_accounts());
+                                },
+                              ),
+                              _buildGlassCard(
+                                icon: Icons.notifications_active,
+                                title: "Send announcements",
+                                txt :'Broadcast message to all users ',
+                                color1: const Color(0xff7F00FF),
+                                color2: const Color(0xffE100FF),
+                                onTap: () {
+                                  navigateto(context, AnnouncementDesign(Owenr: current_admin,uid: uid,));
+                                },
                               ),
                             ],
                           ),
                         ),
-                      ),
-
-                      const SizedBox(height: 25),
-
-                      // ⚡ البطاقات
-                      Expanded(
-                        child: GridView.count(
-                          crossAxisCount: 2,
-                          crossAxisSpacing: 18,
-                          mainAxisSpacing: 18,
-                          childAspectRatio: 1.0,
-                          children: [
-                            _buildGlassCard(
-                              icon: Icons.person_add_alt_1,
-                              title: "Add new user",
-                              txt :'Register a new donor,receiver, or driver',
-                              color1: const Color(0xff4FACFE),
-                              color2: const Color(0xff00F2FE),
-                              onTap: () {
-                                navigateto(context, add_new_user());
-                              },
-                            ),
-                             // _buildGlassCard(
-                             //    icon: Icons.person_remove_alt_1,
-                             //    title: "Remove User",
-                             //    color1: const Color(0xffF85032),
-                             //    color2: const Color(0xffE73827),
-                             //    onTap: () {}, txt: '',
-                             //  ),
-                            _buildGlassCard(
-                              icon: Icons.group,
-                              title: "Manage Accounts",
-                              txt :'Remove user and edit profile ',
-                              color1: const Color(0xff11998e),
-                              color2: const Color(0xff38ef7d),
-                              onTap: () {
-                                navigateto(context, manage_accounts());
-                              },
-                            ),
-                            _buildGlassCard(
-                              icon: Icons.notifications_active,
-                              title: "Send announcements",
-                              txt :'Broadcast message to all users ',
-                              color1: const Color(0xff7F00FF),
-                              color2: const Color(0xffE100FF),
-                              onTap: () {
-                                navigateto(context, AnnouncementDesign());
-                              },
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-        ),
+              ],
+            ),
+          );
+        },
         listener: (context, state){},
       ),
     );

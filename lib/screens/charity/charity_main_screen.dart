@@ -182,7 +182,7 @@ class charity_main_screen extends StatelessWidget {
                                     color1: const Color(0xff7F00FF),
                                     color2: const Color(0xffE100FF),
                                     onTap: () {
-                                      navigateto(context, AnnouncementDesign());
+                                      navigateto(context, AnnouncementDesign(Owenr: current_charity,uid: uid,));
                                     },
                                     icon: Icons.notifications_active,
                                     text: 'Send announcement',

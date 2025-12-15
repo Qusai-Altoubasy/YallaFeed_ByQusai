@@ -49,7 +49,8 @@ class login_screen extends StatelessWidget {
                  child: Padding(
                    padding: const EdgeInsets.symmetric(horizontal: 25,vertical: 60),
 
-                   child: Form(key:formKey,
+                   child: Form(
+                     key:formKey,
                      child: Column(
                        crossAxisAlignment: CrossAxisAlignment.center,
                        children: [
@@ -200,7 +201,7 @@ class login_screen extends StatelessWidget {
                                            } else if (type == 'charity') {
                                              return charity_main_screen(uid: uid,);
                                            } else {
-                                             return admin_main_screen();
+                                             return admin_main_screen(uid: uid,);
                                            }
                                          },
                                        );

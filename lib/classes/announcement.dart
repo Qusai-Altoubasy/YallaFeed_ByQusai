@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class announcement {
   String title;
   String message;
@@ -11,4 +13,16 @@ class announcement {
     required this.owener,
   });
 
+  Future<void> svaeindatabase() async {
+    await FirebaseFirestore.instance.collection('announcements').doc().set(
+        {
+          'title':this.title,
+          'message':this.message,
+          'sendto':this.sendTo,
+          'owener':this.owener,
+          'time': FieldValue.serverTimestamp(),
+        }
+    );
+
+  }
 }
