@@ -5,7 +5,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:qusai/cubits/login/login_cubit.dart';
 import 'package:qusai/cubits/login/login_states.dart';
 import 'package:qusai/screens/register/register_options.dart';
-import 'package:qusai/screens/temp.dart';
 import 'package:qusai/shared/shared.dart';
 import '../../components/components.dart';
 import '../admin/admin_main_screen.dart';
@@ -226,13 +225,6 @@ class login_screen extends StatelessWidget {
                          ),
                          SizedBox(
                            height: 20,
-                         ),
-                         // temp for just showing work
-                         defaultButton(
-                           function: (){
-                             navigateto(context, temp());
-                           },
-                           text: "next  (temp.)",
                          ),
                          Row(
                            mainAxisAlignment:MainAxisAlignment.center,
