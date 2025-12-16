@@ -78,6 +78,59 @@ class user_cubit extends Cubit<user_states>{
     emit(loadeduser());
   }
 
+  List<user> users = [];
+
+  Future<void> getAllUsers() async {
+    emit(loading());
+    try {
+      final snapshot =
+      await FirebaseFirestore.instance.collection('users').get();
+
+      users = snapshot.docs.map((doc) {
+        return user(
+          name: doc['name'],
+          username: doc['username'],
+          password: doc['password'],
+          id: doc['Id'],
+          phone: doc['phone'],
+          imageUrl: doc['image'],
+          databaseid: doc['uid'],
+        )
+          ..havepermission = doc['havepermission']
+          ..askpermission = doc['askpermission']
+          ..nameofcharity = doc['nameofcharity'];
+      }).toList();
+
+      emit(loadeduser());
+    } catch (e) {
+
+    }
+  }
+
+  Future<void> declinePermission(String uid) async {
+    try {
+      await FirebaseFirestore.instance
+          .collection('users')
+          .doc(uid)
+          .update({
+        'havepermission': false,
+      //  'askpermission': false,
+      });
+
+      users = users.map((u) {
+        if (u.databaseID == uid) {
+          u.havepermission = false;
+        //  u.askpermission = false;
+        }
+        return u;
+      }).toList();
+
+      emit(loadeduser());
+    } catch (e) {
+
+    }
+  }
+
 
 
 }

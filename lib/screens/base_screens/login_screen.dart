@@ -156,9 +156,78 @@ class login_screen extends StatelessWidget {
 
                            child:
                            TextButton(
-                               onPressed: () async {
-                             if (formKey.currentState!.validate()) {}
-                             },
+                               onPressed: () {
+                                 var resetEmailController = TextEditingController();
+
+                                 if (EmailController.text.isNotEmpty) {
+                                   resetEmailController.text = EmailController.text;
+                                 }
+
+                                 showDialog(
+                                   context: context,
+                                   builder: (context) => AlertDialog(
+                                     title: const Text('Reset Password'),
+                                     content: Column(
+                                       mainAxisSize: MainAxisSize.min,
+                                       children: [
+                                         const Text('Enter your email to receive a reset link:'),
+                                         const SizedBox(height: 10),
+                                         TextFormField(
+                                           controller: resetEmailController,
+                                           keyboardType: TextInputType.emailAddress,
+                                           decoration: const InputDecoration(
+                                             hintText: "Email Address",
+                                             prefixIcon: Icon(Icons.email),
+                                             border: OutlineInputBorder(),
+                                           ),
+                                         ),
+                                       ],
+                                     ),
+                                     actions: [
+                                       TextButton(
+                                         onPressed: () => Navigator.pop(context),
+                                         child: const Text('Cancel'),
+                                       ),
+                                       TextButton(
+                                         onPressed: () async {
+                                           if (resetEmailController.text.isNotEmpty) {
+                                             try {
+                                               await FirebaseAuth.instance.sendPasswordResetEmail(
+                                                   email: resetEmailController.text.trim());
+
+                                               Navigator.pop(context);
+
+                                               ScaffoldMessenger.of(context).showSnackBar(
+                                                 const SnackBar(
+                                                   content: Text("Reset link sent! Check your email"),
+                                                   backgroundColor: Colors.green,
+                                                 ),
+                                               );
+                                             } on FirebaseAuthException catch (e) {
+                                               Navigator.pop(context);
+
+                                               ScaffoldMessenger.of(context).showSnackBar(
+                                                 SnackBar(
+                                                   content: Text(e.message ?? "Error"),
+                                                   backgroundColor: Colors.red,
+                                                 ),
+                                               );
+                                             }
+                                           } else {
+                                             ScaffoldMessenger.of(context).showSnackBar(
+                                               const SnackBar(
+                                                 content: Text("Please enter email inside the box"),
+                                                 backgroundColor: Colors.orange,
+                                               ),
+                                             );
+                                           }
+                                         },
+                                         child: const Text('Send'),
+                                       ),
+                                     ],
+                                   ),
+                                 );
+                               },
                                child:Text(
                                  "Forget password?",
                                  style:TextStyle(color:Colors.white70,fontSize:14),

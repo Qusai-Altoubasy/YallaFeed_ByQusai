@@ -3,6 +3,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import '../cubits/profile_cubit.dart';
 import '../screens/base_screens/login_screen.dart';
 import '../screens/common_screens/announcemnts.dart';
 import '../screens/common_screens/contact_us.dart';
@@ -39,7 +41,12 @@ Widget menu(context, Color color)=> Padding(
               leading: const Icon(Icons.person, size: 30,),
               title: const Text('Profile'),
               onTap: (){
-                navigateto(context, profile());
+                final uid = FirebaseAuth.instance.currentUser!.uid;
+                navigateto(context, BlocProvider(
+                    create: (_) => ProfileCubit()..loadUser(uid),
+                    child: profile()
+                )
+                );
               },
             ),
             Container(

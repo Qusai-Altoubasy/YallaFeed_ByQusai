@@ -1,5 +1,9 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:qusai/screens/admin/admin_main_screen.dart';
+import 'package:qusai/shared/shared.dart';
+import '../../classes/user.dart';
 import '../../components/components.dart';
 import '../../cubits/register/register_cubit.dart';
 import '../../cubits/register/register_states.dart';
@@ -28,6 +32,7 @@ class add_new_user extends StatelessWidget {
       child: BlocConsumer<register_cubit , register_states>(
         listener: (context, state) {},
         builder: (context, state) {
+          var cubit = register_cubit.get(context);
           return Scaffold(
             appBar: AppBar(
               elevation: 0,
@@ -177,9 +182,33 @@ class add_new_user extends StatelessWidget {
                                     ],
                                   ),
                                   child: defaultButton(
-                                    function: () {
+                                    function: () async{
                                       if (formKey.currentState!.validate()) {
-                                        // Your login logic here
+                                        user User=user(
+                                          username: emailController.text,
+                                          name: nameController.text,
+                                          phone: phoneController.text,
+                                          id: IDController.text,
+                                          imageUrl: 'image path',
+                                          password: passwordController.text,
+                                        );
+                                        try {
+                                          await cubit.userRegister(User: User);
+                                          final adminUid = FirebaseAuth.instance.currentUser!.uid;
+                                          navigateto(context,admin_main_screen(uid: adminUid));
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(content: Text(
+                                                'Adding new user successfully')),
+                                          );
+                                        }
+
+                                        catch (e){
+
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(content: Text(
+                                                'The informations are not valid')),
+                                          );
+                                        }
                                       }
                                     },
                                     text: "Add",

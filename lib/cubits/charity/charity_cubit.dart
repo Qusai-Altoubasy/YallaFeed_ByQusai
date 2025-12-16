@@ -29,6 +29,30 @@ class charity_cubit extends Cubit<charity_states>{
   }
 
 
+  List<charity> charities = [];
+
+  Future<void> getAllCharities() async {
+    emit(loading());
+    try {
+      final snapshot =
+      await FirebaseFirestore.instance.collection('charity').get();
+
+      charities = snapshot.docs.map((doc) {
+        return charity(
+          name: doc['name'],
+          username: doc['username'],
+          password: doc['password'],
+          id: doc['Id'],
+          phone: doc['phone'],
+          imageUrl: doc['image'],
+        );
+      }).toList();
+
+      emit(loadedcharity());
+    } catch (e) {
+
+    }
+  }
 
 
 }
