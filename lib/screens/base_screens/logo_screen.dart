@@ -42,6 +42,8 @@ class _logo_screen extends State<logo_screen>
                     }
 
                     final uid = FirebaseAuth.instance.currentUser!.uid;
+                    userid = uid;
+
 
                     return FutureBuilder<String?>(
                       future: getUserType(uid),
@@ -51,6 +53,7 @@ class _logo_screen extends State<logo_screen>
                         }
 
                         final type = userSnapshot.data;
+                        usertype = type;
 
                         if (type == 'user') {
                           return user_layout(uid: uid,);

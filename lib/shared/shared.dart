@@ -10,10 +10,8 @@ import '../screens/common_screens/announcemnts.dart';
 import '../screens/common_screens/contact_us.dart';
 import '../screens/common_screens/profile.dart';
 
-String charity_name = 'Charity Name';
-String admin_name = 'Admin Name';
-String user_name = 'User Name';
-
+String ?usertype;
+String ?userid;
 Future<void> navigateto(context, Widget page) async {
   Navigator.push(
       context,

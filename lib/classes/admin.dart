@@ -23,8 +23,5 @@ class admin extends mainuser {
 
   }
 
-  void create_new_announcement(String t, String m, String st){
-    announcement Announcement= announcement(title: t, message: m, sendTo: st, owener: this.name);
-  }
 
 }

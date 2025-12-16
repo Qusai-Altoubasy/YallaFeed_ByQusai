@@ -1,5 +1,7 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:qusai/classes/announcement.dart';
+import 'package:qusai/shared/shared.dart';
 
 class show_announecement extends StatelessWidget {
   late announcement current;
@@ -16,6 +18,21 @@ class show_announecement extends StatelessWidget {
             fontWeight: FontWeight.bold,
           ),
         ),
+        actions: [
+          IconButton(
+              onPressed: () async {
+                    await FirebaseFirestore.instance
+                    .collection('read_announcements')
+                    .doc('${userid}_${current.id}')
+                    .set({
+                      'userId': userid,
+                      'announcementId': current.id,
+                    });
+                    Navigator.pop(context, current.id);
+              },
+
+              icon: Icon(Icons.delete_outline,)),
+        ],
       ),
       body: Container(
         width: double.infinity,

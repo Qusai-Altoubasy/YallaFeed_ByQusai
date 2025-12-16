@@ -114,13 +114,11 @@ class user_cubit extends Cubit<user_states>{
           .doc(uid)
           .update({
         'havepermission': false,
-      //  'askpermission': false,
       });
 
       users = users.map((u) {
         if (u.databaseID == uid) {
           u.havepermission = false;
-        //  u.askpermission = false;
         }
         return u;
       }).toList();

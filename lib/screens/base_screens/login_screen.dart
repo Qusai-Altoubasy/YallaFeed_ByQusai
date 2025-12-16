@@ -203,6 +203,7 @@ class login_screen extends StatelessWidget {
                                                    backgroundColor: Colors.green,
                                                  ),
                                                );
+
                                              } on FirebaseAuthException catch (e) {
                                                Navigator.pop(context);
 
@@ -254,31 +255,64 @@ class login_screen extends StatelessWidget {
                                        if (snapshot.connectionState == ConnectionState.waiting) {
                                          return const Center(child: CircularProgressIndicator());
                                        }
-                                       final uid = FirebaseAuth.instance.currentUser!.uid;
+                                       //   final uid = FirebaseAuth.instance.currentUser!.uid;
+                                       final user = FirebaseAuth.instance.currentUser;
+                                       if (user == null) {
+                                         return login_screen();
+                                       }
+
+                                       final uid = user.uid;
+                                       userid = uid;
 
                                        return FutureBuilder<String?>(
                                          future: getUserType(uid),
                                          builder: (context, userSnapshot) {
+
                                            if (userSnapshot.connectionState == ConnectionState.waiting) {
                                              return const Center(child: CircularProgressIndicator());
                                            }
 
-                                           final type = userSnapshot.data;
+
+                                           if (!userSnapshot.hasData || userSnapshot.data == null) {
+                                             WidgetsBinding.instance.addPostFrameCallback((_) {
+                                               ScaffoldMessenger.of(context).showSnackBar(
+                                                 const SnackBar(
+                                                   content: Text('The account has been deleted'),
+                                                   backgroundColor: Colors.red,
+                                                 ),
+                                               );
+                                               FirebaseAuth.instance.signOut();
+                                             });
+                                             return login_screen();
+                                           }
+
+
+                                           final type = userSnapshot.data!;
+                                           usertype = type;
 
                                            if (type == 'user') {
-                                             return user_layout(uid: uid,);
+                                             return user_layout(uid: uid);
                                            } else if (type == 'charity') {
-                                             return charity_main_screen(uid: uid,);
-                                           } else {
+                                             return charity_main_screen(uid: uid);
+                                           } else if (type == 'admin') {
                                              return admin_main_screen(uid: uid,);
+                                           } else {
+                                             WidgetsBinding.instance.addPostFrameCallback((_) {
+                                               ScaffoldMessenger.of(context).showSnackBar(
+                                                 const SnackBar(
+                                                   content: Text('The account has been deleted'),
+                                                   backgroundColor: Colors.red,
+                                                 ),
+                                               );
+                                               FirebaseAuth.instance.signOut();
+                                             });
+                                             return login_screen();
                                            }
                                          },
                                        );
+
                                      },
-                                   )
-                               );
-
-
+                                   )                               );
                              }
                              on FirebaseException catch(e) {
                                ScaffoldMessenger.of(context).showSnackBar(

@@ -69,7 +69,7 @@ class receiver_main_screen extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Text(
-                              'Welcome back,\n$user_name!',
+                              'Welcome back,\n ${User?.name}!',
                               textAlign: TextAlign.center,
                               style: const TextStyle(
                                 fontSize: 30,

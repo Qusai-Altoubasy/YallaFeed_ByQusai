@@ -14,8 +14,6 @@ class ProfileCubit extends Cubit<mainuser?> {
   final _fire = FirebaseFirestore.instance;
 
   Future<void> loadUser(String uid) async {
-    // نجلب المستخدم من ال 3 مجموعات
-    // user - charity - admin
 
     DocumentSnapshot? doc;
 
@@ -80,6 +78,6 @@ class ProfileCubit extends Cubit<mainuser?> {
       "image": user.imageUrl,
     });
 
-    emit(user); // تحديث الحالة
+    emit(user);
   }
 }

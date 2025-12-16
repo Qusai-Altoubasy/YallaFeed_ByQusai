@@ -5,9 +5,11 @@ class announcement {
   String message;
   String sendTo;
   String owener;
+  String id;
 
   announcement({
     required this.title,
+    required this.id,
     required this.message,
     required this.sendTo,
     required this.owener,

@@ -134,17 +134,37 @@ class _profileState extends State<profile> {
                   SizedBox(
                     height: 30,
                   ),
-                  profileField(
-                    label: "ID",
-                    controller: idC,
-                    isEditing: editId,
-                    onEdit: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text("Can't change your id"),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Container(
+                      height: 70,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: editId
+                                  ? TextField(
+                                controller: idC,
+                                obscureText: false,
+                                decoration: InputDecoration(labelText: 'label'),
+                              )
+                                  : Text(
+                                "ID : ${user.ID}",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      );
-                    }
+                      ),
+                    ),
                   ),
                   SizedBox(
                     height: 30,

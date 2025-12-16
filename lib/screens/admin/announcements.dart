@@ -108,7 +108,6 @@ class AnnouncementDesign extends StatelessWidget {
                       items: [
                         DropdownMenuItem(value: 'group1', child: Text('Users')),
                         DropdownMenuItem(value: 'group2', child: Text('Charities')),
-                        DropdownMenuItem(value: 'group3', child: Text('Users and charities')),
                       ],
                       onChanged: (value){
                         selectedGroup = value;
@@ -125,6 +124,7 @@ class AnnouncementDesign extends StatelessWidget {
                               message: messagecontroller.text,
                               sendTo: selectedGroup.toString(),
                               owener: uid,
+                              id: 'dd'
                             );
                             try {
                               A.svaeindatabase();

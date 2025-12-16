@@ -13,6 +13,7 @@ class donor_main_screen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       extendBodyBehindAppBar: true,
+
       backgroundColor: const Color(0xFFE8EEF5),
       body: Stack(
         children: [
