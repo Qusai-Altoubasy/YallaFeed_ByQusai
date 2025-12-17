@@ -7,6 +7,9 @@ class donation {
   String ?description;
   String imagePath;
   String status;
+  String donoruid;
+  String reciveruid;
+  String deleiveruid;
 
   donation({
     required this.mealType,
@@ -17,6 +20,9 @@ class donation {
     this.description,
     required this.imagePath,
     required this.status,
+    required this.deleiveruid,
+    required this.donoruid,
+    required this.reciveruid,
   });
 
 

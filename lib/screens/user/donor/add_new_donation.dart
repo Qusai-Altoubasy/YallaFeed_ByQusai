@@ -41,18 +41,25 @@ class _add_new_donation extends State<add_new_donation> {
   TextEditingController locationController = TextEditingController();
 
   Future<void> _openMap() async {
-    // افتح صفحة اختيار الموقع
+    final hasPermission = await _checkLocationPermission();
+    if (!hasPermission) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Location permission denied')),
+      );
+      return;
+    }
+
+
     final pickedLocation = await Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => PickLocationPage()),
     );
 
-    // رجع من صفحة الخريطة
+
     if (pickedLocation != null) {
       locationController.text =
       "${pickedLocation.latitude}, ${pickedLocation.longitude}";
 
-      // فتح Google Maps على الموقع المختار
       final Uri googleMapUrl = Uri.parse(
           'https://www.google.com/maps/search/?api=1&query=${pickedLocation.latitude},${pickedLocation.longitude}');
 
@@ -304,4 +311,17 @@ class _add_new_donation extends State<add_new_donation> {
       ),
     );
   }
+  Future<bool> _checkLocationPermission() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) return false;
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+
+    return permission == LocationPermission.always ||
+        permission == LocationPermission.whileInUse;
+  }
+
 }

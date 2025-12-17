@@ -168,11 +168,14 @@ class _profileState extends State<another_profile> {
                               SizedBox(
                                 width: 5,
                               ),
-                              Text(
-                                snapshot.data!.data()?['username'],
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
+                              Expanded(
+                                child: Text(
+                                  snapshot.data!.data()?['username'],
+                                  overflow: TextOverflow.ellipsis,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                  ),
                                 ),
                               ),
                             ],

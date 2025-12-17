@@ -139,6 +139,7 @@ class _manage_accountsState extends State<manage_accounts> {
                                 return buildChatItem(
                                     context, model.name, model.ID,
                                     model.imageUrl, 'charity');
+
                               },
                             ),
                           ],
@@ -213,12 +214,13 @@ Widget buildChatItem(BuildContext context, String? name, String? uid,
              onPressed: () => Navigator.pop(context),
              child: Text('Cancel')),
              TextButton(
-             onPressed: () {
+             onPressed: () async {
              FirebaseFirestore.instance
              .collection(collection)
              .doc(uid)
              .delete();
-              Navigator.pop(context);   Navigator.pop(context);
+
+             Navigator.pop(context);   Navigator.pop(context);
              ScaffoldMessenger.of(context).showSnackBar(
                const SnackBar(content: Text(
                    'The account deleted successfully')),
@@ -227,7 +229,7 @@ Widget buildChatItem(BuildContext context, String? name, String? uid,
               child: Text('Delete', style: TextStyle(color: Colors.red))),
                ],
                ));
-                 },
+             },
 
             icon: Icon(Icons.delete, size: 16),
             label: Text('Delete'),

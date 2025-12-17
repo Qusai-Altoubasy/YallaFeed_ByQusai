@@ -193,8 +193,8 @@ class add_new_user extends StatelessWidget {
                                           password: passwordController.text,
                                         );
                                         try {
-                                          await cubit.userRegister(User: User);
                                           final adminUid = FirebaseAuth.instance.currentUser!.uid;
+                                          await cubit.userRegister(User: User);
                                           navigateto(context,admin_main_screen(uid: adminUid));
                                           ScaffoldMessenger.of(context).showSnackBar(
                                             const SnackBar(content: Text(

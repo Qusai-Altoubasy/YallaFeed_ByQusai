@@ -33,6 +33,7 @@ class user_layout extends StatelessWidget {
             drawer: menu(context,
                 cubit.current_index==1?Color(0xFFAB47BC):
                 cubit.current_index==0?Color(0xFF9BE7FF):Color(0xFF388E3C)),
+
             appBar: AppBar(
               elevation: 1,
               backgroundColor: cubit.current_index==1?Color(0xFFAB47BC):

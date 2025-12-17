@@ -4,6 +4,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:qusai/classes/mainuser.dart';
+import 'package:qusai/screens/base_screens/logo_screen.dart';
 import '../cubits/profile_cubit.dart';
 import '../screens/base_screens/login_screen.dart';
 import '../screens/common_screens/announcemnts.dart';
@@ -12,6 +14,7 @@ import '../screens/common_screens/profile.dart';
 
 String ?usertype;
 String ?userid;
+mainuser ? current;
 Future<void> navigateto(context, Widget page) async {
   Navigator.push(
       context,
@@ -84,7 +87,7 @@ Widget menu(context, Color color)=> Padding(
 
                 Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) => login_screen()),
+                    MaterialPageRoute(builder: (context) => (logo_screen())),
                         (route) => false,
                 );
               },
