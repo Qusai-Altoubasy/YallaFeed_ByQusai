@@ -22,7 +22,7 @@ class _profileState extends State<another_profile> {
 
   @override
   Widget build(BuildContext context) {
-    String type='users';
+    String? type=usertype;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFB3E5FC),
@@ -34,7 +34,7 @@ class _profileState extends State<another_profile> {
         ),
       ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection(type).doc(uid).snapshots(),
+        stream: FirebaseFirestore.instance.collection(type!).doc(uid).snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting){
             return const Center(
@@ -237,11 +237,10 @@ class _profileState extends State<another_profile> {
       final ImagePicker picker = ImagePicker();
       final XFile? pickedFile = await picker.pickImage(
         source: source,
-        imageQuality: 80, // اختياري لتقليل حجم الصورة
+        imageQuality: 80,
         maxWidth: 1024,
       );
       if (pickedFile == null) {
-        // المستخدم ألغى الاختيار
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('No image selected')),
         );
@@ -254,7 +253,6 @@ class _profileState extends State<another_profile> {
         _image = imageFile;
       });
     } catch (e) {
-      // إدارة الأخطاء
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error picking image: $e')),
       );
