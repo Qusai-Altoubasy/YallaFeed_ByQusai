@@ -40,8 +40,7 @@ dependencies:
   path: ^1.9.1
   geolocator:
   url_launcher:
-  dotted_border: ^2.0.0
-  google_maps_flutter:
+  dotted_border: ^2.1.0
   firebase_core: ^4.2.1
   firebase_auth:
   cloud_firestore:
@@ -66,7 +65,7 @@ dev_dependencies:
   # activated in the `analysis_options.yaml` file located at the root of your
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
-  flutter_lints: ^5.0.0
+  flutter_lints: ^6.0.0
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec

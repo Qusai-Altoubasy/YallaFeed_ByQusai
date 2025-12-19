@@ -4,10 +4,7 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:url_launcher/url_launcher.dart';
-
 import '../../../components/components.dart';
-import 'location.dart';
 
 class add_new_donation extends StatefulWidget {
   @override
@@ -35,35 +32,6 @@ class _add_new_donation extends State<add_new_donation> {
       setState(() {
         _image = File(pickedFile.path);
       });
-    }
-  }
-
-  TextEditingController locationController = TextEditingController();
-
-  Future<void> _openMap() async {
-    final hasPermission = await _checkLocationPermission();
-    if (!hasPermission) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Location permission denied')),
-      );
-      return;
-    }
-
-
-    final pickedLocation = await Navigator.push(
-      context,
-      MaterialPageRoute(builder: (_) => PickLocationPage()),
-    );
-
-
-    if (pickedLocation != null) {
-      locationController.text =
-      "${pickedLocation.latitude}, ${pickedLocation.longitude}";
-
-      final Uri googleMapUrl = Uri.parse(
-          'https://www.google.com/maps/search/?api=1&query=${pickedLocation.latitude},${pickedLocation.longitude}');
-
-      await launchUrl(googleMapUrl, mode: LaunchMode.externalApplication);
     }
   }
 
@@ -215,39 +183,39 @@ class _add_new_donation extends State<add_new_donation> {
                           Text("Location",
                               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                           const SizedBox(height: 6),
-                          TextFormField(
-                            controller: locationController,
-                            readOnly: true,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'The Location is required';
-                              }
-                              return null;
-                            },
-                            decoration: InputDecoration(
-                              labelText: "Location",
-                              prefixIcon: const Icon(Icons.location_on),
-                              suffixIcon: IconButton(
-                                icon: const Icon(Icons.map, color: Colors.blue),
-                                onPressed: _openMap, // دالة فتح الخرائط والحصول على الموقع
-                              ),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(14),
-                              ),
-                              hintText: "Press map icon to get location",
-                            ),
-                            onTap: () async {
-                              if (locationController.text.isNotEmpty) {
-                                // إذا الحقل يحتوي إحداثيات، افتحها مباشرة في Google Maps
-                                final coords = locationController.text; // "lat, long"
-                                final url =
-                                Uri.parse('https://www.google.com/maps/search/?api=1&query=$coords');
-                                if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
-                                  throw 'Could not launch $url';
-                                }
-                              }
-                            },
-                          ),
+                          // TextFormField(
+                          //   controller: locationController,
+                          //   readOnly: true,
+                          //   validator: (value) {
+                          //     if (value == null || value.isEmpty) {
+                          //       return 'The Location is required';
+                          //     }
+                          //     return null;
+                          //   },
+                          //   decoration: InputDecoration(
+                          //     labelText: "Location",
+                          //     prefixIcon: const Icon(Icons.location_on),
+                          //     suffixIcon: IconButton(
+                          //       icon: const Icon(Icons.map, color: Colors.blue),
+                          //       onPressed: _openMap, // دالة فتح الخرائط والحصول على الموقع
+                          //     ),
+                          //     border: OutlineInputBorder(
+                          //       borderRadius: BorderRadius.circular(14),
+                          //     ),
+                          //     hintText: "Press map icon to get location",
+                          //   ),
+                          //   onTap: () async {
+                          //     if (locationController.text.isNotEmpty) {
+                          //       // إذا الحقل يحتوي إحداثيات، افتحها مباشرة في Google Maps
+                          //       final coords = locationController.text; // "lat, long"
+                          //       final url =
+                          //       Uri.parse('https://www.google.com/maps/search/?api=1&query=$coords');
+                          //       if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
+                          //         throw 'Could not launch $url';
+                          //       }
+                          //     }
+                          //   },
+                          // ),
                           const SizedBox(height: 6),
                           Text("Description",
                               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
