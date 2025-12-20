@@ -62,15 +62,11 @@ class _announcemnts_sharedState extends State<announcemnts_shared> {
             .toList();
 
 
-
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
           return Scaffold(
             appBar: AppBar(
               elevation: 0,
               title: Text('Announcements'),
-              actions: [
-                IconButton(onPressed: (){}, icon: Icon(Icons.delete_outline,)),
-              ],
             ),
             body: Center(child: Text('There are no announcements')),
           );

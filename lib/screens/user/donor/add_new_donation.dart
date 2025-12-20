@@ -315,6 +315,13 @@ class _add_new_donation extends State<add_new_donation> {
                                   );
                                   return;
                                 }
+                                if (category == null) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text('Please select a category')),
+                                  );
+                                  return;
+                                }
+
 
                                 final doc =
                                 FirebaseFirestore.instance.collection('donations').doc();
