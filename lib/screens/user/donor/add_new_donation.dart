@@ -1,10 +1,16 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:qusai/classes/donation.dart';
+import 'package:qusai/shared/shared.dart';
 import '../../../components/components.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as p;
+
 
 class add_new_donation extends StatefulWidget {
   @override
@@ -18,7 +24,10 @@ class _add_new_donation extends State<add_new_donation> {
   var descriptionController = TextEditingController();
   var numberofpeopleController = TextEditingController();
   String? category;
-  var timeController = TextEditingController();
+  var cityController = TextEditingController();
+  var districtController= TextEditingController();
+  var streetController = TextEditingController();
+  var buildingController = TextEditingController();
 
   File? _image;
 
@@ -34,6 +43,27 @@ class _add_new_donation extends State<add_new_donation> {
       });
     }
   }
+
+  Future<Directory> getDonationImagesFolder() async {
+    final dir = await getApplicationDocumentsDirectory();
+    final imagesDir = Directory('${dir.path}/donation_images');
+
+    if (!await imagesDir.exists()) {
+      await imagesDir.create(recursive: true);
+    }
+
+    return imagesDir;
+  }
+
+  Future<File> saveImageLocally(String donationId) async {
+    final imagesDir = await getDonationImagesFolder();
+
+    final imagePath = '${imagesDir.path}/$donationId.jpg';
+
+    return await _image!.copy(imagePath);
+  }
+
+
 
 
   @override
@@ -152,6 +182,13 @@ class _add_new_donation extends State<add_new_donation> {
                               if (value.isEmpty) {
                                 return 'please enter the number of people';
                               }
+                              else{
+                                try{
+                                  int x=int.parse(value);
+                                }catch(e){
+                                  return 'please enter an integer number';
+                                }
+                              }
                               return null;
                             },
                             label: 'How many people you will serve?',
@@ -183,40 +220,60 @@ class _add_new_donation extends State<add_new_donation> {
                           Text("Location",
                               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                           const SizedBox(height: 6),
-                          // TextFormField(
-                          //   controller: locationController,
-                          //   readOnly: true,
-                          //   validator: (value) {
-                          //     if (value == null || value.isEmpty) {
-                          //       return 'The Location is required';
-                          //     }
-                          //     return null;
-                          //   },
-                          //   decoration: InputDecoration(
-                          //     labelText: "Location",
-                          //     prefixIcon: const Icon(Icons.location_on),
-                          //     suffixIcon: IconButton(
-                          //       icon: const Icon(Icons.map, color: Colors.blue),
-                          //       onPressed: _openMap, // دالة فتح الخرائط والحصول على الموقع
-                          //     ),
-                          //     border: OutlineInputBorder(
-                          //       borderRadius: BorderRadius.circular(14),
-                          //     ),
-                          //     hintText: "Press map icon to get location",
-                          //   ),
-                          //   onTap: () async {
-                          //     if (locationController.text.isNotEmpty) {
-                          //       // إذا الحقل يحتوي إحداثيات، افتحها مباشرة في Google Maps
-                          //       final coords = locationController.text; // "lat, long"
-                          //       final url =
-                          //       Uri.parse('https://www.google.com/maps/search/?api=1&query=$coords');
-                          //       if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
-                          //         throw 'Could not launch $url';
-                          //       }
-                          //     }
-                          //   },
-                          // ),
+                          defaultFormField(
+                            controller: cityController,
+                            type: TextInputType.name,
+                            validate: (String value) {
+                              if (value.isEmpty) {
+                                return 'Please enter a city ';
+                              }
+                              return null;
+                            },
+                            label: 'City',
+                            prefix: Icons.map,
+                          ),
                           const SizedBox(height: 6),
+                          defaultFormField(
+                            controller: districtController,
+                            type: TextInputType.name,
+                            validate: (String value) {
+                              if (value.isEmpty) {
+                                return 'Please enter a district';
+                              }
+                              return null;
+                            },
+                            label: 'District',
+                            prefix: Icons.location_city,
+                          ),
+                          const SizedBox(height: 6),
+                          defaultFormField(
+                            controller: streetController,
+                            type: TextInputType.name,
+                            validate: (String value) {
+                              if (value.isEmpty) {
+                                return 'Please enter a street ';
+                              }
+                              return null;
+                            },
+                            label: 'Street',
+                            prefix: Icons.car_repair,
+                          ),
+                          const SizedBox(height: 6),
+                          defaultFormField(
+                            controller: buildingController,
+                            type: TextInputType.name,
+                            validate: (String value) {
+                              if (value.isEmpty) {
+                                return 'Please enter the building number ';
+                              }
+                              return null;
+                            },
+                            label: 'Building number',
+                            prefix: Icons.numbers,
+                          ),
+                          const SizedBox(height: 6),
+
+
                           Text("Description",
                               style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                           const SizedBox(height: 6),
@@ -249,10 +306,42 @@ class _add_new_donation extends State<add_new_donation> {
                               ],
                             ),
                             child: MaterialButton(
-                              onPressed: () {
-                                if (formKey.currentState!.validate()) {
+                              onPressed: () async {
+                                if (!formKey.currentState!.validate()) return;
 
+                                if (_image == null) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text('You have to add an image.')),
+                                  );
+                                  return;
                                 }
+
+                                final doc =
+                                FirebaseFirestore.instance.collection('donations').doc();
+                                final donationId = doc.id;
+
+                                final savedImage = await saveImageLocally(donationId);
+
+                                  donation Donation=donation(
+                                      mealType: nameController.text,
+                                      numberOfPeople: int.parse(numberofpeopleController.text),
+                                      fromlocation: '${cityController.text}, ${districtController.text}, ${streetController.text}, ${buildingController.text}.',
+                                      imagePath: savedImage.path,
+                                      status: 'pending',
+                                      deleiveruid: ' ',
+                                      donoruid: '$userid',
+                                      reciveruid: ' ',
+                                      description: descriptionController.text,
+                                      category: category,
+                                  );
+
+                                  Donation.saveindatabase(doc);
+
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(content: Text(
+                                        'The donation have been submitted successfully, thank you. ')),
+                                  );
+                                  Navigator.pop(context);
                               },
                               child: const Padding(
                                 padding: EdgeInsets.symmetric(vertical: 15.0),
@@ -278,18 +367,6 @@ class _add_new_donation extends State<add_new_donation> {
         ),
       ),
     );
-  }
-  Future<bool> _checkLocationPermission() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) return false;
-
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-    }
-
-    return permission == LocationPermission.always ||
-        permission == LocationPermission.whileInUse;
   }
 
 }

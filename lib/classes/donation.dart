@@ -1,3 +1,5 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 class donation {
   String mealType;
   int numberOfPeople;
@@ -10,6 +12,7 @@ class donation {
   String donoruid;
   String reciveruid;
   String deleiveruid;
+
 
   donation({
     required this.mealType,
@@ -24,6 +27,28 @@ class donation {
     required this.donoruid,
     required this.reciveruid,
   });
+
+  Future<void> saveindatabase(doc)async {
+    await doc.set(
+        {
+          'mealType': this.mealType,
+          'numberOfPeople': this.numberOfPeople,
+          'category': this.category,
+          'fromlocation': this.fromlocation,
+          'tolocation': this.tolocation,
+          'description': this.description,
+          'imagePath': this.imagePath,
+          'status': this.status,
+          'deleiveruid': this.deleiveruid,
+          'donoruid': this.donoruid,
+          'reciveruid': this.reciveruid,
+          'donatetime': FieldValue.serverTimestamp(),
+          'recivetime': FieldValue.serverTimestamp(),
+          'deleviretime': FieldValue.serverTimestamp(),
+        }
+    );
+
+  }
 
 
 }

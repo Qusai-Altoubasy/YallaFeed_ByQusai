@@ -44,6 +44,8 @@ dependencies:
   firebase_core: ^4.2.1
   firebase_auth:
   cloud_firestore:
+  path_provider: ^2.1.2
+
 
 
 
