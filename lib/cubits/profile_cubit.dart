@@ -2,6 +2,7 @@
 
 import 'package:bloc/bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../classes/mainuser.dart';
@@ -15,10 +16,11 @@ class ProfileCubit extends Cubit<mainuser?> {
 
   Future<void> loadUser(String uid) async {
 
+
     DocumentSnapshot? doc;
 
     // users
-    doc = await _fire.collection("users").doc(uid).get();
+    doc = await _fire.collection("users").doc(uid).get(const GetOptions(source: Source.server));
     if (doc.exists) {
       emit(mainuser(
         name: doc["name"],
@@ -33,7 +35,7 @@ class ProfileCubit extends Cubit<mainuser?> {
     }
 
     // charity
-    doc = await _fire.collection("charity").doc(uid).get();
+    doc = await _fire.collection("charity").doc(uid).get(const GetOptions(source: Source.server));
     if (doc.exists) {
       emit(mainuser(
         name: doc["name"],
@@ -48,7 +50,7 @@ class ProfileCubit extends Cubit<mainuser?> {
     }
 
     // admin
-    doc = await _fire.collection("admin").doc(uid).get();
+    doc = await _fire.collection("admin").doc(uid).get(const GetOptions(source: Source.server));
     if (doc.exists) {
       emit(mainuser(
         name: doc["name"],
@@ -70,6 +72,7 @@ class ProfileCubit extends Cubit<mainuser?> {
         ? "charity"
         : "admin";
 
+
     await _fire.collection(collection).doc(uid).update({
       "name": user.name,
       "username": user.username,
@@ -78,6 +81,6 @@ class ProfileCubit extends Cubit<mainuser?> {
       "image": user.imageUrl,
     });
 
-    emit(user);
+    await loadUser(uid);
   }
 }

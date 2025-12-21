@@ -6,8 +6,9 @@ import 'package:image_picker/image_picker.dart';
 import 'package:qusai/shared/shared.dart';
 
 class another_profile extends StatefulWidget {
-  const another_profile({super.key, required this.uid});
+  const another_profile({super.key, required this.uid ,});
   final String uid;
+
 
   @override
   State<another_profile> createState() => _profileState(uid: uid);
@@ -22,7 +23,7 @@ class _profileState extends State<another_profile> {
 
   @override
   Widget build(BuildContext context) {
-    String? type=usertype;
+    String? type='users';
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFB3E5FC),
@@ -34,7 +35,7 @@ class _profileState extends State<another_profile> {
         ),
       ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection(type!).doc(uid).snapshots(),
+        stream: FirebaseFirestore.instance.collection(type).doc(uid).snapshots(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting){
             return const Center(
@@ -42,9 +43,9 @@ class _profileState extends State<another_profile> {
             );
           }
 
-          if(!snapshot.hasData){
+       /*   if(!snapshot.hasData){
             type='charity';
-          }
+          }*/
 
           return Container(
             decoration: const BoxDecoration(

@@ -4,21 +4,27 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:qusai/classes/admin.dart';
 import 'package:qusai/cubits/admin/admin_cubit.dart';
 import 'package:qusai/cubits/admin/admin_states.dart';
+import 'package:qusai/cubits/user/user_cubit.dart';
 import 'package:qusai/screens/admin/add_new_user.dart';
 import 'package:qusai/screens/admin/announcements.dart';
 import 'package:qusai/screens/admin/manage_accounts.dart';
 import 'package:qusai/shared/shared.dart';
 
-class admin_main_screen extends StatelessWidget {
+class admin_main_screen extends StatefulWidget {
   final String uid;
   const admin_main_screen({super.key, required this.uid});
 
+  @override
+  State<admin_main_screen> createState() => _admin_main_screenState();
+}
+
+class _admin_main_screenState extends State<admin_main_screen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (BuildContext context){
         var cubit = admin_cubit();
-        cubit.getadmin(uid);
+        cubit.getadmin(widget.uid);
         return cubit;
       },
       child: BlocConsumer<admin_cubit, admin_state>(
@@ -129,7 +135,7 @@ class admin_main_screen extends StatelessWidget {
                                 color1: const Color(0xff4FACFE),
                                 color2: const Color(0xff00F2FE),
                                 onTap: () {
-                                  navigateto(context, add_new_user());
+                                 navigateto(context, add_new_user());
                                 },
                               ),
                               // _buildGlassCard(
@@ -156,7 +162,7 @@ class admin_main_screen extends StatelessWidget {
                                 color1: const Color(0xff7F00FF),
                                 color2: const Color(0xffE100FF),
                                 onTap: () {
-                                  navigateto(context, AnnouncementDesign(Owenr: current_admin,uid: uid,));
+                                  navigateto(context, AnnouncementDesign(Owenr: current_admin,uid: widget.uid,));
                                 },
                               ),
                             ],
@@ -174,7 +180,6 @@ class admin_main_screen extends StatelessWidget {
       ),
     );
   }
-
 
   Widget _buildGlassCard({
     required IconData icon,
@@ -237,5 +242,4 @@ class admin_main_screen extends StatelessWidget {
       ),
     );
   }
-
 }

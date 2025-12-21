@@ -5,6 +5,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:path/path.dart';
 import 'package:qusai/cubits/register/register_states.dart';
 
 import '../../classes/charity.dart';
@@ -30,6 +31,9 @@ class register_cubit extends Cubit<register_states> {
 
 
 
+
+
+
   IconData suffix = Icons.visibility_outlined;
   bool isPassword = true;
 
@@ -40,4 +44,38 @@ class register_cubit extends Cubit<register_states> {
 
     emit(register_change_password_visibility_state());
   }
+
+  Future<void> addingUserbyAdmin(user User) async {
+    FirebaseApp secondaryApp = await Firebase.initializeApp(
+      name: 'Secondary',
+      options: Firebase.app().options,
+    );
+
+    FirebaseAuth secondaryAuth =
+    FirebaseAuth.instanceFor(app: secondaryApp);
+
+    UserCredential cred =
+    await secondaryAuth.createUserWithEmailAndPassword(
+      email: User.username.trim(),
+      password: User.password.trim(),
+    );
+
+    String uid = cred.user!.uid;
+    await FirebaseFirestore.instance.collection('users').doc(uid).set({
+      "Id": User.ID.trim(),
+      "name": User.name.trim(),
+      "username": User.username.trim(),
+      "password": User.password.trim(),
+      "phone": User.phone.trim(),
+      "image": User.imageUrl,
+      "type": User.type,
+      "havepermission": false,
+      "askpermission": false,
+      "nameofcharity": null,
+      "uid": uid,
+    });
+    await secondaryAuth.signOut();
+    await secondaryApp.delete();
+  }
+
 }

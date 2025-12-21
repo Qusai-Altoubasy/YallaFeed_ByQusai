@@ -15,8 +15,8 @@ import '../screens/common_screens/profile.dart';
 String ?usertype;
 String ?userid;
 mainuser ? current;
-Future<void> navigateto(context, Widget page) async {
-  Navigator.push(
+Future<void> navigateto (context, Widget page) async {
+  Navigator.push (
       context,
       MaterialPageRoute(
         builder: (context)=> page,
@@ -27,6 +27,7 @@ Future<void> navigateto(context, Widget page) async {
 Widget menu(context, Color color)=> Padding(
   padding: EdgeInsetsDirectional.only(
     top: 30,
+    bottom: 60,
   ),
   child: NavigationDrawer(
     backgroundColor: color,
@@ -42,11 +43,7 @@ Widget menu(context, Color color)=> Padding(
               leading: const Icon(Icons.person, size: 30,),
               title: const Text('Profile'),
               onTap: (){
-                final uid = FirebaseAuth.instance.currentUser!.uid;
-                navigateto(context, BlocProvider(
-                    create: (_) => ProfileCubit()..loadUser(uid),
-                    child: profile()
-                )
+                navigateto(context, profile()
                 );
               },
             ),
@@ -84,10 +81,11 @@ Widget menu(context, Color color)=> Padding(
               title: const Text('Log out'),
               onTap: ()async {
                 await FirebaseAuth.instance.signOut();
+                context.read<ProfileCubit>().emit(null);
 
                 Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (context) => (logo_screen())),
+                    MaterialPageRoute(builder: (context) => (login_screen())),
                         (route) => false,
                 );
               },

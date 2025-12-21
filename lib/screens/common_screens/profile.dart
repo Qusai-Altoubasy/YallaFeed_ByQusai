@@ -1,6 +1,7 @@
 
 import 'dart:io';
 
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../classes/mainuser.dart';
+import '../../cubits/admin/admin_cubit.dart';
 import '../../cubits/profile_cubit.dart';
 
 class profile extends StatefulWidget {
@@ -34,7 +36,7 @@ class _profileState extends State<profile> {
   @override
   void initState() {
     super.initState();
-    String uid = FirebaseAuth.instance.currentUser!.uid;
+    final uid =FirebaseAuth.instance.currentUser!.uid;
     ProfileCubit.get(context).loadUser(uid);
   }
 
@@ -57,11 +59,13 @@ class _profileState extends State<profile> {
             return const Center(child: CircularProgressIndicator());
           }
 
+          if (user != null && nameC.text.isEmpty) {
+
           nameC.text = user.name;
           emailC.text = user.username;
           passC.text = user.password;
           phoneC.text = user.phone;
-          idC.text = user.ID;
+          idC.text = user.ID;    }
 
           return Container(
             decoration: const BoxDecoration(
@@ -169,6 +173,41 @@ class _profileState extends State<profile> {
                   SizedBox(
                     height: 30,
                   ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20),
+                    child: Container(
+                      height: 70,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(12.0),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: editEmail
+                                  ? TextField(
+                                controller: emailC,
+                                obscureText: false,
+                                decoration: InputDecoration(labelText: 'label'),
+                              )
+                                  : Text(
+                                "Email : ${user.username}",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(
+                    height: 30,
+                  ),
                   profileField(
                     label: "Name",
                     controller: nameC,
@@ -179,10 +218,10 @@ class _profileState extends State<profile> {
                     height: 30,
                   ),
                   profileField(
-                    label: "Email",
-                    controller: emailC,
-                    isEditing: editEmail,
-                    onEdit: () => setState(() => editEmail = !editEmail),
+                    label: "Phone",
+                    controller: phoneC,
+                    isEditing: editPhone,
+                    onEdit: () => setState(() => editPhone = !editPhone),
                   ),
                   SizedBox(
                     height: 30,
@@ -191,44 +230,45 @@ class _profileState extends State<profile> {
                     label: "Password",
                     controller: passC,
                     isEditing: editPassword,
-                    obscure: true,
+                    obscure: false,
                     onEdit: () => setState(() => editPassword = !editPassword),
                   ),
-                  SizedBox(
-                    height: 30,
-                  ),
-                  profileField(
-                    label: "Phone",
-                    controller: phoneC,
-                    isEditing: editPhone,
-                    onEdit: () => setState(() => editPhone = !editPhone),
-                  ),
+
 
                   SizedBox(height: 25),
 
                   ElevatedButton(
-                    onPressed: () {
-                      final updated = mainuser(
-                        name: nameC.text,
-                        username: emailC.text,
-                        password: passC.text,
-                        phone: phoneC.text,
-                        ID: user.ID,
-                        imageUrl: user.imageUrl,
-                        type: user.type,
-                      );
+                    onPressed: () async{
+                      try {
+                        final  authUser = FirebaseAuth.instance.currentUser!;
+                        if (passC.text.trim().isNotEmpty) {
+                          await authUser.updatePassword(passC.text.trim());
+                        }
 
-                      String uid =
-                          FirebaseAuth.instance.currentUser!.uid;
+                        final updated = mainuser(
+                          name: nameC.text.trim(),
+                          username: emailC.text.trim(),
+                          password: passC.text.trim(),
+                          phone: phoneC.text.trim(),
+                          ID: user.ID,
+                          imageUrl: user.imageUrl,
+                          type: user.type,
+                        );
 
-                      ProfileCubit.get(context).updateUser(updated, uid);
+                        final uid = authUser.uid;
 
-                      Navigator.pop(context);
-                      Navigator.pop(context);
+                        await ProfileCubit.get(context).updateUser(updated, uid);
 
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text("Updated Successfully")),
-                      );
+                        Navigator.pop(context);
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text("Updated Successfully")),
+                        );
+                      } catch (e) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(e.toString())),
+                        );
+                      }
                     },
                     child: const Text("Save"),
                   )

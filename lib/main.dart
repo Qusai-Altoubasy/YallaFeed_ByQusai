@@ -2,18 +2,30 @@
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:qusai/screens/base_screens/logo_screen.dart';
 
+import 'cubits/admin/admin_cubit.dart';
+import 'cubits/login/login_cubit.dart';
+import 'cubits/profile_cubit.dart';
+import 'cubits/user/user_cubit.dart';
 import 'firebase_options.dart';
 
 void main() async{
-  runApp(const MyApp());
 
   WidgetsFlutterBinding.ensureInitialized();
 
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  runApp(  MultiBlocProvider
+    (
+      providers: [
+        BlocProvider(create: (_) => ProfileCubit()),
+      ],child: const MyApp()));
+
+
 
 
 }

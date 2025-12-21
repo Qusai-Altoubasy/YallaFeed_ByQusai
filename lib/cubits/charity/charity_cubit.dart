@@ -23,6 +23,7 @@ class charity_cubit extends Cubit<charity_states>{
       id: userdoc.data()?["Id"],
       phone: userdoc.data()?["phone"],
       imageUrl: userdoc.data()?["image"],
+      databaseid: userdoc.data()?["uid"],
     );
     this.Charity=User;
     emit(loadedcharity());
@@ -45,6 +46,7 @@ class charity_cubit extends Cubit<charity_states>{
           id: doc['Id'],
           phone: doc['phone'],
           imageUrl: doc['image'],
+          databaseid: doc['uid'],
         );
       }).toList();
 

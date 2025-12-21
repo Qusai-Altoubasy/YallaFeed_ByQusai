@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -10,6 +11,7 @@ import '../../classes/charity.dart';
 import '../../classes/user.dart';
 import '../../cubits/charity/charity_states.dart';
 import '../../cubits/user/user_states.dart';
+import '../common_screens/another_profile_charity.dart';
 
 
 
@@ -137,7 +139,7 @@ class _manage_accountsState extends State<manage_accounts> {
                               itemBuilder: (context, index) {
                                 var model = filteredCharities[index];
                                 return buildChatItem(
-                                    context, model.name, model.ID,
+                                    context, model.name, model.databaseID,
                                     model.imageUrl, 'charity');
 
                               },
@@ -185,8 +187,12 @@ Widget buildChatItem(BuildContext context, String? name, String? uid,
         mainAxisSize: MainAxisSize.min,
         children: [
           ElevatedButton.icon(
-            onPressed: () {
-              navigateto(context, another_profile(uid: uid!,));
+            onPressed: () async {
+              if (collection == 'users') {
+                navigateto(context, another_profile(uid: uid!));
+              } else if (collection == 'charity') {
+                navigateto(context, another_profile_charity(uid: uid!));
+              }
             },
             icon: Icon(Icons.remove_red_eye, size: 16),
             label: Text('View'),
