@@ -4,29 +4,37 @@ class donation {
   String mealType;
   int numberOfPeople;
   String ?category;
-  String ?fromlocation;
+  String fromlocation;
   String ?tolocation;
-  String ?description;
+  String description;
   String imagePath;
   String status;
   String ?donoruid;
   String ?reciveruid;
   String ?deleiveruid;
+  DateTime donatetime;
+  DateTime? recivetime;
+  DateTime? deleviretime;
+  String did;
 
 
   donation({
     required this.mealType,
     required this.numberOfPeople,
     this.category,
-    this.fromlocation,
+    this.fromlocation='kla',
     this.tolocation,
-    this.description,
+    this.description='kl',
     required this.imagePath,
     required this.status,
     this.deleiveruid,
     this.donoruid,
     this.reciveruid,
-  });
+    DateTime? donatetime,
+    this.deleviretime,
+    this.recivetime,
+    this.did='ml'
+  }): donatetime = donatetime ?? DateTime.now();
 
   Future<void> saveindatabase(doc)async {
     await doc.set(
@@ -45,6 +53,7 @@ class donation {
           'donatetime': FieldValue.serverTimestamp(),
           'recivetime': FieldValue.serverTimestamp(),
           'deleviretime': FieldValue.serverTimestamp(),
+          'did':doc.id,
         }
     );
 

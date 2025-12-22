@@ -271,7 +271,8 @@ class _profileState extends State<profile> {
           setState(() { editName = editEmail = editPhone = false; });
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Profile Updated!")));
         },
-        child: const Text("Save Profile Changes", style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+        child: const Text(
+            "Save Profile Changes", style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
       ),
     );
   }

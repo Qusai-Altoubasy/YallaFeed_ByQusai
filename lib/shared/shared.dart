@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:qusai/classes/donation.dart';
 import 'package:qusai/classes/mainuser.dart';
 import 'package:qusai/screens/base_screens/logo_screen.dart';
 import '../cubits/profile_cubit.dart';
@@ -17,6 +18,9 @@ import 'package:qusai/screens/common_screens/page_transition.dart';
 String ?usertype;
 String ?userid;
 mainuser ? current;
+donation ? receiverdonationdetails;
+
+
 Future<void> navigateto(context, Widget page) async {
   Navigator.push(
     context,

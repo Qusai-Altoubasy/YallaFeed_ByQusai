@@ -89,92 +89,88 @@ Widget _requestCard({
     ),
     child: Padding(
       padding: const EdgeInsets.all(16),
-      child: Row(
-        children: [
-          GestureDetector(
-            onTap: () {
-              navigatetoWithTransition(
-                context,
-                another_profile(uid: uid),
-                color: const Color(0xFF26A69A),
-                message: 'Opening profile...',
-              );
+      child: GestureDetector(
+        onTap: () {
+          navigatetoWithTransition(
+            context,
+            another_profile(uid: uid),
+            color: const Color(0xFF26A69A),
+            message: 'Opening profile...',
+          );
 
-            },
-            child: const CircleAvatar(
+        },
+        child: Row(
+          children: [
+            const CircleAvatar(
               radius: 28,
               backgroundImage: NetworkImage(
                 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
               ),
             ),
-          ),
-          const SizedBox(width: 16),
-          Expanded(
-            child: Text(
-              name,
-              style: const TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w600,
-                color: Color(0xFF1A202C),
+            const SizedBox(width: 16),
+            Expanded(
+              child: Text(
+                name,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w600,
+                  color: Color(0xFF1A202C),
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
-              overflow: TextOverflow.ellipsis,
             ),
-          ),
-          const SizedBox(width: 8),
+            const SizedBox(width: 8),
+            IconButton(
+              icon: const Icon(Icons.check_circle,
+                  color: Color(0xFF1F7A5C)),
+              tooltip: 'Accept',
+              onPressed: () async {
+                await FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(uid)
+                    .update({
+                  'havepermission': true,
+                  'askpermission': false,
+                });
 
-          // ACCEPT
-          IconButton(
-            icon: const Icon(Icons.check_circle,
-                color: Color(0xFF1F7A5C)),
-            tooltip: 'Accept',
-            onPressed: () async {
-              await FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(uid)
-                  .update({
-                'havepermission': true,
-                'askpermission': false,
-              });
+                await FirebaseFirestore.instance
+                    .collection('requests')
+                    .doc(uid)
+                    .delete();
 
-              await FirebaseFirestore.instance
-                  .collection('requests')
-                  .doc(uid)
-                  .delete();
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('User accepted successfully'),
+                  ),
+                );
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.cancel,
+                  color: Colors.redAccent),
+              tooltip: 'Reject',
+              onPressed: () async {
+                await FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(uid)
+                    .update({
+                  'askpermission': false,
+                });
 
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('User accepted successfully'),
-                ),
-              );
-            },
-          ),
+                await FirebaseFirestore.instance
+                    .collection('requests')
+                    .doc(uid)
+                    .delete();
 
-          // REJECT
-          IconButton(
-            icon: const Icon(Icons.cancel,
-                color: Colors.redAccent),
-            tooltip: 'Reject',
-            onPressed: () async {
-              await FirebaseFirestore.instance
-                  .collection('users')
-                  .doc(uid)
-                  .update({
-                'askpermission': false,
-              });
-
-              await FirebaseFirestore.instance
-                  .collection('requests')
-                  .doc(uid)
-                  .delete();
-
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Request rejected'),
-                ),
-              );
-            },
-          ),
-        ],
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Request rejected'),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
       ),
     ),
   );

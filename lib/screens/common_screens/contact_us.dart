@@ -58,7 +58,7 @@ class contact_us extends StatelessWidget {
             _contactCard(
               name: 'Qusai',
               phone: '0795351305',
-              email: 'qaaltwbasy@cit.edu.just',
+              email: 'qaaltwbasy@cit.just.edu.jo',
               facebookUrl: 'https://www.facebook.com/share/1Hr59ottn5/?mibextid=wwXIfr',
             ),
 
