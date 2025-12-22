@@ -1,12 +1,9 @@
 import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:qusai/shared/shared.dart';
-
 import '../../../classes/donation.dart';
-
 
 class my_donations extends StatefulWidget {
   const my_donations({super.key});
@@ -16,8 +13,7 @@ class my_donations extends StatefulWidget {
 }
 
 class _my_donationsState extends State<my_donations> {
-
-  List<String> Readdonordonations=[];
+  List<String> Readdonordonations = [];
   bool loading = true;
 
   @override
@@ -40,160 +36,201 @@ class _my_donationsState extends State<my_donations> {
     });
   }
 
+  Color _statusColor(String status) {
+    if (status == 'pending') return Colors.orange;
+    if (status == 'delivered') return Colors.green;
+    return Colors.blue;
+  }
 
   @override
   Widget build(BuildContext context) {
     if (loading) {
-        return Center(child: CircularProgressIndicator());
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
     }
 
     return StreamBuilder(
       stream: FirebaseFirestore.instance
           .collection('donations')
-          .where('donoruid', isEqualTo:userid)
+          .where('donoruid', isEqualTo: userid)
           .orderBy('donatetime', descending: true)
           .snapshots(),
       builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
-        }
-
         if (!snapshot.hasData) {
-          return Center(child: CircularProgressIndicator());
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
         }
 
-        var docs = snapshot.data!.docs
+        final docs = snapshot.data!.docs
             .where((doc) => !Readdonordonations.contains(doc.id))
             .toList();
 
         if (docs.isEmpty) {
           return Scaffold(
-            appBar: AppBar(title: Text('My Donations')),
-            body: Center(child: Text('There are no donations.')),
+            appBar: AppBar(
+              elevation: 0,
+              backgroundColor: Colors.white,
+              iconTheme:
+              const IconThemeData(color: Color(0xFF1F7A5C)),
+              title: const Text(
+                'My Donations',
+                style: TextStyle(
+                  color: Color(0xFF1A202C),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            body: const Center(
+              child: Text('There are no donations.'),
+            ),
           );
         }
 
-
         return Scaffold(
+          backgroundColor: const Color(0xFFF3F7F6),
           appBar: AppBar(
-            title: Center(child: const Text("My Donations")),
             elevation: 0,
+            backgroundColor: Colors.white,
+            iconTheme:
+            const IconThemeData(color: Color(0xFF1F7A5C)),
+            title: const Text(
+              'My Donations',
+              style: TextStyle(
+                color: Color(0xFF1A202C),
+                fontWeight: FontWeight.w600,
+              ),
+            ),
           ),
-          body: Padding(
-            padding: const EdgeInsets.all(15),
-            child: ListView.builder(
-              itemCount: docs.length,
-              itemBuilder: (context, index) {
-                final item = docs[index];
-                donation current =donation(
-                  mealType: item['mealType'],
-                  numberOfPeople: item['numberOfPeople'],
-                  status: item['status'],
-                  imagePath: item['imagePath'],
-                );
+          body: ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: docs.length,
+            itemBuilder: (context, index) {
+              final item = docs[index];
 
-                return Container(
-                  margin: const EdgeInsets.only(bottom: 20),
-                  padding: const EdgeInsets.all(15),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(18),
-                    color: Colors.white,
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.grey.shade300,
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
-                      ),
-                    ],
-                  ),
+              donation current = donation(
+                mealType: item['mealType'],
+                numberOfPeople: item['numberOfPeople'],
+                status: item['status'],
+                imagePath: item['imagePath'],
+              );
+
+              final statusColor = _statusColor(current.status);
+
+              return Card(
+                elevation: 6,
+                shadowColor: Colors.black12,
+                margin: const EdgeInsets.only(bottom: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(22),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16),
                   child: Row(
                     children: [
+                      // ===== IMAGE =====
                       Container(
-                        width: 70,
-                        height: 70,
+                        width: 64,
+                        height: 64,
                         decoration: BoxDecoration(
-                          color: Colors.blue.shade100,
-                          borderRadius: BorderRadius.circular(12),
+                          color: statusColor.withOpacity(0.15),
+                          borderRadius: BorderRadius.circular(18),
                         ),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12),
-                      child: FutureBuilder(
-                        future: getApplicationDocumentsDirectory(),
-                        builder: (context, asyncSnapshot) {
-                          if (!asyncSnapshot.hasData) {
-                            return Center(child: CircularProgressIndicator(strokeWidth: 2));
-                          }
-                          final fullPath =
-                              current.imagePath;
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(18),
+                          child: FutureBuilder(
+                            future: getApplicationDocumentsDirectory(),
+                            builder: (context, snap) {
+                              if (!snap.hasData) {
+                                return const Center(
+                                    child:
+                                    CircularProgressIndicator(strokeWidth: 2));
+                              }
 
-                          final file = File(fullPath);
+                              final file = File(current.imagePath);
+                              if (!file.existsSync()) {
+                                return Icon(Icons.fastfood_outlined,
+                                    color: statusColor);
+                              }
 
-                          if (!file.existsSync()) {
-                            return Icon(Icons.broken_image);
-                          }
-
-                          return Image.file(
-                              file,
-                              fit: BoxFit.cover);
-                        }
+                              return Image.file(file, fit: BoxFit.cover);
+                            },
+                          ),
+                        ),
                       ),
-                  ),
-                      ),
-                      const SizedBox(width: 15),
-                      // Details
+
+                      const SizedBox(width: 14),
+
+                      // ===== INFO =====
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
                             Text(
-                                current.mealType,
-                                style: const TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold)),
-                            const SizedBox(height: 4),
-                            Text("Persons: ${current.numberOfPeople}"),
+                              current.mealType,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFF1A202C),
+                              ),
+                            ),
                             const SizedBox(height: 6),
-                            // Status Badge
+                            Text(
+                              "Serves ${current.numberOfPeople} people",
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+
                             Container(
                               padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 5),
+                                  horizontal: 12, vertical: 6),
                               decoration: BoxDecoration(
-                                color: current.status=='pending'?Colors.orange[100]:current.status=='delivered'?Colors.green[100]:Colors.blue[100],
-                                borderRadius: BorderRadius.circular(12),
+                                color: statusColor.withOpacity(0.15),
+                                borderRadius: BorderRadius.circular(14),
                               ),
                               child: Text(
                                 current.status,
                                 style: TextStyle(
-                                    color: current.status=='pending'?Colors.orange:current.status=='delivered'?Colors.green:Colors.blue
-                                    , fontWeight: FontWeight.bold),
+                                  color: statusColor,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 12,
+                                ),
                               ),
-                            )
+                            ),
                           ],
                         ),
                       ),
+
+                      // ===== DELETE =====
                       IconButton(
-                          onPressed: () async {
-                            await FirebaseFirestore.instance
-                                .collection('read_donor_donations')
-                                .doc('${userid}_${docs[index].id}')
-                                .set({
-                              'userId': userid,
-                              'donationid': docs[index].id,
-                            });
-                            setState(() {
-                              Readdonordonations.add(docs[index].id);
-                            });
+                        icon: const Icon(Icons.delete_outline,
+                            color: Colors.redAccent),
+                        onPressed: () async {
+                          await FirebaseFirestore.instance
+                              .collection('read_donor_donations')
+                              .doc('${userid}_${docs[index].id}')
+                              .set({
+                            'userId': userid,
+                            'donationid': docs[index].id,
+                          });
 
-                          },
-
-                          icon: const Icon(Icons.delete, color: Colors.red)),
+                          setState(() {
+                            Readdonordonations.add(docs[index].id);
+                          });
+                        },
+                      ),
                     ],
                   ),
-                );
-              },
-            ),
+                ),
+              );
+            },
           ),
         );
-      }
+      },
     );
   }
 }
