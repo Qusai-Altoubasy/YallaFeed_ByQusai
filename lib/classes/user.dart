@@ -9,7 +9,7 @@ class user extends mainuser{
   late bool askpermission;
   late String databaseID;
 
-  user({name, username, password, imageUrl, phone, id, databaseid='fd'}) :
+  user({name, username, password, imageUrl, phone, id, databaseid='fd' ,}) :
         super(name: name, username: username, password: password,phone: phone,ID :id ,imageUrl: imageUrl, type: 'user'){
     havepermission = false;
     nameofcharity = 'nameofcharity';

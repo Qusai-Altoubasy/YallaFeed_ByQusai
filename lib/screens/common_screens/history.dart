@@ -112,6 +112,13 @@ class history extends StatelessWidget {
                       icon: const Icon(Icons.delete_outline),
                       color: Colors.redAccent,
                     ),
+                    IconButton(
+                      onPressed: () {
+                        _showRatingDialog(context, item.name);
+                      },
+                      icon: const Icon(Icons.star_border, color: Colors.amber, size: 30),
+                      tooltip: 'Rate Order',
+                    ),
                   ],
                 ),
               ],
@@ -119,6 +126,74 @@ class history extends StatelessWidget {
           );
         },
       ),
+    );
+  }
+  void _showRatingDialog(BuildContext context, String itemName) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        int selectedStars = 0; // متغير لحفظ عدد النجوم المختار
+
+        // StatefulBuilder ضروري عشان نقدر نغير لون النجوم بنفس اللحظة
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              title: Center(child: Text("Rate $itemName")),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text("How was the quality?", style: TextStyle(fontSize: 16)),
+                  const SizedBox(height: 20),
+
+                  // رسم النجوم
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(5, (index) {
+                      return IconButton(
+                        onPressed: () {
+                          // تحديث الحالة عند الضغط
+                          setState(() {
+                            selectedStars = index + 1;
+                          });
+                        },
+                        // تغيير الأيقونة واللون بناءً على الاختيار
+                        icon: Icon(
+                          index < selectedStars ? Icons.star : Icons.star_border,
+                          color: index < selectedStars ? Colors.amber : Colors.grey,
+                          size: 32,
+                        ),
+                      );
+                    }),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  ),
+                  onPressed: () {
+                    // هنا بتكتب كود الحفظ (Backend)
+                    Navigator.pop(context);
+
+                    // رسالة تأكيد صغيرة
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("You rated $selectedStars stars for $itemName!")),
+                    );
+                  },
+                  child: const Text("Submit"),
+                )
+              ],
+            );
+          },
+        );
+      },
     );
   }
 }

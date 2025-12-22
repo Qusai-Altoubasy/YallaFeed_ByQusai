@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:qusai/cubits/user/user_cubit.dart';
 import 'package:qusai/cubits/charity/charity_cubit.dart';
+import 'package:qusai/screens/common_screens/another_profile_charity.dart';
 import 'package:qusai/shared/shared.dart';
 import 'package:qusai/screens/common_screens/another_profile.dart';
 import '../../cubits/charity/charity_states.dart';
@@ -113,7 +114,7 @@ class _manage_accountsState extends State<manage_accounts> {
                               context: context,
                               name: c.name!,
                               image: c.imageUrl!,
-                              uid: c.ID!,
+                              uid: c.databaseID!,
                               collection: 'charity',
                             );
                           }).toList(),
@@ -190,12 +191,21 @@ Widget _accountTile({
             icon: const Icon(Icons.visibility_outlined,
                 color: Color(0xFF1F7A5C)),
             onPressed: () {
+              if(collection == 'users') {
               navigatetoWithTransition(
                 context,
-                another_profile(uid: uid),
+                another_profile(uid: uid,),
                 color: const Color(0xFF455A64),
                 message: 'Opening profile...',
-              );
+              );   }
+              else if (collection == 'charity') {
+                navigatetoWithTransition(
+                  context,
+                  another_profile_charity(uid: uid),
+                  color: const Color(0xFF455A64),
+                  message: 'Opening profile...',
+                );
+              }
 
 
             },
@@ -222,7 +232,7 @@ Widget _accountTile({
                             .doc(uid)
                             .delete();
 
-                        Navigator.pop(context);
+                        Navigator.pop(context);    Navigator.pop(context);
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
                               content: Text(

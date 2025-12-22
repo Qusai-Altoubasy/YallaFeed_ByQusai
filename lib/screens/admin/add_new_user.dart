@@ -230,6 +230,35 @@ class add_new_user extends StatelessWidget {
                                             ),
                                           ),
                                           onPressed: () async {
+                                            if (formKey.currentState!.validate()) {
+                                              user User=user(
+                                                username: emailController.text,
+                                                name: nameController.text,
+                                                phone: phoneController.text,
+                                                id: IDController.text,
+                                                imageUrl: 'image path',
+                                                password: passwordController.text,
+                                              );
+                                              try {
+                                               // await cubit.userRegister(User: User);
+                                               // navigateto(context,admin_main_screen());
+                                                await cubit.addingUserbyAdmin(User);
+                                                Navigator.pop(context , true);
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  const SnackBar(content: Text(
+                                                      'Adding new user successfully')),
+                                                );
+                                              }
+
+                                              catch (e){
+
+                                                ScaffoldMessenger.of(context).showSnackBar(
+                                                  const SnackBar(content: Text(
+                                                      'The informations are not valid')),
+                                                );
+                                              }
+                                            }
+                                            /*
                                             if (!formKey.currentState!
                                                 .validate()) return;
 
@@ -283,7 +312,7 @@ class add_new_user extends StatelessWidget {
                                                       'Invalid information'),
                                                 ),
                                               );
-                                            }
+                                            }*/
                                           },
                                           child: const Text(
                                             'Create User',

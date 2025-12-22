@@ -29,6 +29,7 @@ Future<void> navigateto(context, Widget page) async {
 Widget menu(context, Color color)=> Padding(
   padding: EdgeInsetsDirectional.only(
     top: 30,
+    bottom: 55,
   ),
   child: NavigationDrawer(
     backgroundColor: color,
