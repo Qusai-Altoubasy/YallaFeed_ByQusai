@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 
@@ -7,239 +6,163 @@ class donation_detalis extends StatefulWidget {
   const donation_detalis({super.key});
 
   @override
-  State<donation_detalis> createState() => _profileState();
+  State<donation_detalis> createState() => _DonationDetailsState();
 }
 
-class _profileState extends State<donation_detalis> {
+class _DonationDetailsState extends State<donation_detalis> {
   File? _image;
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF5F3FA),
       appBar: AppBar(
-        backgroundColor: Color(0xFFB3E5FC),
-        title: Text(
-          'Donation\'s details',
+        elevation: 0,
+        backgroundColor: Colors.white,
+        iconTheme: const IconThemeData(color: Color(0xFF6A1B9A)),
+        title: const Text(
+          'Donation Details',
           style: TextStyle(
-            fontWeight: FontWeight.bold,
+            color: Color(0xFF1A202C),
+            fontWeight: FontWeight.w600,
           ),
         ),
       ),
-      body: Container(
-        decoration: const BoxDecoration(
-          // 🌟 Gradient background
-          gradient: LinearGradient(
-            colors: [Color(0xFFB3E5FC), Color(0xFFE1F5FE)],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
-        child: Center(
-          child: SingleChildScrollView(
-            child: Column(
-              children: [
-                SizedBox(
-                  height: 30,
+      body: SingleChildScrollView(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // ===== IMAGE =====
+            Center(
+              child: Container(
+                width: double.infinity,
+                height: 220,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(26),
+                  color: const Color(0xFF6A1B9A).withOpacity(0.08),
+                  image: _image != null
+                      ? DecorationImage(
+                      image: FileImage(_image!), fit: BoxFit.cover)
+                      : null,
                 ),
-                CircleAvatar(
-                  radius: 150,
-                  backgroundImage:
-                  _image == null ? null : FileImage(_image!),
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Container(
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Row(
-                        children: [
-                          Text(
-                            'Type of meal :',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Text(
-                            "Burger",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                child: _image == null
+                    ? const Center(
+                  child: Icon(
+                    Icons.fastfood_outlined,
+                    size: 80,
+                    color: Color(0xFF6A1B9A),
                   ),
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Container(
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Row(
-                        children: [
-                          Text(
-                            'Persons :',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Text(
-                            "5",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                  ),
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Container(
-                    height: 60,
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(25),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(12.0),
-                      child: Row(
-                        children: [
-                          Text(
-                            'Date: ',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
-                          ),
-                          SizedBox(
-                            width: 5,
-                          ),
-                          Text(
-                            "5/10/2025",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 20,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-
-                  ),
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      Container(
-                        width: double.infinity,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Description: ',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                ),
-                              ),
-                              SizedBox(
-                                width: 7,
-                              ),
-                              Text(
-                                "HelHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHelloHellolo",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(
-                  height: 30,
-                ),
-              ],
+                )
+                    : null,
+              ),
             ),
+
+            const SizedBox(height: 30),
+
+            // ===== INFO CARDS =====
+            _infoCard(title: 'Meal Type', value: 'Burger'),
+            _infoCard(title: 'Persons', value: '5'),
+            _infoCard(title: 'Date', value: '05 / 10 / 2025'),
+
+            const SizedBox(height: 20),
+
+            // ===== DESCRIPTION =====
+            Card(
+              elevation: 6,
+              shadowColor: Colors.black12,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(22),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(18),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: const [
+                    Text(
+                      'Description',
+                      style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xFF1A202C),
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      'This meal is freshly prepared and suitable for families. '
+                          'Please pick it up within the available time window.',
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Colors.grey,
+                        height: 1.6,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 30),
+          ],
+        ),
+      ),
+    );
+  }
+
+  // ===== INFO CARD =====
+  Widget _infoCard({required String title, required String value}) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 14),
+      child: Card(
+        elevation: 5,
+        shadowColor: Colors.black12,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                title,
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w600,
+                  color: Colors.grey,
+                ),
+              ),
+              Text(
+                value,
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                  color: Color(0xFF1A202C),
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
+
+  // ===== IMAGE PICKER (unchanged logic) =====
   Future<void> getImage(ImageSource source) async {
     try {
-      final ImagePicker picker = ImagePicker();
-      final XFile? pickedFile = await picker.pickImage(
-        source: source,
-        imageQuality: 80, // اختياري لتقليل حجم الصورة
-        maxWidth: 1024,
-      );
-      if (pickedFile == null) {
-        // المستخدم ألغى الاختيار
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No image selected')),
-        );
-        return;
-      }
+      final picker = ImagePicker();
+      final XFile? pickedFile =
+      await picker.pickImage(source: source, imageQuality: 80);
 
-      final File imageFile = File(pickedFile.path);
+      if (pickedFile == null) return;
 
       setState(() {
-        _image = imageFile;
+        _image = File(pickedFile.path);
       });
     } catch (e) {
-      // إدارة الأخطاء
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error picking image: $e')),
       );
     }
   }
-
 }

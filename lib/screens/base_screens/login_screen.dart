@@ -21,43 +21,6 @@ class login_screen extends StatelessWidget {
         .hasMatch(email);
   }
 
-  void showDeletedAccountSnackBar(BuildContext context) {
-    ScaffoldMessenger.of(context)
-      ..hideCurrentSnackBar()
-      ..showSnackBar(
-        SnackBar(
-          behavior: SnackBarBehavior.floating,
-          elevation: 6,
-          backgroundColor: const Color(0xFFD32F2F),
-          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(14),
-          ),
-          duration: const Duration(seconds: 3),
-          content: Row(
-            children: const [
-              Icon(
-                Icons.delete_forever_outlined,
-                color: Colors.white,
-                size: 22,
-              ),
-              SizedBox(width: 12),
-              Expanded(
-                child: Text(
-                  'The account has been deleted',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-            ],
-          ),
-        ),
-      );
-  }
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -164,8 +127,7 @@ class login_screen extends StatelessWidget {
                                   },
                                   suffix: cubit.suffix,
                                   isPassword: cubit.isPassword,
-                                  suffixPressed:
-                                  cubit.changePasswordVisibility,
+                                  suffixPressed: cubit.changePasswordVisibility,
                                 ),
 
                                 const SizedBox(height: 20),
@@ -174,36 +136,62 @@ class login_screen extends StatelessWidget {
                                   text: "Log In",
                                   height: 52,
                                   function: () async {
-                                    if (!formKey.currentState!.validate())
-                                      return;
+                                    if (!formKey.currentState!.validate()) return;
 
                                     try {
                                       await cubit.userLogin(
-                                        email:
-                                        EmailController.text.trim(),
-                                        password:
-                                        PasswordController.text.trim(),
+                                        email: EmailController.text.trim(),
+                                        password: PasswordController.text.trim(),
                                       );
                                     } on FirebaseAuthException {
-                                      showDeletedAccountSnackBar(context);
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          behavior: SnackBarBehavior.floating,
+                                          backgroundColor: const Color(0xFFD32F2F),
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.circular(14),
+                                          ),
+                                          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                          duration: const Duration(seconds: 3),
+                                          content: Row(
+                                            children: const [
+                                              Icon(
+                                                Icons.delete_forever_outlined,
+                                                color: Colors.white,
+                                              ),
+                                              SizedBox(width: 12),
+                                              Expanded(
+                                                child: Text(
+                                                  'Email or password is incorrect',
+                                                  style: TextStyle(
+                                                    color: Colors.white,
+                                                    fontSize: 14,
+                                                    fontWeight: FontWeight.w600,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+
+
                                       return;
                                     }
 
                                     navigatetoWithTransition(
                                       context,
                                       StreamBuilder(
-                                        stream: FirebaseAuth.instance
-                                            .authStateChanges(),
+                                        stream: FirebaseAuth.instance.authStateChanges(),
                                         builder: (context, snapshot) {
                                           if (snapshot.connectionState ==
                                               ConnectionState.waiting) {
                                             return const Center(
-                                                child:
-                                                CircularProgressIndicator());
+                                                child: CircularProgressIndicator());
                                           }
 
-                                          final user = FirebaseAuth
-                                              .instance.currentUser;
+                                          final user =
+                                              FirebaseAuth.instance.currentUser;
                                           if (user == null) {
                                             return login_screen();
                                           }
@@ -213,51 +201,71 @@ class login_screen extends StatelessWidget {
 
                                           return FutureBuilder<String?>(
                                             future: getUserType(uid),
-                                            builder:
-                                                (context, userSnapshot) {
-                                              if (userSnapshot
-                                                  .connectionState ==
+                                            builder: (context, userSnapshot) {
+                                              if (userSnapshot.connectionState ==
                                                   ConnectionState.waiting) {
                                                 return const Center(
-                                                    child:
-                                                    CircularProgressIndicator());
+                                                    child: CircularProgressIndicator());
                                               }
 
                                               if (!userSnapshot.hasData ||
-                                                  userSnapshot.data ==
-                                                      null) {
+                                                  userSnapshot.data == null) {
                                                 WidgetsBinding.instance
-                                                    .addPostFrameCallback(
-                                                        (_) {
-                                                      showDeletedAccountSnackBar(
-                                                          context);
-                                                      FirebaseAuth.instance
-                                                          .signOut();
-                                                    });
+                                                    .addPostFrameCallback((_) {
+                                                  ScaffoldMessenger.of(context)
+                                                    ..hideCurrentSnackBar()
+                                                    ..showSnackBar(
+                                                      SnackBar(
+                                                        behavior: SnackBarBehavior.floating,
+                                                        elevation: 6,
+                                                        backgroundColor: const Color(0xFFD32F2F),
+                                                        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                                        shape: RoundedRectangleBorder(
+                                                          borderRadius: BorderRadius.circular(14),
+                                                        ),
+                                                        duration: const Duration(seconds: 3),
+                                                        content: Row(
+                                                          children: const [
+                                                            Icon(
+                                                              Icons.delete_forever_outlined,
+                                                              color: Colors.white,
+                                                              size: 22,
+                                                            ),
+                                                            SizedBox(width: 12),
+                                                            Expanded(
+                                                              child: Text(
+                                                                'The account has been deleted',
+                                                                style: TextStyle(
+                                                                  color: Colors.white,
+                                                                  fontSize: 14,
+                                                                  fontWeight: FontWeight.w600,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    );
+
+                                                  FirebaseAuth.instance.signOut();
+                                                });
                                                 return login_screen();
                                               }
 
-                                              final type =
-                                              userSnapshot.data!;
+                                              final type = userSnapshot.data!;
                                               usertype = type;
 
                                               ProfileCubit.get(context)
                                                   .loadUser(uid);
 
                                               if (type == 'user') {
-                                                return user_layout(
-                                                    uid: uid);
-                                              } else if (type ==
-                                                  'charity') {
-                                                return charity_main_screen(
-                                                    uid: uid);
-                                              } else if (type ==
-                                                  'admin') {
-                                                return admin_main_screen(
-                                                    uid: uid);
+                                                return user_layout(uid: uid);
+                                              } else if (type == 'charity') {
+                                                return charity_main_screen(uid: uid);
+                                              } else if (type == 'admin') {
+                                                return admin_main_screen(uid: uid);
                                               } else {
-                                                FirebaseAuth.instance
-                                                    .signOut();
+                                                FirebaseAuth.instance.signOut();
                                                 return login_screen();
                                               }
                                             },
@@ -278,23 +286,19 @@ class login_screen extends StatelessWidget {
                       const SizedBox(height: 24),
 
                       Row(
-                        mainAxisAlignment:
-                        MainAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           const Text(
                             "Don’t have an account?",
-                            style:
-                            TextStyle(color: Colors.white70),
+                            style: TextStyle(color: Colors.white70),
                           ),
                           TextButton(
                             onPressed: () {
                               navigatetoWithTransition(
                                 context,
                                 register_option(),
-                                color:
-                                const Color(0xFF00BFA5),
-                                message:
-                                'Preparing registration options...',
+                                color: const Color(0xFF00BFA5),
+                                message: 'Preparing registration options...',
                               );
                             },
                             child: const Text(
