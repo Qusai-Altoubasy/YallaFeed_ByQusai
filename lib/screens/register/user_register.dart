@@ -8,249 +8,279 @@ import '../../cubits/register/register_states.dart';
 
 
 class user_register extends StatelessWidget {
+  final formKey = GlobalKey<FormState>();
 
-  var formKey = GlobalKey<FormState>();
-
-  var nameController = TextEditingController();
-  var emailController = TextEditingController();
-  var passwordController = TextEditingController();
-  var confirmpasswordController = TextEditingController();
-  var phoneController = TextEditingController();
-  var IDController = TextEditingController();
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmpasswordController = TextEditingController();
+  final phoneController = TextEditingController();
+  final IDController = TextEditingController();
 
   bool isValidEmail(String email) {
     return RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email);
   }
 
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) => register_cubit(),
-      child: BlocConsumer<register_cubit , register_states>(
+      create: (_) => register_cubit(),
+      child: BlocConsumer<register_cubit, register_states>(
         listener: (context, state) {},
-          builder: (context, state) {
-          var cubit = register_cubit.get(context);
-          return Scaffold(
-            appBar: AppBar(
-              backgroundColor: Color(0xFFB3E5FC),
-            ),
+        builder: (context, state) {
+          final cubit = register_cubit.get(context);
 
+          return Scaffold(
+            extendBodyBehindAppBar: true,
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+            ),
             body: Container(
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Color(0xFFB3E5FC), Color(0xFFE1F5FE)],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
+                  colors: [
+                    Color(0xFF2F855A),
+                    Color(0xFF68D391),
+                  ],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
                 ),
               ),
-              child: Center(
+              child: SafeArea(
                 child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Text(
-                          'REGISTER',
-                          style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                            color: Colors.blue[300],
-                            fontWeight: FontWeight.bold,
-                          ),
+                  padding: const EdgeInsets.fromLTRB(20, 30, 20, 30),
+                  child: Column(
+                    children: [
+                      // ===== HEADER =====
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.15),
+                          borderRadius: BorderRadius.circular(30),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.15),
+                              blurRadius: 18,
+                              offset: const Offset(0, 10),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 8),
-                        Text(
-                          'Register now to donate or receive food easily',
-                          textAlign: TextAlign.center,
-                          style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: Colors.grey[700],
-                          ),
+                        child: Column(
+                          children: const [
+                            Icon(
+                              Icons.volunteer_activism,
+                              size: 56,
+                              color: Colors.white,
+                            ),
+                            SizedBox(height: 12),
+                            Text(
+                              'User Registration',
+                              style: TextStyle(
+                                fontSize: 26,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.white,
+                              ),
+                            ),
+                            SizedBox(height: 6),
+                            Text(
+                              'Register now to donate or receive food easily',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.white70,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
                         ),
-                        const SizedBox(height: 30),
+                      ),
 
-                        // Card-like container for inputs
-                        Container(
-                          padding: const EdgeInsets.all(20),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.95),
-                            borderRadius: BorderRadius.circular(25),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 15,
-                                offset: const Offset(0, 8),
+                      const SizedBox(height: 28),
+
+                      // ===== FORM CARD =====
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(22),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.96),
+                          borderRadius: BorderRadius.circular(30),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.08),
+                              blurRadius: 20,
+                              offset: const Offset(0, 10),
+                            ),
+                          ],
+                        ),
+                        child: Form(
+                          key: formKey,
+                          child: Column(
+                            children: [
+                              defaultFormField(
+                                controller: nameController,
+                                type: TextInputType.name,
+                                label: 'Your name',
+                                prefix: Icons.person_outline,
+                                validate: (v) =>
+                                v.isEmpty ? 'Enter your name' : null,
+                              ),
+                              const SizedBox(height: 14),
+
+                              defaultFormField(
+                                controller: emailController,
+                                type: TextInputType.emailAddress,
+                                label: 'Email address',
+                                prefix: Icons.email_outlined,
+                                validate: (v) {
+                                  if (v.isEmpty) return 'Email is required';
+                                  if (!isValidEmail(v.trim())) {
+                                    return 'Invalid email';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 14),
+
+                              defaultFormField(
+                                controller: phoneController,
+                                type: TextInputType.phone,
+                                label: 'Phone number',
+                                prefix: Icons.phone_outlined,
+                                validate: (v) {
+                                  if (v.isEmpty) return 'Phone number required';
+                                  if (v.length != 10) {
+                                    return 'Phone must be 10 digits';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 14),
+
+                              defaultFormField(
+                                controller: IDController,
+                                type: TextInputType.number,
+                                label: 'National ID',
+                                prefix: Icons.badge_outlined,
+                                validate: (v) {
+                                  if (v.isEmpty) return 'ID required';
+                                  if (v.length != 10) {
+                                    return 'ID must be 10 digits';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 14),
+
+                              defaultFormField(
+                                controller: passwordController,
+                                type: TextInputType.visiblePassword,
+                                label: 'Password',
+                                prefix: Icons.lock_outline,
+                                isPassword: cubit.isPassword,
+                                suffix: cubit.suffix,
+                                suffixPressed:
+                                cubit.changePasswordVisibility,
+                                validate: (v) =>
+                                v.isEmpty ? 'Password required' : null,
+                              ),
+                              const SizedBox(height: 14),
+
+                              defaultFormField(
+                                controller: confirmpasswordController,
+                                type: TextInputType.visiblePassword,
+                                label: 'Confirm password',
+                                prefix: Icons.lock_outline,
+                                isPassword: cubit.isPassword,
+                                suffix: cubit.suffix,
+                                suffixPressed:
+                                cubit.changePasswordVisibility,
+                                validate: (v) {
+                                  if (v.isEmpty) return 'Confirm password';
+                                  if (v != passwordController.text) {
+                                    return 'Passwords do not match';
+                                  }
+                                  return null;
+                                },
+                              ),
+
+                              const SizedBox(height: 28),
+
+                              // ===== REGISTER BUTTON =====
+                              Container(
+                                width: double.infinity,
+                                height: 54,
+                                decoration: BoxDecoration(
+                                  gradient: const LinearGradient(
+                                    colors: [
+                                      Color(0xFF2F855A),
+                                      Color(0xFF68D391),
+                                    ],
+                                  ),
+                                  borderRadius: BorderRadius.circular(20),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color(0xFF2F855A)
+                                          .withOpacity(0.35),
+                                      blurRadius: 14,
+                                      offset: const Offset(0, 6),
+                                    ),
+                                  ],
+                                ),
+                                child: MaterialButton(
+                                  onPressed: () async {
+                                    if (!formKey.currentState!.validate()) return;
+
+                                    final User = user(
+                                      username: emailController.text,
+                                      name: nameController.text,
+                                      phone: phoneController.text,
+                                      id: IDController.text,
+                                      imageUrl: 'image path',
+                                      password: passwordController.text,
+                                    );
+
+                                    try {
+                                      await cubit.userRegister(User: User);
+                                      Navigator.pop(context);
+                                      Navigator.pop(context);
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                          content:
+                                          Text('Registered successfully'),
+                                        ),
+                                      );
+                                    } catch (_) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                          content:
+                                          Text('Invalid information'),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  child: const Text(
+                                    'Register',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w800,
+                                    ),
+                                  ),
+                                ),
                               ),
                             ],
                           ),
-                          child: Form(
-                            key: formKey,
-                            child: Column(
-                              children: [
-                                defaultFormField(
-                                  controller: nameController,
-                                  type: TextInputType.name,
-                                  validate: (String value) {
-                                    if (value.isEmpty) {
-                                      return 'please enter your name';
-                                    }
-                                    return null;
-                                  },
-                                  label: 'Your name',
-                                  prefix: Icons.person,
-                                ),
-                                const SizedBox(height: 15),
-                                defaultFormField(
-                                  controller: emailController,
-                                  type: TextInputType.emailAddress,
-                                  validate: (String value) {
-                                    if (value.isEmpty) {
-                                      return 'please enter your email address';
-                                    }  else if (!isValidEmail(value.trim())) {
-                                      return 'Please enter a valid email address';
-                                    }
-                                    return null;
-                                  },
-                                  label: 'Email Address',
-                                  prefix: Icons.email_outlined,
-                                ),
-                                const SizedBox(height: 15),
-                                defaultFormField(
-                                  controller: phoneController,
-                                  type: TextInputType.phone,
-                                  validate: (String value) {
-                                    if (value.isEmpty) {
-                                      return 'please enter your phone number';
-                                    } else if (phoneController.text.length != 10) {
-                                      return 'The phone must be 10 numbers';
-                                    }
-                                    return null;
-                                  },
-                                  label: 'Phone',
-                                  prefix: Icons.phone,
-                                ),
-                                const SizedBox(height: 15),
-                                defaultFormField(
-                                  controller: IDController,
-                                  type: TextInputType.number,
-                                  validate: (String value) {
-                                    if (value.isEmpty) {
-                                      return 'please enter your ID number';
-                                    } else if (IDController.text.length != 10) {
-                                      return 'The ID must be 10 numbers';
-                                    }
-                                    return null;
-                                  },
-                                  label: 'National ID',
-                                  prefix: Icons.badge,
-                                ),
-                                const SizedBox(height: 15),
-                                defaultFormField(
-                                  controller: passwordController,
-                                  type: TextInputType.visiblePassword,
-                                  suffix: register_cubit.get(context).suffix,
-                                  isPassword: register_cubit.get(context).isPassword,
-                                  suffixPressed: () {
-                                   register_cubit.get(context).changePasswordVisibility();
-                                  },
-                                  validate: (String value) {
-                                    if (value.isEmpty) {
-                                      return 'password is too short';
-                                    }
-                                    return null;
-                                  },
-                                  label: 'Password',
-                                  prefix: Icons.lock_outline,
-                                ),
-                                const SizedBox(height: 15),
-                                defaultFormField(
-                                  controller: confirmpasswordController,
-                                  type: TextInputType.visiblePassword,
-                                  suffix: register_cubit.get(context).suffix,
-                                  isPassword: register_cubit.get(context).isPassword,
-                                  suffixPressed: () {
-                                    register_cubit.get(context).changePasswordVisibility();
-                                  },
-                                  validate: (String value) {
-                                    if (value.isEmpty) {
-                                      return 'password is too short';
-                                    } else if (passwordController.text !=
-                                        confirmpasswordController.text) {
-                                      return 'password does not match';
-                                    }
-                                    return null;
-                                  },
-                                  label: 'Confirm Password',
-                                  prefix: Icons.lock_outline,
-                                ),
-                                const SizedBox(height: 30),
-                                //  Modern Button
-
-                                Container(
-                                  width: double.infinity,
-                                  height: 55,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(25),
-                                    gradient: const LinearGradient(
-                                      colors: [Color(0xFF56CCF2), Color(0xFF2F80ED)],
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                    ),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.blue.withOpacity(0.4),
-                                        blurRadius: 12,
-                                        offset: const Offset(0, 5),
-                                      ),
-                                    ],
-                                  ),
-                                  child: defaultButton(
-                                    function: () async{
-                                      if (formKey.currentState!.validate()) {
-                                        user User=user(
-                                          username: emailController.text,
-                                          name: nameController.text,
-                                          phone: phoneController.text,
-                                          id: IDController.text,
-                                          imageUrl: 'image path',
-                                          password: passwordController.text,
-                                        );
-                                        try {
-                                        await cubit.userRegister(User: User);
-                                        Navigator.pop(context); Navigator.pop(context);
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          const SnackBar(content: Text(
-                                              'Signed up successfully')),
-                                        );
-                                        }
-
-                                            catch (e){
-
-                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                const SnackBar(content: Text(
-                                                    'The informations are not valid')),
-                                              );
-                                            }
-                                      }
-                                    },
-                                    text: "Register",
-                                    radius: 25,
-                                  ),
-                                ),
-
-                              ],
-                            ),
-                          ),
                         ),
-                        const SizedBox(height: 30),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
             ),
           );
-          }
-
+        },
       ),
     );
   }

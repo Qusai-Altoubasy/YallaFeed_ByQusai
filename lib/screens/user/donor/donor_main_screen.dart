@@ -122,7 +122,12 @@ class donor_main_screen extends StatelessWidget {
                                 Color(0xFF38EF7D),
                               ],
                               onTap: () {
-                                navigateto(context, add_new_donation());
+                                navigatetoWithTransition(
+                                  context,
+                                  add_new_donation(),
+                                  color: const Color(0xFF1E88E5),
+                                  message: 'Preparing donation form...',
+                                );
                               },
                             ),
 
@@ -138,7 +143,12 @@ class donor_main_screen extends StatelessWidget {
                                 Color(0xFF00D2FF),
                               ],
                               onTap: () {
-                                navigateto(context, my_donations());
+                                navigatetoWithTransition(
+                                  context,
+                                  my_donations(),
+                                  color: const Color(0xFF1565C0),
+                                  message: 'Loading your donations...',
+                                );
                               },
                             ),
                           ],

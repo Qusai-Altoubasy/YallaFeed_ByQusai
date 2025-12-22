@@ -7,109 +7,159 @@ class register_option extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      extendBodyBehindAppBar: true,
       appBar: AppBar(
-        backgroundColor: Color(0xFFB3E5FC),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
 
-      //  Gradient background for modern look
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFFB3E5FC), Color(0xFFE1F5FE)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            colors: [
+              Color(0xFF2F855A), // نفس ثيم Login
+              Color(0xFF68D391),
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
         ),
         child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              // First Option
-              Container(
-                width: 350,
-                height: 60,
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF56CCF2), Color(0xFF2F80ED)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Container(
+              padding: const EdgeInsets.all(28),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.15),
+                borderRadius: BorderRadius.circular(28),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.15),
+                    blurRadius: 25,
+                    offset: const Offset(0, 10),
                   ),
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.blue.withOpacity(0.4),
-                      blurRadius: 12,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                ),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
-                    shadowColor: Colors.transparent,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  onPressed: () {
-                    navigateto(context, user_register());
-                  },
-                  child: const Text(
-                    'Register as User',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
+                ],
+                border: Border.all(color: Colors.white24),
               ),
-              const SizedBox(height: 25),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Icons.volunteer_activism,
+                    color: Colors.white,
+                    size: 60,
+                  ),
+                  const SizedBox(height: 16),
+                  const Text(
+                    'Join Our Community',
+                    style: TextStyle(
+                      fontSize: 26,
+                      fontWeight: FontWeight.w800,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Choose how you would like to help',
+                    style: TextStyle(
+                      color: Colors.white70,
+                      fontSize: 15,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                  const SizedBox(height: 30),
 
-              //  Second Option
-              Container(
-                width: 350,
-                height: 60,
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF56CCF2), Color(0xFF2F80ED)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+                  // ===== USER BUTTON =====
+                  _buildOptionButton(
+                    icon: Icons.person_outline,
+                    text: 'Register as User',
+                    onTap: () {
+                      navigatetoWithTransition(
+                        context,
+                        user_register(),
+                        color: const Color(0xFF4CAF50),
+                        message: 'Starting user registration...',
+                      );
+                    },
                   ),
-                  borderRadius: BorderRadius.circular(20),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.blue.withOpacity(0.4),
-                      blurRadius: 12,
-                      offset: const Offset(0, 5),
-                    ),
-                  ],
-                ),
-                child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.transparent,
-                    shadowColor: Colors.transparent,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
+
+                  const SizedBox(height: 18),
+
+                  // ===== CHARITY BUTTON =====
+                  _buildOptionButton(
+                    icon: Icons.apartment_outlined,
+                    text: 'Register as Charity Organization',
+                    onTap: () {
+                      navigatetoWithTransition(
+                        context,
+                        charity_register(),
+                        color: const Color(0xFF2F855A),
+                        message: 'Starting charity registration...',
+                      );
+                    },
                   ),
-                  onPressed: () {
-                    navigateto(context, charity_register());
-                  },
-                  child: const Text(
-                    'Register as Charity Organization',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
       ),
     );
   }
+
+  Widget _buildOptionButton({
+    required IconData icon,
+    required String text,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        width: double.infinity,
+        height: 60,
+        padding: const EdgeInsets.symmetric(horizontal: 16), // مهم
+        decoration: BoxDecoration(
+          gradient: const LinearGradient(
+            colors: [
+              Color(0xFF2F855A),
+              Color(0xFF68D391),
+            ],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+          borderRadius: BorderRadius.circular(20),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.25),
+              blurRadius: 14,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
+        child: Row(
+          children: [
+            Icon(icon, color: Colors.white, size: 24),
+            const SizedBox(width: 10),
+
+            // ✅ هذا هو الحل: خلي النص يتمدد واذا طول يختصر
+            Expanded(
+              child: Text(
+                text,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
 }

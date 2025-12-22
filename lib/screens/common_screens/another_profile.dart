@@ -6,9 +6,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:qusai/shared/shared.dart';
 
 class another_profile extends StatefulWidget {
-  const another_profile({super.key, required this.uid ,});
+  const another_profile({super.key, required this.uid});
   final String uid;
-
 
   @override
   State<another_profile> createState() => _profileState(uid: uid);
@@ -23,213 +22,213 @@ class _profileState extends State<another_profile> {
 
   @override
   Widget build(BuildContext context) {
-    String? type='users';
+    String? type=usertype;
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFB3E5FC),
         title: Text(
-            'Your profile',
+          'Your profile',
           style: TextStyle(
             fontWeight: FontWeight.bold,
           ),
         ),
       ),
       body: StreamBuilder(
-        stream: FirebaseFirestore.instance.collection(type).doc(uid).snapshots(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting){
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
+          stream: FirebaseFirestore.instance.collection(type!).doc(uid).snapshots(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting){
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            }
 
-       /*   if(!snapshot.hasData){
-            type='charity';
-          }*/
+            if(!snapshot.hasData){
+              type='charity';
+            }
 
-          return Container(
-            decoration: const BoxDecoration(
-              // 🌟 Gradient background
-              gradient: LinearGradient(
-                colors: [Color(0xFFB3E5FC), Color(0xFFE1F5FE)],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
+            return Container(
+              decoration: const BoxDecoration(
+                // 🌟 Gradient background
+                gradient: LinearGradient(
+                  colors: [Color(0xFFB3E5FC), Color(0xFFE1F5FE)],
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                ),
               ),
-            ),
-            child: Center(
-              child: SingleChildScrollView(
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 30,
-                    ),
-                    CircleAvatar(
-                      radius: 150,
-                      backgroundImage:
-                      _image == null ? null : FileImage(_image!),
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Container(
-                        height: 60,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Row(
-                            children: [
-                              Text(
-                                'ID :',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                ),
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                snapshot.data!.data()?['Id'],
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                ),
-                              ),
-                              Spacer(),
-                
-                            ],
-                          ),
-                        ),
+              child: Center(
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      SizedBox(
+                        height: 30,
                       ),
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Container(
-                        height: 60,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Row(
-                            children: [
-                              Text(
-                                'Name :',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                ),
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                snapshot.data!.data()?['name'],
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
+                      CircleAvatar(
+                        radius: 150,
+                        backgroundImage:
+                        _image == null ? null : FileImage(_image!),
                       ),
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Container(
-                        height: 60,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Row(
-                            children: [
-                              Text(
-                                'Email :',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
-                                ),
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Expanded(
-                                child: Text(
-                                  snapshot.data!.data()?['username'],
-                                  overflow: TextOverflow.ellipsis,
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Container(
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Row(
+                              children: [
+                                Text(
+                                  'ID :',
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     fontSize: 20,
                                   ),
                                 ),
-                              ),
-                            ],
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  snapshot.data!.data()?['Id'],
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                                Spacer(),
+
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 20),
-                      child: Container(
-                        height: 60,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(25),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(12.0),
-                          child: Row(
-                            children: [
-                              Text(
-                                'phone :',
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Container(
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Row(
+                              children: [
+                                Text(
+                                  'Name :',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                  ),
                                 ),
-                              ),
-                              SizedBox(
-                                width: 5,
-                              ),
-                              Text(
-                                snapshot.data!.data()?['phone'],
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 20,
+                                SizedBox(
+                                  width: 5,
                                 ),
-                              ),
-                            ],
+                                Text(
+                                  snapshot.data!.data()?['name'],
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    SizedBox(
-                      height: 30,
-                    ),
-                  ],
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Container(
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Row(
+                              children: [
+                                Text(
+                                  'Email :',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    snapshot.data!.data()?['username'],
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 20,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        child: Container(
+                          height: 60,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(25),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(12.0),
+                            child: Row(
+                              children: [
+                                Text(
+                                  'phone :',
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                                SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  snapshot.data!.data()?['phone'],
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                    ],
+                  ),
                 ),
               ),
-            ),
-          );
-        }
+            );
+          }
       ),
     );
   }

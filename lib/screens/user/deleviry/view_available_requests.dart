@@ -4,11 +4,9 @@ class Donation {
   final String name;
   final String qty;
 
-
   Donation({
     required this.name,
     required this.qty,
-
   });
 }
 
@@ -18,95 +16,135 @@ class view_available_requests extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final donations = [
-      Donation(
-        name: "Chicken Meal",
-        qty: "3",
-      ),
-      Donation(
-        name: "Fresh Bread",
-        qty: "10",
-      ),
-      Donation(
-        name: "Vegetables Box",
-        qty: "4",
-      )
+      Donation(name: "Chicken Meal", qty: "3"),
+      Donation(name: "Fresh Bread", qty: "10"),
+      Donation(name: "Vegetables Box", qty: "4"),
     ];
 
     return Scaffold(
-      appBar: AppBar(),
-      body: Padding(
-        padding: const EdgeInsets.all(15),
-        child: ListView.builder(
-          itemCount: donations.length,
-          itemBuilder: (context, index) {
-            final item = donations[index];
-
-            return Container(
-              margin: const EdgeInsets.only(bottom: 20),
-              padding: const EdgeInsets.all(15),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(18),
-                color: Colors.white,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.shade300,
-                    blurRadius: 10,
-                    offset: const Offset(0, 4),
-                  ),
-                ],
-              ),
-
-              child: Row(
-                children: [
-                  // Image Placeholder
-                  Container(
-                    width: 70,
-                    height: 70,
-                    decoration: BoxDecoration(
-                      color: Colors.blue.shade100,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: const Icon(Icons.fastfood, size: 35),
-                  ),
-                  const SizedBox(width: 15),
-                  // Details
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(item.name,
-                            style: const TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold)),
-                        const SizedBox(height: 4),
-                        Text("Persons: ${item.qty}"),
-                        const SizedBox(height: 6),
-
-                      ],
-                    ),
-                  ),
-                  // Buttons
-                  Row(
-                    children: [
-                      IconButton(
-                          onPressed: () {},
-                          icon: const Icon(Icons.visibility)),
-                      TextButton(onPressed: (){}, child:
-                      Text('Accept',style: TextStyle(
-                        color: Colors.green[800],
-                        fontWeight: FontWeight.bold,
-                      ),),
-                      ),
-                      SizedBox(height: 5,),
-                      IconButton(
-                          onPressed: () {},
-                          icon: const Icon(Icons.delete, color: Colors.red)),
-                    ],
-                  )
-                ],
-              ),
-            );
-          },
+      backgroundColor: const Color(0xFFEAF5EC),
+      appBar: AppBar(
+        title: const Text(
+          'Available Requests',
+          style: TextStyle(fontWeight: FontWeight.bold),
         ),
+        backgroundColor: const Color(0xFF388E3C),
+        elevation: 0,
+      ),
+      body: ListView.builder(
+        padding: const EdgeInsets.all(16),
+        itemCount: donations.length,
+        itemBuilder: (context, index) {
+          final item = donations[index];
+
+          return Container(
+            margin: const EdgeInsets.only(bottom: 18),
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(22),
+              color: Colors.white,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.08),
+                  blurRadius: 14,
+                  offset: const Offset(0, 6),
+                ),
+              ],
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // ===== ICON / IMAGE =====
+                Container(
+                  width: 68,
+                  height: 68,
+                  decoration: BoxDecoration(
+                    gradient: const LinearGradient(
+                      colors: [
+                        Color(0xFF66BB6A),
+                        Color(0xFF43A047),
+                      ],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: const Icon(
+                    Icons.fastfood_rounded,
+                    color: Colors.white,
+                    size: 34,
+                  ),
+                ),
+
+                const SizedBox(width: 16),
+
+                // ===== DETAILS =====
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        item.name,
+                        style: const TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w700,
+                          color: Color(0xFF2E2E2E),
+                        ),
+                      ),
+                      const SizedBox(height: 6),
+                      Text(
+                        'Persons: ${item.qty}',
+                        style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.black54,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // ===== ACTIONS =====
+                Column(
+                  children: [
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.visibility_rounded,
+                        color: Color(0xFF388E3C),
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF43A047),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 14, vertical: 6),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
+                        textStyle: const TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                      child: const Text('Accept'),
+                    ),
+                    const SizedBox(height: 4),
+                    IconButton(
+                      onPressed: () {},
+                      icon: const Icon(
+                        Icons.close_rounded,
+                        color: Colors.redAccent,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }

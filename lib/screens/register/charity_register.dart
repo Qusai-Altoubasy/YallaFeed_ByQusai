@@ -9,14 +9,14 @@ import '../../cubits/register/register_states.dart';
 
 
 class charity_register extends StatelessWidget {
+  final formKey = GlobalKey<FormState>();
 
-  var formKey = GlobalKey<FormState>();
-  var nameController = TextEditingController();
-  var emailController = TextEditingController();
-  var passwordController = TextEditingController();
-  var confirmpasswordController = TextEditingController();
-  var phoneController = TextEditingController();
-  var IDController = TextEditingController();
+  final nameController = TextEditingController();
+  final emailController = TextEditingController();
+  final passwordController = TextEditingController();
+  final confirmpasswordController = TextEditingController();
+  final phoneController = TextEditingController();
+  final IDController = TextEditingController();
 
   bool isValidEmail(String email) {
     return RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email);
@@ -25,232 +25,242 @@ class charity_register extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context) => register_cubit(),
-      child: BlocConsumer<register_cubit , register_states>(
+      create: (_) => register_cubit(),
+      child: BlocConsumer<register_cubit, register_states>(
         listener: (context, state) {},
         builder: (context, state) {
-          var cubit = register_cubit.get(context);
+          final cubit = register_cubit.get(context);
+
           return Scaffold(
+            extendBodyBehindAppBar: true,
             appBar: AppBar(
-              backgroundColor: Color(0xFFB3E5FC),
+              backgroundColor: Colors.transparent,
+              elevation: 0,
             ),
             body: Container(
               decoration: const BoxDecoration(
-                // 🌟 Gradient background
                 gradient: LinearGradient(
-                  colors: [Color(0xFFB3E5FC), Color(0xFFE1F5FE)],
+                  colors: [
+                    Color(0xFF2F855A),
+                    Color(0xFF68D391),
+                  ],
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                 ),
               ),
-              child: Center(
+              child: SafeArea(
                 child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                    child: Form(
-                      key: formKey,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          //  Title
-                          Text(
-                            'REGISTER',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineMedium
-                                ?.copyWith(
-                              color: Colors.blue[400],
-                              fontWeight: FontWeight.bold,
+                  padding: const EdgeInsets.fromLTRB(20, 30, 20, 30),
+                  child: Column(
+                    children: [
+                      // ===== HEADER =====
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(24),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.15),
+                          borderRadius: BorderRadius.circular(30),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.15),
+                              blurRadius: 18,
+                              offset: const Offset(0, 10),
                             ),
-                          ),
-                          const SizedBox(height: 8.0),
-                          //  Subtitle
-                          Text(
-                            'Register now to accept people in need.',
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyLarge
-                                ?.copyWith(color: Colors.grey[700]),
-                          ),
-                          const SizedBox(height: 30.0),
-
-                          // Form fields inside a card
-                          Container(
-                            padding: const EdgeInsets.all(20.0),
-                            decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.95),
-                              borderRadius: BorderRadius.circular(25),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 15,
-                                  offset: const Offset(0, 8),
-                                ),
-                              ],
+                          ],
+                        ),
+                        child: Column(
+                          children: const [
+                            Icon(
+                              Icons.volunteer_activism,
+                              size: 56,
+                              color: Colors.white,
                             ),
-                            child: Column(
-                              children: [
-                                defaultFormField(
-                                  controller: nameController,
-                                  type: TextInputType.name,
-                                  validate: (String value) {
-                                    if (value.isEmpty) {
-                                      return 'please enter your name of organization ';
-                                    }
-                                    return null;
-                                  },
-                                  label: 'Name of organization',
-                                  prefix: Icons.volunteer_activism,
-                                ),
-                                const SizedBox(height: 15.0),
-                                defaultFormField(
-                                  controller: emailController,
-                                  type: TextInputType.emailAddress,
-                                  validate: (String value) {
-                                    if (value.isEmpty) {
-                                      return 'please enter your email address';
-                                    }  else if (!isValidEmail(value.trim())) {
-                                      return 'Please enter a valid email address';
-                                    }
-                                    return null;
-                                  },
-                                  label: 'Email Address',
-                                  prefix: Icons.email_outlined,
-                                ),
-                                const SizedBox(height: 15.0),
-                                defaultFormField(
-                                  controller: phoneController,
-                                  type: TextInputType.phone,
-                                  validate: (String value) {
-                                    if (value.isEmpty) {
-                                      return 'please enter your phone number';
-                                    }
-                                    return null;
-                                  },
-                                  label: 'Phone',
-                                  prefix: Icons.phone,
-                                ),
-                                const SizedBox(height: 15.0),
-                                defaultFormField(
-                                  controller: IDController,
-                                  type: TextInputType.number,
-                                  validate: (String value) {
-                                    if (value.isEmpty) {
-                                      return 'please enter your ID from a Governmental organization ';
-                                    }
-                                    return null;
-                                  },
-                                  label: 'ID from a Governmental organization',
-                                  prefix: Icons.badge_outlined,
-                                ),
-                                const SizedBox(height: 15.0),
-                                defaultFormField(
-                                  controller: passwordController,
-                                  type: TextInputType.visiblePassword,
-                                  suffix: register_cubit.get(context).suffix,
-                                  isPassword: register_cubit.get(context).isPassword,
-                                  suffixPressed: () {
-                                    register_cubit.get(context).changePasswordVisibility();
-                                  },
-                                  validate: (String value) {
-                                    if (value.isEmpty) {
-                                      return 'password is too short';
-                                    }
-                                    return null;
-                                  },
-                                  label: 'Password',
-                                  prefix: Icons.lock_outline,
-                                ),
-                                const SizedBox(height: 15.0),
-                                defaultFormField(
-                                  controller: confirmpasswordController,
-                                  type: TextInputType.visiblePassword,
-                                  suffix: register_cubit.get(context).suffix,
-                                  isPassword: register_cubit.get(context).isPassword,
-                                  suffixPressed: () {
-                                    register_cubit.get(context).changePasswordVisibility();
-                                  },
-                                  validate: (String value) {
-                                    if (value.isEmpty) {
-                                      return 'password is too short';
-                                    } else if (passwordController.text !=
-                                        confirmpasswordController.text) {
-                                      return 'password does not match';
-                                    }
-                                    return null;
-                                  },
-                                  label: 'Confirm password',
-                                  prefix: Icons.lock_outline,
-                                ),
-                                const SizedBox(height: 30.0),
+                            SizedBox(height: 12),
+                            Text(
+                              'Charity Registration',
+                              style: TextStyle(
+                                fontSize: 26,
+                                fontWeight: FontWeight.w800,
+                                color: Colors.white,
+                              ),
+                            ),
+                            SizedBox(height: 6),
+                            Text(
+                              'Register your organization to help people in need',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.white70,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
 
-                                //  Register button with gradient
-                                Container(
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    gradient: const LinearGradient(
-                                      colors: [Color(0xFF56CCF2), Color(0xFF2F80ED)],
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                    ),
-                                    borderRadius: BorderRadius.circular(20),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.blue.withOpacity(0.4),
-                                        blurRadius: 12,
-                                        offset: const Offset(0, 5),
-                                      ),
+                      const SizedBox(height: 28),
+
+                      // ===== FORM CARD =====
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(22),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.96),
+                          borderRadius: BorderRadius.circular(30),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.08),
+                              blurRadius: 20,
+                              offset: const Offset(0, 10),
+                            ),
+                          ],
+                        ),
+                        child: Form(
+                          key: formKey,
+                          child: Column(
+                            children: [
+                              defaultFormField(
+                                controller: nameController,
+                                type: TextInputType.name,
+                                label: 'Organization name',
+                                prefix: Icons.business_outlined,
+                                validate: (v) =>
+                                v.isEmpty ? 'Enter organization name' : null,
+                              ),
+                              const SizedBox(height: 14),
+
+                              defaultFormField(
+                                controller: emailController,
+                                type: TextInputType.emailAddress,
+                                label: 'Email address',
+                                prefix: Icons.email_outlined,
+                                validate: (v) {
+                                  if (v.isEmpty) return 'Email is required';
+                                  if (!isValidEmail(v.trim())) {
+                                    return 'Invalid email';
+                                  }
+                                  return null;
+                                },
+                              ),
+                              const SizedBox(height: 14),
+
+                              defaultFormField(
+                                controller: phoneController,
+                                type: TextInputType.phone,
+                                label: 'Phone number',
+                                prefix: Icons.phone_outlined,
+                                validate: (v) =>
+                                v.isEmpty ? 'Phone number required' : null,
+                              ),
+                              const SizedBox(height: 14),
+
+                              defaultFormField(
+                                controller: IDController,
+                                type: TextInputType.number,
+                                label: 'Government organization ID',
+                                prefix: Icons.badge_outlined,
+                                validate: (v) =>
+                                v.isEmpty ? 'Organization ID required' : null,
+                              ),
+                              const SizedBox(height: 14),
+
+                              defaultFormField(
+                                controller: passwordController,
+                                type: TextInputType.visiblePassword,
+                                label: 'Password',
+                                prefix: Icons.lock_outline,
+                                isPassword: cubit.isPassword,
+                                suffix: cubit.suffix,
+                                suffixPressed: cubit.changePasswordVisibility,
+                                validate: (v) =>
+                                v.isEmpty ? 'Password required' : null,
+                              ),
+                              const SizedBox(height: 14),
+
+                              defaultFormField(
+                                controller: confirmpasswordController,
+                                type: TextInputType.visiblePassword,
+                                label: 'Confirm password',
+                                prefix: Icons.lock_outline,
+                                isPassword: cubit.isPassword,
+                                suffix: cubit.suffix,
+                                suffixPressed: cubit.changePasswordVisibility,
+                                validate: (v) {
+                                  if (v.isEmpty) return 'Confirm password';
+                                  if (v != passwordController.text) {
+                                    return 'Passwords do not match';
+                                  }
+                                  return null;
+                                },
+                              ),
+
+                              const SizedBox(height: 28),
+
+                              // ===== REGISTER BUTTON =====
+                              Container(
+                                width: double.infinity,
+                                height: 54,
+                                decoration: BoxDecoration(
+                                  gradient: const LinearGradient(
+                                    colors: [
+                                      Color(0xFF2F855A),
+                                      Color(0xFF68D391),
                                     ],
                                   ),
-                                  child: MaterialButton(
-                                    onPressed:  () async{
-                                      if (formKey.currentState!.validate()) {
-                                        charity Charity=charity(
-                                          username: emailController.text,
-                                          name: nameController.text,
-                                          phone: phoneController.text,
-                                          id: IDController.text,
-                                          imageUrl: 'image path',
-                                          password: passwordController.text,
-                                        );
-                                        try {
-                                          await cubit.charityRegister(Charity : Charity);
-                                          Navigator.pop(context); Navigator.pop(context);
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            const SnackBar(content: Text(
-                                                'Signed up successfully')),
-                                          );
-                                        }
+                                  borderRadius: BorderRadius.circular(20),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Color(0xFF2F855A).withOpacity(0.35),
+                                      blurRadius: 14,
+                                      offset: const Offset(0, 6),
+                                    ),
+                                  ],
+                                ),
+                                child: MaterialButton(
+                                  onPressed: () async {
+                                    if (!formKey.currentState!.validate()) return;
 
-                                        catch(e) {
+                                    final Charity = charity(
+                                      username: emailController.text,
+                                      name: nameController.text,
+                                      phone: phoneController.text,
+                                      id: IDController.text,
+                                      imageUrl: 'image path',
+                                      password: passwordController.text,
+                                    );
 
-                                          ScaffoldMessenger.of(context).showSnackBar(
-                                            const SnackBar(content: Text(
-                                                'The informations are not valid')),
-                                          );
-                                        }
-                                      }
-                                    },
-                                    child: const Padding(
-                                      padding: EdgeInsets.symmetric(vertical: 15.0),
-                                      child: Text(
-                                        "Register",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 22,
-                                          fontWeight: FontWeight.bold,
+                                    try {
+                                      await cubit.charityRegister(Charity: Charity);
+                                      Navigator.pop(context);
+                                      Navigator.pop(context);
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                          content: Text('Registered successfully'),
                                         ),
-                                      ),
+                                      );
+                                    } catch (_) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                          content: Text('Invalid information'),
+                                        ),
+                                      );
+                                    }
+                                  },
+                                  child: const Text(
+                                    'Register',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w800,
                                     ),
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
-                    ),
+                    ],
                   ),
                 ),
               ),
