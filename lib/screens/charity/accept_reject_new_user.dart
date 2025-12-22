@@ -9,130 +9,173 @@ class accept_reject_new_user extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: const Color(0xFFF3F7F6),
       appBar: AppBar(
+        title: const Text(
+          'New Requests',
+          style: TextStyle(
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        backgroundColor: Colors.white,
         elevation: 0,
+        iconTheme: const IconThemeData(color: Color(0xFF1F7A5C)),
+        titleTextStyle: const TextStyle(
+          color: Color(0xFF1A202C),
+          fontSize: 18,
+        ),
       ),
-      body: Center(
-        child: StreamBuilder(
-            stream: FirebaseFirestore.instance.collection('requests').snapshots(),
-            builder: (context, snapshot){
-              if (snapshot.connectionState == ConnectionState.waiting){
-                return const Center(
-                  child: CircularProgressIndicator(),
-                );
-              }
-              if(snapshot.data!.docs.isEmpty){
-                return Center(
-                  child: Text(
-                    'There is no requests yet.',
+      body: StreamBuilder<QuerySnapshot>(
+        stream:
+        FirebaseFirestore.instance.collection('requests').snapshots(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
+            return Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: const [
+                  Icon(Icons.inbox_outlined,
+                      size: 60, color: Colors.grey),
+                  SizedBox(height: 12),
+                  Text(
+                    'No requests yet',
                     style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 30,
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.grey,
                     ),
                   ),
-                );
-              }
-              return Expanded(
-                child: ListView.builder(
-                    itemCount: snapshot.data!.docs.length,
-                    itemBuilder:(context , index ) => buildChatItem(
-                        context,
-                      snapshot.data!.docs[index].data()['uid'],
-                      snapshot.data!.docs[index].data()['name'],
-                    ),
-                ),
+                ],
+              ),
+            );
+          }
+
+          return ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: snapshot.data!.docs.length,
+            itemBuilder: (context, index) {
+              final doc = snapshot.data!.docs[index];
+              final uid = doc['uid'];
+              final name = doc['name'];
+
+              return _requestCard(
+                context: context,
+                uid: uid,
+                name: name,
               );
             },
-        ),
+          );
+        },
       ),
     );
   }
 }
-Widget buildChatItem(context, uid, name) => Padding(
-  padding: const EdgeInsets.all(8.0),
-  child: MaterialButton(
-    onPressed: () { navigateto(context, another_profile(uid: uid)); },
-    child: Row(
-      children: [
-        CircleAvatar(
-          radius: 30.0,
-          backgroundImage: NetworkImage(
-            'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
-          ),
-        ),
-        SizedBox(width: 20.0),
-        Expanded(
-          child: Text(
-            name,
-            style: TextStyle(
-              fontSize: 16.0,
-              fontWeight: FontWeight.bold,
-            ),
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-          ),
-        ),
-        SizedBox(width: 8,),
-        Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            ElevatedButton.icon(
-              onPressed: () async {
-                await FirebaseFirestore.instance.collection('users').doc(uid).update(
-                    {
-                      'havepermission': true,
-                      'askpermission' :false,
-                    }
-                );
 
-                await FirebaseFirestore.instance
-                    .collection('requests')
-                    .doc(uid)
-                    .delete();
-
-              },
-              icon: Icon(Icons.check_box, size: 20),
-              label: Text('Accept'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blueAccent.withOpacity(0.5),
-                foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                textStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
-            SizedBox(width: 8,),
-            ElevatedButton.icon(
-              onPressed: () async {
-                await FirebaseFirestore.instance.collection('users').doc(uid).update(
-                    {
-                      'askpermission' :false,
-                    }
-                );
-
-                await FirebaseFirestore.instance
-                    .collection('requests')
-                    .doc(uid)
-                    .delete();
-
-              },
-              icon: Icon(Icons.remove_circle, size: 20),
-              label: Text('Reject'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.redAccent.withOpacity(0.5),
-                foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                textStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ],
+// ===== REQUEST CARD =====
+Widget _requestCard({
+  required BuildContext context,
+  required String uid,
+  required String name,
+}) {
+  return Card(
+    margin: const EdgeInsets.only(bottom: 14),
+    elevation: 4,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(20),
     ),
-  ),
-);
+    child: Padding(
+      padding: const EdgeInsets.all(16),
+      child: Row(
+        children: [
+          GestureDetector(
+            onTap: () {
+              navigatetoWithTransition(
+                context,
+                another_profile(uid: uid),
+                color: const Color(0xFF26A69A),
+                message: 'Opening profile...',
+              );
+
+            },
+            child: const CircleAvatar(
+              radius: 28,
+              backgroundImage: NetworkImage(
+                'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_1280.png',
+              ),
+            ),
+          ),
+          const SizedBox(width: 16),
+          Expanded(
+            child: Text(
+              name,
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Color(0xFF1A202C),
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ),
+          const SizedBox(width: 8),
+
+          // ACCEPT
+          IconButton(
+            icon: const Icon(Icons.check_circle,
+                color: Color(0xFF1F7A5C)),
+            tooltip: 'Accept',
+            onPressed: () async {
+              await FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(uid)
+                  .update({
+                'havepermission': true,
+                'askpermission': false,
+              });
+
+              await FirebaseFirestore.instance
+                  .collection('requests')
+                  .doc(uid)
+                  .delete();
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('User accepted successfully'),
+                ),
+              );
+            },
+          ),
+
+          // REJECT
+          IconButton(
+            icon: const Icon(Icons.cancel,
+                color: Colors.redAccent),
+            tooltip: 'Reject',
+            onPressed: () async {
+              await FirebaseFirestore.instance
+                  .collection('users')
+                  .doc(uid)
+                  .update({
+                'askpermission': false,
+              });
+
+              await FirebaseFirestore.instance
+                  .collection('requests')
+                  .doc(uid)
+                  .delete();
+
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('Request rejected'),
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+    ),
+  );
+}

@@ -6,7 +6,6 @@ import 'package:qusai/cubits/charity/charity_cubit.dart';
 import 'package:qusai/cubits/charity/charity_states.dart';
 import 'package:qusai/screens/charity/manage_accounts.dart';
 import 'package:qusai/shared/shared.dart';
-
 import '../admin/announcements.dart';
 
 class charity_main_screen extends StatelessWidget {
@@ -16,178 +15,206 @@ class charity_main_screen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context){
-        var cubit = charity_cubit();
+      create: (_) {
+        final cubit = charity_cubit();
         cubit.getcharity(uid);
         return cubit;
       },
       child: BlocConsumer<charity_cubit, charity_states>(
-          builder: (context, state){
-            if(state is loading){
-              return Center(child: CircularProgressIndicator());
-            }
-            var cubit = charity_cubit.get(context);
-            charity? current_charity = cubit.Charity;
-            return Scaffold(
-            drawer: menu(context, Color(0xFF9BE7FF)),
+        listener: (_, __) {},
+        builder: (context, state) {
+          if (state is loading) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          final cubit = charity_cubit.get(context);
+          final charity? currentCharity = cubit.Charity;
+
+          return Scaffold(
+            drawer: menu(context, const Color(0xFF1F7A5C)),
             extendBodyBehindAppBar: true,
-            backgroundColor: const Color(0xFFE8EEF5),
+            backgroundColor: const Color(0xFFF3F7F6),
             appBar: AppBar(
               backgroundColor: Colors.transparent,
               elevation: 0,
               title: const Text(
-                'Charity Organization Dashboard',
+                'Charity Dashboard',
                 style: TextStyle(
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                   fontSize: 20,
-                  color: Colors.black87,
+                  color: Colors.white,
                 ),
               ),
+              iconTheme: const IconThemeData(color: Colors.white),
             ),
             body: Stack(
               children: [
-                //  Gradient background
+                // ===== BACKGROUND =====
                 Container(
                   decoration: const BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        Color(0xFF9BE7FF),
-                        Color(0xFFB3E5FC),
-                        Color(0xFFE1F5FE),
+                        Color(0xFF1F7A5C),
+                        Color(0xFF3AA17E),
+                        Color(0xFF8FE3CF),
                       ],
                       begin: Alignment.topCenter,
                       end: Alignment.bottomCenter,
                     ),
                   ),
                 ),
-                //  Main content
+
+                // ===== CONTENT =====
                 SafeArea(
                   child: SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
                     child: Padding(
-                      padding: const EdgeInsets.all(16.0),
+                      padding: const EdgeInsets.all(16),
                       child: Column(
                         children: [
-                          //  Header card
+                          // ===== HEADER CARD =====
                           Container(
                             width: double.infinity,
-                            margin: const EdgeInsets.only(top: 20),
+                            margin: const EdgeInsets.only(top: 16),
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25),
+                              borderRadius: BorderRadius.circular(28),
                               gradient: const LinearGradient(
                                 colors: [
-                                  Color(0xFF4A90E2),
-                                  Color(0xFF6FB1FC),
+                                  Color(0xFF1F7A5C),
+                                  Color(0xFF3AA17E),
                                 ],
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                               ),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.blueAccent.withOpacity(0.3),
-                                  blurRadius: 15,
-                                  offset: const Offset(0, 6),
+                                  color: Colors.black.withOpacity(0.18),
+                                  blurRadius: 20,
+                                  offset: const Offset(0, 8),
                                 ),
                               ],
                             ),
                             child: Padding(
                               padding: const EdgeInsets.symmetric(
-                                  vertical: 25, horizontal: 16),
+                                  vertical: 26, horizontal: 20),
                               child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Text(
-                                    'Welcome back,\n ${current_charity.name} !',
-                                    textAlign: TextAlign.center,
-                                    style: const TextStyle(
-                                      fontSize: 30,
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
+                                    'Welcome back',
+                                    style: TextStyle(
+                                      color: Colors.white.withOpacity(0.85),
+                                      fontSize: 14,
+                                      letterSpacing: 1.1,
                                     ),
                                   ),
-                                  const SizedBox(height: 10),
-                                  const Text(
+                                  const SizedBox(height: 6),
+                                  Text(
+                                    currentCharity?.name ?? '',
                                     textAlign: TextAlign.center,
-                                    'Together we are making a difference in our community\n'
-                                        'by connecting those in need with generous donors.',
+                                    style: const TextStyle(
+                                      fontSize: 28,
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+                                  const Text(
+                                    'Together we create impact by connecting generosity with need.',
+                                    textAlign: TextAlign.center,
                                     style: TextStyle(
                                       color: Colors.white70,
-                                      fontWeight: FontWeight.w500,
+                                      fontSize: 14,
                                     ),
                                   ),
                                 ],
                               ),
                             ),
                           ),
-                          const SizedBox(
-                              height: 25
-                          ),
-                          // Actions card
+
+                          const SizedBox(height: 28),
+
+                          // ===== ACTIONS CARD =====
                           Container(
                             width: double.infinity,
                             decoration: BoxDecoration(
-                              color: Colors.white.withOpacity(0.8),
-                              borderRadius: BorderRadius.circular(30),
+                              color: Colors.white.withOpacity(0.95),
+                              borderRadius: BorderRadius.circular(32),
                               boxShadow: [
                                 BoxShadow(
-                                  color: Colors.black12,
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 4),
+                                  color: Colors.black.withOpacity(0.08),
+                                  blurRadius: 16,
+                                  offset: const Offset(0, 6),
                                 ),
                               ],
-                              border: Border.all(
-                                color: Colors.white.withOpacity(0.5),
-                              ),
                             ),
                             child: Padding(
-                              padding: const EdgeInsets.all(20.0),
+                              padding: const EdgeInsets.all(22),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   const Text(
                                     'Actions',
                                     style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 28,
-                                      color: Color(0xFF4A4A4A),
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 26,
+                                      color: Color(0xFF1A202C),
                                     ),
                                   ),
-                                  const SizedBox(height: 30),
-                                  // 🟩 Button 1 - Accept new recipients
+                                  const SizedBox(height: 26),
+
                                   _buildModernButton(
                                     color1: const Color(0xFF56AB2F),
                                     color2: const Color(0xFFA8E063),
                                     icon: Icons.person_add_alt_1_rounded,
                                     text: 'Accept new recipients',
                                     onTap: () {
-                                      navigateto(context, accept_reject_new_user());
+                                      navigatetoWithTransition(
+                                        context,
+                                        accept_reject_new_user(),
+                                        color: const Color(0xFF43A047),
+                                        message: 'Reviewing new requests...',
+                                      );
+
                                     },
                                   ),
-                                  const SizedBox(height: 25),
+                                  const SizedBox(height: 22),
 
-                                  // 🟦 Button 3 - Manage recipients
                                   _buildModernButton(
-                                    color1: const Color(0xFF396afc),
-                                    color2: const Color(0xFF2948ff),
-                                    icon: Icons.group,
+                                    color1: const Color(0xFF396AFC),
+                                    color2: const Color(0xFF2948FF),
+                                    icon: Icons.group_rounded,
                                     text: 'Manage recipients',
                                     onTap: () {
-                                      navigateto(context, manage_accounts());
+                                      navigatetoWithTransition(
+                                        context,
+                                        manage_accounts(),
+                                        color: const Color(0xFF11998E),
+                                        message: 'Loading accounts manager...',
+                                      );
+
                                     },
                                   ),
-                                  const SizedBox(height: 25),
+                                  const SizedBox(height: 22),
 
-                                  // 🟦 Button 3 - Manage recipients
                                   _buildModernButton(
-                                    color1: const Color(0xff7F00FF),
-                                    color2: const Color(0xffE100FF),
-                                    onTap: () {
-                                      navigateto(context, AnnouncementDesign(Owenr: current_charity,uid: uid,));
-                                    },
-                                    icon: Icons.notifications_active,
+                                    color1: const Color(0xFF7F00FF),
+                                    color2: const Color(0xFFE100FF),
+                                    icon:
+                                    Icons.notifications_active_rounded,
                                     text: 'Send announcement',
-                                  ),
+                                    onTap: () {
+                                      navigatetoWithTransition(
+                                        context,
+                                        AnnouncementDesign(
+                                          Owenr: currentCharity!,
+                                          uid: uid,
+                                        ),
+                                        color: const Color(0xFF26A69A),
+                                        message: 'Preparing announcement...',
+                                      );
 
+                                    },
+                                  ),
                                 ],
                               ),
                             ),
@@ -200,13 +227,12 @@ class charity_main_screen extends StatelessWidget {
               ],
             ),
           );
-            },
-          listener: (context, state){},
+        },
       ),
     );
   }
 
-  //  Custom reusable modern button widget
+  // ===== REUSABLE BUTTON =====
   Widget _buildModernButton({
     required Color color1,
     required Color color2,
@@ -217,35 +243,38 @@ class charity_main_screen extends StatelessWidget {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 75,
+        height: 72,
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [color1, color2],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(22),
           boxShadow: [
             BoxShadow(
-              color: color1.withOpacity(0.4),
-              blurRadius: 12,
-              offset: const Offset(0, 5),
+              color: color1.withOpacity(0.35),
+              blurRadius: 14,
+              offset: const Offset(0, 6),
             ),
           ],
         ),
         child: Row(
           children: [
-            const SizedBox(width: 15),
-            Icon(icon, color: Colors.white, size: 40),
-            const SizedBox(width: 15),
-            Text(
-              text,
-              style: const TextStyle(
-                color: Colors.white,
-                fontSize: 22,
-                fontWeight: FontWeight.w600,
+            const SizedBox(width: 18),
+            Icon(icon, color: Colors.white, size: 34),
+            const SizedBox(width: 18),
+            Expanded(
+              child: Text(
+                text,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
+            const SizedBox(width: 18),
           ],
         ),
       ),
