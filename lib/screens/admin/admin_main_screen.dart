@@ -4,52 +4,49 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:qusai/classes/admin.dart';
 import 'package:qusai/cubits/admin/admin_cubit.dart';
 import 'package:qusai/cubits/admin/admin_states.dart';
-import 'package:qusai/cubits/user/user_cubit.dart';
 import 'package:qusai/screens/admin/add_new_user.dart';
 import 'package:qusai/screens/admin/announcements.dart';
 import 'package:qusai/screens/admin/manage_accounts.dart';
 import 'package:qusai/shared/shared.dart';
 
-class admin_main_screen extends StatefulWidget {
+class admin_main_screen extends StatelessWidget {
   final String uid;
   const admin_main_screen({super.key, required this.uid});
 
   @override
-  State<admin_main_screen> createState() => _admin_main_screenState();
-}
-
-class _admin_main_screenState extends State<admin_main_screen> {
-  @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (BuildContext context){
-        var cubit = admin_cubit();
-        cubit.getadmin(widget.uid);
+      create: (_) {
+        final cubit = admin_cubit();
+        cubit.getadmin(uid);
         return cubit;
       },
       child: BlocConsumer<admin_cubit, admin_state>(
-        builder: (context, state){
-          if(state is loading){
-            return Center(child: CircularProgressIndicator());
+        listener: (_, __) {},
+        builder: (context, state) {
+          if (state is loading) {
+            return const Center(child: CircularProgressIndicator());
           }
-          var cubit = admin_cubit.get(context);
-          admin? current_admin = cubit.Admin;
+
+          final cubit = admin_cubit.get(context);
+          final admin? currentAdmin = cubit.Admin;
+
           return Scaffold(
-            drawer: menu(context, Color(0xFF9BE7FF)),
+            drawer: menu(context, const Color(0xFF1F7A5C)),
             extendBodyBehindAppBar: true,
             backgroundColor: Colors.transparent,
             appBar: AppBar(
               backgroundColor: Colors.transparent,
               elevation: 0,
+              centerTitle: true,
               title: Text(
                 'Admin Dashboard',
                 style: GoogleFonts.poppins(
                   fontSize: 22,
-                  fontWeight: FontWeight.bold,
+                  fontWeight: FontWeight.w600,
                   color: Colors.white,
                 ),
               ),
-              centerTitle: true,
             ),
             body: Stack(
               children: [
@@ -57,115 +54,147 @@ class _admin_main_screenState extends State<admin_main_screen> {
                   decoration: const BoxDecoration(
                     gradient: LinearGradient(
                       colors: [
-                        Color(0xFF9BE7FF),
-                        Color(0xFFB3E5FC),
-                        Color(0xFFE1F5FE),
+                        Color(0xFF1F7A5C),
+                        Color(0xFF3AA17E),
+                        Color(0xFF8FE3CF),
                       ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
+                      begin: Alignment.topCenter,
+                      end: Alignment.bottomCenter,
                     ),
                   ),
                 ),
 
-
                 SafeArea(
                   child: Padding(
-                    padding: const EdgeInsets.all(20.0),
+                    padding: const EdgeInsets.all(20),
                     child: Column(
                       children: [
-                        // 🧑‍💼 قسم الترحيب
-                        Hero(
-                          tag: "admin_header",
-                          child: Container(
-                            width: double.infinity,
-                            padding: const EdgeInsets.all(25),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(25),
-                              color: Colors.white.withOpacity(0.15),
-                              border: Border.all(color: Colors.white30),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black26.withOpacity(0.1),
-                                  blurRadius: 10,
-                                  offset: const Offset(0, 4),
+                        // ===== HEADER =====
+                        Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 26, horizontal: 24),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(26),
+                            color: Colors.white.withOpacity(0.18),
+                            border: Border.all(color: Colors.white24),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.12),
+                                blurRadius: 18,
+                                offset: const Offset(0, 6),
+                              ),
+                            ],
+                          ),
+                          child: Column(
+                            children: [
+                              Text(
+                                "Welcome, ${currentAdmin?.name ?? ''}",
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.poppins(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white,
                                 ),
-                              ],
-                            ),
-                            child: Column(
-                              children: [
-                                Text(
-                                  "Welcome, ${current_admin.name}👋",
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.poppins(
-                                    color: Colors.white,
-                                    fontSize: 26,
-
-                                    fontWeight: FontWeight.bold,
-                                  ),
+                              ),
+                              const SizedBox(height: 8),
+                              Text(
+                                "Leading impact • Reducing food waste",
+                                textAlign: TextAlign.center,
+                                style: GoogleFonts.poppins(
+                                  fontSize: 13,
+                                  color: Colors.white70,
                                 ),
-                                const SizedBox(height: 8),
-                                Text(
-                                  "Reducing food waste, fighting hunger",
-                                  textAlign: TextAlign.center,
-                                  style: GoogleFonts.poppins(
-                                    color: Colors.white70,
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.w400,
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                         ),
 
-                        const SizedBox(height: 25),
+                        const SizedBox(height: 26),
 
-                        // ⚡ البطاقات
+                        // ===== CARDS =====
                         Expanded(
-                          child: GridView.count(
-                            crossAxisCount: 2,
-                            crossAxisSpacing: 18,
-                            mainAxisSpacing: 18,
-                            childAspectRatio: 1.0,
-                            children: [
-                              _buildGlassCard(
-                                icon: Icons.person_add_alt_1,
-                                title: "Add new user",
-                                txt :'Register a new donor,receiver, or driver',
-                                color1: const Color(0xff4FACFE),
-                                color2: const Color(0xff00F2FE),
-                                onTap: () {
-                                 navigateto(context, add_new_user());
+                          child: GridView.builder(
+                            physics: const BouncingScrollPhysics(),
+                            gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                              crossAxisSpacing: 18,
+                              mainAxisSpacing: 18,
+                              childAspectRatio: 0.82,
+                            ),
+                            itemCount: 3,
+                            itemBuilder: (context, index) {
+                              final cards = [
+                                {
+                                  'icon': Icons.person_add_alt_1,
+                                  'title': 'Add User',
+                                  'desc':
+                                  'Register donors, receivers or drivers',
+                                  'gradient': const [
+                                    Color(0xFF11998E),
+                                    Color(0xFF38EF7D),
+                                  ],
+                                  'action': () =>
+                                      navigatetoWithTransition(
+                                        context,
+                                        add_new_user(),
+                                        color: const Color(0xFF2F80ED),
+                                        message: 'Opening registration form...',
+                                      )
+                                  ,
                                 },
-                              ),
-                              // _buildGlassCard(
-                              //    icon: Icons.person_remove_alt_1,
-                              //    title: "Remove User",
-                              //    color1: const Color(0xffF85032),
-                              //    color2: const Color(0xffE73827),
-                              //    onTap: () {}, txt: '',
-                              //  ),
-                              _buildGlassCard(
-                                icon: Icons.group,
-                                title: "Manage Accounts",
-                                txt :'Remove user and edit profile ',
-                                color1: const Color(0xff11998e),
-                                color2: const Color(0xff38ef7d),
-                                onTap: () {
-                                  navigateto(context, manage_accounts());
+                                {
+                                  'icon': Icons.group,
+                                  'title': 'Manage Accounts',
+                                  'desc': 'Edit or remove user accounts',
+                                  'gradient': const [
+                                    Color(0xFF3A7BD5),
+                                    Color(0xFF00D2FF),
+                                  ],
+                                  'action': () =>
+                                      navigatetoWithTransition(
+                                        context,
+
+                                        manage_accounts(),
+                                        color: const Color(0xFF11998E),
+                                        message: 'Loading accounts manager...',
+                                      ),
+
+
                                 },
-                              ),
-                              _buildGlassCard(
-                                icon: Icons.notifications_active,
-                                title: "Send announcements",
-                                txt :'Broadcast message to all users ',
-                                color1: const Color(0xff7F00FF),
-                                color2: const Color(0xffE100FF),
-                                onTap: () {
-                                  navigateto(context, AnnouncementDesign(Owenr: current_admin,uid: widget.uid,));
+                                {
+                                  'icon': Icons.notifications_active,
+                                  'title': 'Announcements',
+                                  'desc': 'Broadcast messages to all users',
+                                  'gradient': const [
+                                    Color(0xFF7F00FF),
+                                    Color(0xFFE100FF),
+                                  ],
+                                  'action': () =>navigatetoWithTransition(
+                                    context,
+                                    AnnouncementDesign(
+                                      Owenr: currentAdmin!,
+                                      uid: uid,
+                                    ),
+                                    color: const Color(0xFF7F00FF),
+                                    message: 'Preparing announcement editor...',
+                                  ),
+
                                 },
-                              ),
-                            ],
+                              ];
+
+                              final card = cards[index];
+
+                              return _adminCard(
+                                icon: card['icon'] as IconData,
+                                title: card['title'] as String,
+                                description: card['desc'] as String,
+                                gradient:
+                                card['gradient'] as List<Color>,
+                                onTap: card['action'] as VoidCallback,
+                              );
+                            },
                           ),
                         ),
                       ],
@@ -176,68 +205,71 @@ class _admin_main_screenState extends State<admin_main_screen> {
             ),
           );
         },
-        listener: (context, state){},
       ),
     );
   }
 
-  Widget _buildGlassCard({
+  Widget _adminCard({
     required IconData icon,
     required String title,
-    required Color color1,
-    required Color color2,
+    required String description,
+    required List<Color> gradient,
     required VoidCallback onTap,
-    required String txt,
   }) {
     return GestureDetector(
       onTap: onTap,
-      child: AnimatedContainer(
-        duration: const Duration(milliseconds: 400),
-        curve: Curves.easeOutCubic,
+      child: Container(
+        padding: const EdgeInsets.all(20),
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [color1.withOpacity(0.9), color2.withOpacity(0.9)],
+            colors: gradient,
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(26),
           boxShadow: [
             BoxShadow(
-              color: color2.withOpacity(0.4),
-              blurRadius: 15,
-              offset: const Offset(0, 6),
+              color: gradient.last.withOpacity(0.4),
+              blurRadius: 18,
+              offset: const Offset(0, 8),
             ),
           ],
         ),
-        child: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: 50, color: Colors.white),
-              const SizedBox(height: 10),
-              Text(
-                title,
-                textAlign: TextAlign.center,
-                style: GoogleFonts.poppins(
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                  letterSpacing: 0.5,
-                ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.18),
+                shape: BoxShape.circle,
               ),
-              const SizedBox(height: 10),
-              Text(
-                txt,
-                textAlign: TextAlign.center,
-                style: GoogleFonts.poppins(
-                  fontSize: 10,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                  letterSpacing: 0.5,
-                ),
+              child: Icon(icon, size: 34, color: Colors.white),
+            ),
+            const SizedBox(height: 14),
+            Text(
+              title,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.poppins(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
               ),
-            ],
-          ),
+            ),
+            const SizedBox(height: 6),
+            Text(
+              description,
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+              textAlign: TextAlign.center,
+              style: GoogleFonts.poppins(
+                fontSize: 11.5,
+                color: Colors.white70,
+              ),
+            ),
+          ],
         ),
       ),
     );

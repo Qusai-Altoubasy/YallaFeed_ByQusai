@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,14 +5,8 @@ import 'package:qusai/cubits/user/user_cubit.dart';
 import 'package:qusai/cubits/charity/charity_cubit.dart';
 import 'package:qusai/shared/shared.dart';
 import 'package:qusai/screens/common_screens/another_profile.dart';
-
-import '../../classes/charity.dart';
-import '../../classes/user.dart';
 import '../../cubits/charity/charity_states.dart';
 import '../../cubits/user/user_states.dart';
-import '../common_screens/another_profile_charity.dart';
-
-
 
 class manage_accounts extends StatefulWidget {
   @override
@@ -21,9 +14,7 @@ class manage_accounts extends StatefulWidget {
 }
 
 class _manage_accountsState extends State<manage_accounts> {
-
   String searchText = '';
-
 
   @override
   Widget build(BuildContext context) {
@@ -33,118 +24,99 @@ class _manage_accountsState extends State<manage_accounts> {
         BlocProvider(create: (_) => charity_cubit()..getAllCharities()),
       ],
       child: Scaffold(
+        backgroundColor: const Color(0xFFF3F7F6),
         appBar: AppBar(
-          title: Text('Manage Accounts'),
+          backgroundColor: Colors.white,
           elevation: 0,
+          title: const Text(
+            'Manage Accounts',
+            style: TextStyle(
+              color: Color(0xFF1A202C),
+              fontWeight: FontWeight.w600,
+            ),
+          ),
+          iconTheme: const IconThemeData(color: Color(0xFF1F7A5C)),
         ),
         body: Column(
           children: [
+            // ===== SEARCH =====
             Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(30),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.2),
-                      blurRadius: 8,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: TextField(
-                  onChanged: (value) {
-                    setState(() {
-                      searchText = value.toLowerCase();
-                    });
-                  },
-                  decoration: InputDecoration(
-                    hintText: 'Search for users or charities',
-                    hintStyle: TextStyle(color: Colors.grey[500]),
-                    prefixIcon: Icon(Icons.search, color: Colors.grey[600]),
-                    border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(vertical: 15),
+              padding: const EdgeInsets.all(16),
+              child: TextField(
+                onChanged: (v) => setState(() {
+                  searchText = v.toLowerCase();
+                }),
+                decoration: InputDecoration(
+                  hintText: 'Search users or charities',
+                  prefixIcon: const Icon(Icons.search),
+                  filled: true,
+                  fillColor: Colors.white,
+                  contentPadding:
+                  const EdgeInsets.symmetric(vertical: 14),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(20),
+                    borderSide: BorderSide.none,
                   ),
                 ),
               ),
             ),
-            SizedBox(height: 10),
+
             Expanded(
               child: SingleChildScrollView(
+                padding: const EdgeInsets.only(bottom: 20),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    // ===== USERS =====
                     BlocBuilder<user_cubit, user_states>(
                       builder: (context, state) {
-                        var userCubit = user_cubit.get(context);
-                        final filteredUsers = userCubit.users.where((u) {
-                          final name = u.name ?? '';
-                          return name.toLowerCase().contains(searchText);
+                        final cubit = user_cubit.get(context);
+                        final users = cubit.users.where((u) {
+                          return (u.name ?? '')
+                              .toLowerCase()
+                              .contains(searchText);
                         }).toList();
-                        if (userCubit.users.isEmpty) {
-                          return SizedBox();
-                        }
-                        return Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                'Users',
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            ListView.separated(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemCount: filteredUsers.length,
-                              separatorBuilder: (_, __) => Divider(),
-                              itemBuilder: (context, index) {
-                                var model = filteredUsers[index];
-                                return buildChatItem(
-                                    context, model.name, model.databaseID,
-                                    model.imageUrl, 'users');
-                              },
-                            ),
-                          ],
+
+                        if (users.isEmpty) return const SizedBox();
+
+                        return _section(
+                          title: 'Users',
+                          children: users.map((u) {
+                            return _accountTile(
+                              context: context,
+                              name: u.name!,
+                              image: u.imageUrl!,
+                              uid: u.databaseID!,
+                              collection: 'users',
+                            );
+                          }).toList(),
                         );
                       },
                     ),
 
+                    // ===== CHARITIES =====
                     BlocBuilder<charity_cubit, charity_states>(
                       builder: (context, state) {
-                        var charityCubit = charity_cubit.get(context);
-                        final filteredCharities = charityCubit.charities.where((c) {
-                          final name = c.name ?? '';
-                          return name.toLowerCase().contains(searchText);
+                        final cubit = charity_cubit.get(context);
+                        final charities = cubit.charities.where((c) {
+                          return (c.name ?? '')
+                              .toLowerCase()
+                              .contains(searchText);
                         }).toList();
-                        if (charityCubit.charities.isEmpty) {
-                          return SizedBox();
-                        }
-                        return Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                'Charities',
-                                style: TextStyle(
-                                    fontSize: 18, fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                            ListView.separated(
-                              shrinkWrap: true,
-                              physics: NeverScrollableScrollPhysics(),
-                              itemCount: filteredCharities.length,
-                              separatorBuilder: (_, __) => Divider(),
-                              itemBuilder: (context, index) {
-                                var model = filteredCharities[index];
-                                return buildChatItem(
-                                    context, model.name, model.databaseID,
-                                    model.imageUrl, 'charity');
 
-                              },
-                            ),
-                          ],
+                        if (charities.isEmpty) return const SizedBox();
+
+                        return _section(
+                          title: 'Charities',
+                          children: charities.map((c) {
+                            return _accountTile(
+                              context: context,
+                              name: c.name!,
+                              image: c.imageUrl!,
+                              uid: c.ID!,
+                              collection: 'charity',
+                            );
+                          }).toList(),
                         );
                       },
                     ),
@@ -159,98 +131,116 @@ class _manage_accountsState extends State<manage_accounts> {
   }
 }
 
-Widget buildChatItem(BuildContext context, String? name, String? uid,
-    String? image, String collection) => Padding(
-  padding: const EdgeInsets.all(8.0),
-  child: Row(
-    children: [
-      CircleAvatar(
-        radius: 30.0,
-        backgroundImage: NetworkImage(
-          image!,
-        ),
-      ),
-      SizedBox(width: 20.0),
-      Expanded(
-        child: Text(
-          name!,
-          style: TextStyle(
-            fontSize: 16.0,
-            fontWeight: FontWeight.bold,
+// ===== SECTION =====
+Widget _section({required String title, required List<Widget> children}) {
+  return Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+    child: Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          title,
+          style: const TextStyle(
+            fontSize: 18,
+            fontWeight: FontWeight.w600,
+            color: Color(0xFF1A202C),
           ),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
         ),
-      ),
-      SizedBox(width: 8,),
-      Row(
-        mainAxisSize: MainAxisSize.min,
+        const SizedBox(height: 10),
+        ...children,
+      ],
+    ),
+  );
+}
+
+// ===== ACCOUNT TILE =====
+Widget _accountTile({
+  required BuildContext context,
+  required String name,
+  required String image,
+  required String uid,
+  required String collection,
+}) {
+  return Card(
+    margin: const EdgeInsets.only(bottom: 12),
+    elevation: 4,
+    shape: RoundedRectangleBorder(
+      borderRadius: BorderRadius.circular(20),
+    ),
+    child: Padding(
+      padding: const EdgeInsets.all(14),
+      child: Row(
         children: [
-          ElevatedButton.icon(
-            onPressed: () async {
-              if (collection == 'users') {
-                navigateto(context, another_profile(uid: uid!));
-              } else if (collection == 'charity') {
-                navigateto(context, another_profile_charity(uid: uid!));
-              }
-            },
-            icon: Icon(Icons.remove_red_eye, size: 16),
-            label: Text('View'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.blueAccent.withOpacity(0.5),
-              foregroundColor: Colors.white,
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              textStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+          CircleAvatar(
+            radius: 26,
+            backgroundImage: NetworkImage(image),
+          ),
+          const SizedBox(width: 14),
+          Expanded(
+            child: Text(
+              name,
+              style: const TextStyle(
+                fontSize: 15,
+                fontWeight: FontWeight.w600,
               ),
+              overflow: TextOverflow.ellipsis,
             ),
           ),
-          SizedBox(width: 8,),
-          ElevatedButton.icon(
+          IconButton(
+            icon: const Icon(Icons.visibility_outlined,
+                color: Color(0xFF1F7A5C)),
             onPressed: () {
-             showDialog(
-             context: context,
-             builder: (context) => AlertDialog(
-             title: Text('Delete Account'),
-             content:
-             Text('Are you sure you want to delete this account?'),
-             actions: [
-             TextButton(
-             onPressed: () => Navigator.pop(context),
-             child: Text('Cancel')),
-             TextButton(
-             onPressed: () async {
-             FirebaseFirestore.instance
-             .collection(collection)
-             .doc(uid)
-             .delete();
+              navigatetoWithTransition(
+                context,
+                another_profile(uid: uid),
+                color: const Color(0xFF455A64),
+                message: 'Opening profile...',
+              );
 
-             Navigator.pop(context);   Navigator.pop(context);
-             ScaffoldMessenger.of(context).showSnackBar(
-               const SnackBar(content: Text(
-                   'The account deleted successfully')),
-             );
-              },
-              child: Text('Delete', style: TextStyle(color: Colors.red))),
-               ],
-               ));
-             },
 
-            icon: Icon(Icons.delete, size: 16),
-            label: Text('Delete'),
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.redAccent.withOpacity(0.5),
-              foregroundColor: Colors.white,
-              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-              textStyle: TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
+            },
+          ),
+          IconButton(
+            icon: const Icon(Icons.delete_outline,
+                color: Colors.redAccent),
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (_) => AlertDialog(
+                  title: const Text('Delete Account'),
+                  content: const Text(
+                      'Are you sure you want to delete this account?'),
+                  actions: [
+                    TextButton(
+                        onPressed: () =>
+                            Navigator.pop(context),
+                        child: const Text('Cancel')),
+                    TextButton(
+                      onPressed: () async {
+                        await FirebaseFirestore.instance
+                            .collection(collection)
+                            .doc(uid)
+                            .delete();
+
+                        Navigator.pop(context);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                              content: Text(
+                                  'Account deleted successfully')),
+                        );
+                      },
+                      child: const Text(
+                        'Delete',
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
           ),
         ],
       ),
-    ],
-  ),
-);
+    ),
+  );
+}
