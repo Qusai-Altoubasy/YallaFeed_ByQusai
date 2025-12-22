@@ -52,32 +52,48 @@ Widget defaultFormField({
 
 Widget defaultButton({
   double width = double.infinity,
-  Color background =Colors.blue,
+  double height = 52,
   bool isUpperCase = true,
-  double radius = 10.0,
-  double height=50.0,
-  Color textColor=Colors.white,
-  required Function function,
+  double radius = 18.0,
+  Color background = const Color(0xFF2F855A),
+  Color textColor = Colors.white,
+  required VoidCallback function,
   required String text,
 }) =>
     Container(
       width: width,
       height: height,
       decoration: BoxDecoration(
-        color: background,
+        gradient: const LinearGradient(
+          colors: [
+            Color(0xFF2F855A),
+            Color(0xFF68D391),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
         borderRadius: BorderRadius.circular(radius),
+        boxShadow: [
+          BoxShadow(
+            color: const Color(0xFF2F855A).withOpacity(0.4),
+            blurRadius: 12,
+            offset: const Offset(0, 5),
+          ),
+        ],
       ),
       child: MaterialButton(
-        onPressed: (){
-          function();
-        },
+        onPressed: function,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(radius),
+        ),
         child: Text(
           isUpperCase ? text.toUpperCase() : text,
           style: TextStyle(
-            color: textColor, fontWeight: FontWeight.bold,
+            color: textColor,
+            fontSize: 16,
+            fontWeight: FontWeight.bold,
+            letterSpacing: 1,
           ),
         ),
       ),
-
-
     );
