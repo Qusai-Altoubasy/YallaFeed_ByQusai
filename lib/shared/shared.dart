@@ -10,6 +10,7 @@ import '../cubits/profile_cubit.dart';
 import '../screens/base_screens/login_screen.dart';
 import '../screens/common_screens/announcemnts.dart';
 import '../screens/common_screens/contact_us.dart';
+import '../screens/common_screens/page_transition.dart';
 import '../screens/common_screens/profile.dart';
 
 String ?usertype;
@@ -97,6 +98,8 @@ Widget menu(context, Color color)=> Padding(
   ),
 );
 
+
+
 Future<String?> getUserType(String uid) async {
   // Check users collection
   final userDoc = await FirebaseFirestore.instance
@@ -121,7 +124,21 @@ Future<String?> getUserType(String uid) async {
 
   return null; // Not found in any collection
 }
-
-
-
+void navigatetoWithTransition(
+    BuildContext context,
+    Widget nextScreen, {
+      Color color = const Color(0xFF1F7A5C),
+      String message = 'Loading...',
+    }) {
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (_) => PageTransitionScreen(
+        nextPage: nextScreen,
+        primaryColor: color,
+        message: message,
+      ),
+    ),
+  );
+}
 
