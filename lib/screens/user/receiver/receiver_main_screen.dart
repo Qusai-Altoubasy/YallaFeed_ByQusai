@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:qusai/screens/common_screens/history.dart';
+import 'package:qusai/screens/user/receiver/history/receiver_history.dart';
 import 'package:qusai/screens/user/receiver/view_available_donations.dart';
 import 'package:qusai/shared/shared.dart';
 import '../../../classes/user.dart';
@@ -145,7 +145,7 @@ class receiver_main_screen extends StatelessWidget {
                               onTap: () {
                                 navigatetoWithTransition(
                                   context,
-                                  history(),
+                                  receiver_history(),
                                   color: const Color(0xFF616161),
                                   message: 'Loading history...',
                                 );

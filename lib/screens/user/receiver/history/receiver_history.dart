@@ -1,0 +1,332 @@
+import 'dart:io';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:path_provider/path_provider.dart';
+
+import '../../../../classes/donation.dart';
+import '../../../../shared/shared.dart';
+import 'donation_det.dart';
+
+class receiver_history extends StatefulWidget {
+  const receiver_history({super.key});
+
+  @override
+  State<receiver_history> createState() => _receiver_historyState();
+}
+
+class _receiver_historyState extends State<receiver_history> {
+
+  List<String> Readreceiverhistory = [];
+  bool loading = true;
+  @override
+  void initState() {
+    super.initState();
+    LoadReadreceiverhistory();
+  }
+  Future<void> LoadReadreceiverhistory() async {
+    final readSnapshot = await FirebaseFirestore.instance
+        .collection('read_receiver_history')
+        .where('userId', isEqualTo: userid)
+        .get();
+
+    Readreceiverhistory =
+        readSnapshot.docs.map((e) => e['donationid'] as String).toList();
+
+    setState(() {
+      loading = false;
+    });
+  }
+
+  Color _statusColor(String status) {
+    if (status == 'pending') return Colors.orange;
+    if (status == 'delivered') return Colors.green;
+    return Colors.blue;
+  }
+
+
+  @override
+  Widget build(BuildContext context) {
+    if (loading) {
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+
+
+    return StreamBuilder(
+      stream: FirebaseFirestore.instance
+          .collection('donations')
+          .where('reciveruid', isEqualTo: userid)
+          .orderBy('donatetime', descending: true)
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+        final docs = snapshot.data!.docs
+            .where((doc) => !Readreceiverhistory.contains(doc.id))
+            .toList();
+
+        if (docs.isEmpty) {
+          return Scaffold(
+            appBar: AppBar(
+              elevation: 0,
+              backgroundColor: Colors.white,
+              iconTheme:
+              const IconThemeData(color: Color(0xFF1F7A5C)),
+              title: const Text(
+                'History',
+                style: TextStyle(
+                  color: Color(0xFF1A202C),
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            body: const Center(
+              child: Text('There are no meals.'),
+            ),
+          );
+        }
+
+
+        return Scaffold(
+          backgroundColor: const Color(0xFFF4F6F8),
+          appBar: AppBar(
+            elevation: 0,
+            title: const Text(
+              "History",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            backgroundColor: Colors.transparent,
+            foregroundColor: Colors.black,
+          ),
+
+          body: ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: docs.length,
+            itemBuilder: (context, index) {
+              final item = docs[index];
+              donation current = donation(
+                  mealType: item['mealType'],
+                  numberOfPeople: item['numberOfPeople'],
+                  status: item['status'],
+                  imagePath: item['imagePath'],
+                  category: item['category'],
+                  fromlocation: item['fromlocation'],
+                  description: item['description'],
+                  donatetime: item['donatetime'].toDate(),
+                  did: item['did'],
+                  tolocation: item['tolocation'],
+              );
+
+              final statusColor = _statusColor(current.status);
+
+              return Card(
+                elevation: 6,
+                shadowColor: Colors.black12,
+                margin: const EdgeInsets.only(bottom: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(22),
+                ),
+
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 64,
+                        height: 64,
+                        decoration: BoxDecoration(
+                          color: statusColor.withOpacity(0.15),
+                          borderRadius: BorderRadius.circular(18),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(18),
+                          child: FutureBuilder(
+                            future: getApplicationDocumentsDirectory(),
+                            builder: (context, snap) {
+                              if (!snap.hasData) {
+                                return const Center(
+                                    child:
+                                    CircularProgressIndicator(strokeWidth: 2));
+                              }
+
+                              final file = File(current.imagePath);
+                              if (!file.existsSync()) {
+                                return Icon(Icons.fastfood_outlined,
+                                    color: statusColor);
+                              }
+
+                              return Image.file(file, fit: BoxFit.cover);
+                            },
+                          ),
+                        ),
+                      ),
+
+                      const SizedBox(width: 16),
+
+                      // Details
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              current.mealType,
+                              style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFF1A202C),
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              "Serves ${current.numberOfPeople} people",
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 6),
+                              decoration: BoxDecoration(
+                                color: statusColor.withOpacity(0.15),
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                              child: Text(
+                                current.status=="accepted"?"Waiting for a driver":
+                                current.status=="delivering"?'On its way':'delivered',
+                                style: TextStyle(
+                                  color: statusColor,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+
+                      // Actions
+                      Column(
+                        children: [
+                          IconButton(
+                            icon: const Icon(Icons.remove_red_eye,
+                                color: Color(0xFF6A1B9A)),
+                            tooltip: 'View details',
+                            onPressed: () {
+                              receiverdonationdetails = current;
+                              navigatetoWithTransition(
+                                context,
+                                donation_det(),
+                                color: const Color(0xFF5C6BC0),
+                                message: 'Loading donation details...',
+                              );
+
+                            },
+                          ),
+                          IconButton(
+                            icon: const Icon(Icons.delete_outline,
+                                color: Colors.redAccent),
+                            onPressed: () async {
+                              await FirebaseFirestore.instance
+                                  .collection('read_receiver_history')
+                                  .doc('${userid}_${docs[index].id}')
+                                  .set({
+                                'userId': userid,
+                                'donationid': docs[index].id,
+                              });
+
+                              setState(() {
+                                Readreceiverhistory.add(docs[index].id);
+                              });
+                            },
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              _showRatingDialog(context, current.mealType);
+                            },
+                            icon: const Icon(Icons.star_border, color: Colors.amber, size: 30),
+                            tooltip: 'Rate Order',
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      }
+    );
+  }
+
+  void _showRatingDialog(BuildContext context, String itemName) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        int selectedStars = 0;
+
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              title: Center(child: Text("Rate $itemName")),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text("How was the quality?", style: TextStyle(fontSize: 16)),
+                  const SizedBox(height: 20),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(5, (index) {
+                      return IconButton(
+                        onPressed: () {
+                          setState(() {
+                            selectedStars = index + 1;
+                          });
+                        },
+                        icon: Icon(
+                          index < selectedStars ? Icons.star : Icons.star_border,
+                          color: index < selectedStars ? Colors.amber : Colors.grey,
+                          size: 32,
+                        ),
+                      );
+                    }),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context);
+
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("You rated $selectedStars stars for $itemName!")),
+                    );
+                  },
+                  child: const Text("Submit"),
+                )
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+}

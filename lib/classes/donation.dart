@@ -5,7 +5,7 @@ class donation {
   int numberOfPeople;
   String ?category;
   String fromlocation;
-  String ?tolocation;
+  String tolocation;
   String description;
   String imagePath;
   String status;
@@ -23,7 +23,7 @@ class donation {
     required this.numberOfPeople,
     this.category,
     this.fromlocation='kla',
-    this.tolocation,
+    this.tolocation='jn',
     this.description='kl',
     required this.imagePath,
     required this.status,
