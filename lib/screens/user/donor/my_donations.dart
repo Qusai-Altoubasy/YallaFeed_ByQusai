@@ -223,6 +223,15 @@ class _my_donationsState extends State<my_donations> {
                           });
                         },
                       ),
+                      if (current.status == 'pending')
+                        IconButton(
+                          icon: const Icon(Icons.delete_forever, color: Colors.red),
+                          tooltip: 'Delete donation permanently',
+                          onPressed: () async {
+                            await _deleteDonationForAll(docs[index].id);
+                          },
+                        ),
+
                     ],
                   ),
                 ),
@@ -233,4 +242,41 @@ class _my_donationsState extends State<my_donations> {
       },
     );
   }
+
+  Future<void> _deleteDonationForAll(String donationId) async {
+    try {
+
+      await FirebaseFirestore.instance
+          .collection('donations')
+          .doc(donationId)
+          .delete();
+
+      final receiverReads = await FirebaseFirestore.instance
+          .collection('read_receiver_donations')
+          .where('donationid', isEqualTo: donationId)
+          .get();
+
+      for (var doc in receiverReads.docs) {
+        await doc.reference.delete();
+      }
+
+      final donorReads = await FirebaseFirestore.instance
+          .collection('read_donor_donations')
+          .where('donationid', isEqualTo: donationId)
+          .get();
+
+      for (var doc in donorReads.docs) {
+        await doc.reference.delete();
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Donation deleted successfully')),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Error deleting donation')),
+      );
+    }
+  }
+
 }
