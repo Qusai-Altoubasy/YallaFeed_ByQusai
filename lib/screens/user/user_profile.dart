@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:qusai/classes/user.dart';
 
 import '../../classes/mainuser.dart';
@@ -16,7 +17,10 @@ class user_profile extends StatefulWidget {
 }
 
 class _user_profile extends State<user_profile> {
+
   File? _image;
+  final ImagePicker _picker = ImagePicker();
+
   bool editName = false;
   bool editEmail = false;
   bool editPhone = false;
@@ -138,14 +142,26 @@ class _user_profile extends State<user_profile> {
   // --- Widgets ---
 
   Widget _buildProfileImage(mainuser user) {
+    ImageProvider? provider;
+
+    if (_image != null) {
+      provider = FileImage(_image!);
+    } else if (user.imageUrl != null && user.imageUrl!.isNotEmpty) {
+      provider = FileImage(File(user.imageUrl!));
+    }
+
     return Stack(
       alignment: Alignment.bottomRight,
       children: [
         CircleAvatar(
           radius: 75,
           backgroundColor: Colors.white,
-          backgroundImage: _image != null ? FileImage(_image!) : (user.imageUrl != null && user.imageUrl!.isNotEmpty ? NetworkImage(user.imageUrl!) as ImageProvider : null),
-          child: (_image == null && (user.imageUrl == null || user.imageUrl!.isEmpty)) ? const Icon(Icons.person, size: 70, color: Color(0xFF64B5F6)) : null,
+          backgroundImage: provider,
+          child: provider == null
+              ? const Icon(Icons.person,
+              size: 70, color: Color(0xFF64B5F6))
+              : null,
+
         ),
         CircleAvatar(
           backgroundColor: Colors.blue, radius: 20,
@@ -267,7 +283,14 @@ class _user_profile extends State<user_profile> {
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF2F80ED), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18))),
         onPressed: () {
-          final updated = user(name: nameC.text, username: emailC.text, password: U.password, phone: phoneC.text, id: U.ID, imageUrl: U.imageUrl, );
+          final updated = user(
+            name: nameC.text,
+            username: emailC.text,
+            password: U.password,
+            phone: phoneC.text,
+            id: U.ID,
+            imageUrl: _image != null ? _image!.path : U.imageUrl,
+          );
           user_profile_cubit.get(context).updateUser(updated, FirebaseAuth.instance.currentUser!.uid);
           setState(() { editName = editEmail = editPhone = false; });
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Profile Updated!")));
@@ -278,13 +301,74 @@ class _user_profile extends State<user_profile> {
     );
   }
 
-  void _showImageSourceSheet(BuildContext context) {
-    showModalBottomSheet(context: context, shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(20))), builder: (context) => Container(padding: const EdgeInsets.all(20), height: 160, child: Column(children: [const Text("Select Image Source", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)), const SizedBox(height: 20), Row(mainAxisAlignment: MainAxisAlignment.spaceEvenly, children: [ElevatedButton.icon(onPressed: () { Navigator.pop(context); getImage(ImageSource.camera); }, icon: const Icon(Icons.camera_alt), label: const Text("Camera")), ElevatedButton.icon(onPressed: () { Navigator.pop(context); getImage(ImageSource.gallery); }, icon: const Icon(Icons.photo), label: const Text("Gallery"))])])));
+  Future<Directory> _getProfileImagesFolder() async {
+    final dir = await getApplicationDocumentsDirectory();
+    final imagesDir = Directory('${dir.path}/profile_images');
+    if (!await imagesDir.exists()) {
+      await imagesDir.create(recursive: true);
+    }
+    return imagesDir;
   }
 
-  Future<void> getImage(ImageSource source) async {
-    final ImagePicker picker = ImagePicker();
-    final XFile? pickedFile = await picker.pickImage(source: source, imageQuality: 80);
-    if (pickedFile != null) setState(() { _image = File(pickedFile.path); });
+  Future<File> _saveProfileImageLocally(String uid, File image) async {
+    final imagesDir = await _getProfileImagesFolder();
+    return await image.copy('${imagesDir.path}/$uid.jpg');
+  }
+
+  Future<void> _pickImage(ImageSource source) async {
+    final XFile? picked =
+    await _picker.pickImage(source: source, imageQuality: 80);
+
+    if (picked == null) return;
+
+    final uid = FirebaseAuth.instance.currentUser!.uid;
+    final savedImage =
+    await _saveProfileImageLocally(uid, File(picked.path));
+
+    setState(() {
+      _image = savedImage;
+    });
+
+  }
+
+  void _showImageSourceSheet(BuildContext context) {
+    showModalBottomSheet(
+        context: context,
+        shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(top: Radius.circular(20))),
+        builder: (context) => Container(
+            padding: const EdgeInsets.all(20),
+            height: 160,
+            child: Column(
+                children: [
+                  const Text(
+                      "Select Image Source",
+                      style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                  const SizedBox(height: 20),
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              _pickImage(ImageSource.camera);
+                            },
+                            icon: const Icon(
+                                Icons.camera_alt),
+                            label: const Text("Camera")
+                        ), ElevatedButton.icon(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              _pickImage(ImageSource.gallery);
+                            },
+                            icon: const Icon(Icons.photo),
+                            label: const Text("Gallery")
+                        ),
+                      ]
+                  )
+                ]
+            )
+        )
+    );
   }
 }
