@@ -8,8 +8,11 @@ class user extends mainuser{
   String ?nameofcharity;
   late bool askpermission;
   late String databaseID;
+  int ?ratingTotal;
+  int ?ratingCount;
+  double ?ratingAverage;
 
-  user({name, username, password, imageUrl, phone, id, databaseid='fd' ,}) :
+  user({name, username, password, imageUrl, phone, id, databaseid='fd' ,this.ratingAverage}) :
         super(name: name, username: username, password: password,phone: phone,ID :id ,imageUrl: imageUrl, type: 'user'){
     havepermission = false;
     nameofcharity = 'nameofcharity';
@@ -44,6 +47,9 @@ class user extends mainuser{
             "nameofcharity": this.nameofcharity,
             "askpermission": this.askpermission,
             "uid": userid,
+            "ratingTotal": 0,
+            "ratingCount": 0,
+            "ratingAverage": -1
           }
       );
   }

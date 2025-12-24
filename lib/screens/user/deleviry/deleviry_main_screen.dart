@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:qusai/screens/common_screens/history.dart';
+import 'package:qusai/screens/user/deleviry/history/history.dart';
 import 'package:qusai/screens/user/deleviry/view_available_requests.dart';
 import 'package:qusai/shared/shared.dart';
 
@@ -63,12 +63,6 @@ class deleviry_main_screen extends StatelessWidget {
                     ),
                     child: Column(
                       children: [
-                        Icon(
-                          Icons.local_shipping_rounded,
-                          size: 56,
-                          color: Colors.white.withOpacity(0.9),
-                        ),
-                        const SizedBox(height: 12),
                         Text(
                           'Welcome back,\n${User?.name ?? ''}',
                           textAlign: TextAlign.center,

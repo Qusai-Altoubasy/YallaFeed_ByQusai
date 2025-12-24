@@ -170,7 +170,7 @@ class charity_main_screen extends StatelessWidget {
                                     onTap: () {
                                       navigatetoWithTransition(
                                         context,
-                                        accept_reject_new_user(),
+                                        accept_reject_new_user(cid: uid,),
                                         color: const Color(0xFF43A047),
                                         message: 'Reviewing new requests...',
                                       );

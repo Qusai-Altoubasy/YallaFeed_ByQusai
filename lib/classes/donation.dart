@@ -16,9 +16,18 @@ class donation {
   DateTime? recivetime;
   DateTime? deleviretime;
   String did;
+  bool donorRated;
+  bool receiverRated;
+  bool deliverRated;
+
+
 
 
   donation({
+    this.donorRated=false,
+    this.deliverRated=false,
+    this.receiverRated=false,
+
     required this.mealType,
     required this.numberOfPeople,
     this.category,
@@ -27,7 +36,7 @@ class donation {
     this.description='kl',
     required this.imagePath,
     required this.status,
-    this.deleiveruid,
+    this.deleiveruid='jnf',
     this.donoruid,
     this.reciveruid,
     DateTime? donatetime,
@@ -54,6 +63,9 @@ class donation {
           'recivetime': FieldValue.serverTimestamp(),
           'deleviretime': FieldValue.serverTimestamp(),
           'did':doc.id,
+          'donorRated': false,
+          'deliverRated':false,
+          'receiverRated':false,
         }
     );
 

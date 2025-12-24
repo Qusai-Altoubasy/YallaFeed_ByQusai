@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 
 
 
-class accept extends StatelessWidget {
+class delivered extends StatelessWidget {
   File? _image= File(receiverdonationdetails!.imagePath);
 
   String donorname;
@@ -18,8 +18,8 @@ class accept extends StatelessWidget {
   String receiverphone;
 
 
-  accept({required this.donorname, required this.donorphone, required this.receivername,
-      required this.receiverphone});
+  delivered({required this.donorname, required this.donorphone, required this.receivername,
+    required this.receiverphone});
 
   @override
   Widget build(BuildContext context) {
@@ -299,40 +299,6 @@ class accept extends StatelessWidget {
                 ),
               ),
             ),
-            const SizedBox(height: 15),
-
-            Container(
-              alignment: Alignment.center,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF2F80ED), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18))),
-                onPressed: () async {
-                  await FirebaseFirestore.instance
-                      .collection('donations')
-                      .doc(receiverdonationdetails?.did)
-                      .update({
-                    'deleiveruid': userid,
-                    'deleviretime': FieldValue.serverTimestamp(),
-                    'status':'delivering',
-                  });
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content:
-                        Text('You have accepted the delivery successfully. 🤍')),
-                  );
-                  Navigator.pop(context);
-
-
-                },
-                child: const Text(
-                    "Accept", style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
-              ),
-            ),
-
-
-
-
-
-
             const SizedBox(height: 30),
           ],
         ),

@@ -7,7 +7,7 @@ import 'package:qusai/screens/base_screens/logo_screen.dart';
 
 import 'cubits/admin/admin_cubit.dart';
 import 'cubits/login/login_cubit.dart';
-import 'cubits/profile_cubit.dart';
+import 'cubits/profile/profile_cubit.dart';
 import 'cubits/user/user_cubit.dart';
 import 'firebase_options.dart';
 

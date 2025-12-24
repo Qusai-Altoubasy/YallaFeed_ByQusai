@@ -114,6 +114,9 @@ class _my_donationsState extends State<my_donations> {
                 numberOfPeople: item['numberOfPeople'],
                 status: item['status'],
                 imagePath: item['imagePath'],
+                deleiveruid:item['deleiveruid'],
+                did: item.id,
+                donorRated: item['donorRated'],
               );
 
               final statusColor = _statusColor(current.status);
@@ -205,32 +208,47 @@ class _my_donationsState extends State<my_donations> {
                         ),
                       ),
 
-                      // ===== DELETE =====
-                      IconButton(
-                        icon: const Icon(Icons.delete_outline,
-                            color: Colors.redAccent),
-                        onPressed: () async {
-                          await FirebaseFirestore.instance
-                              .collection('read_donor_donations')
-                              .doc('${userid}_${docs[index].id}')
-                              .set({
-                            'userId': userid,
-                            'donationid': docs[index].id,
-                          });
-
-                          setState(() {
-                            Readdonordonations.add(docs[index].id);
-                          });
-                        },
-                      ),
-                      if (current.status == 'pending')
+                      // ===== ACTIONS =====
+                      Column(children: [
                         IconButton(
-                          icon: const Icon(Icons.delete_forever, color: Colors.red),
-                          tooltip: 'Delete donation permanently',
+                          icon: const Icon(Icons.delete_outline,
+                              color: Colors.redAccent),
                           onPressed: () async {
-                            await _deleteDonationForAll(docs[index].id);
+                            await FirebaseFirestore.instance
+                                .collection('read_donor_donations')
+                                .doc('${userid}_${docs[index].id}')
+                                .set({
+                              'userId': userid,
+                              'donationid': docs[index].id,
+                            });
+
+                            setState(() {
+                              Readdonordonations.add(docs[index].id);
+                            });
                           },
                         ),
+                        if (current.status == 'pending')
+                          IconButton(
+                            icon: const Icon(Icons.delete_forever, color: Colors.red),
+                            tooltip: 'Delete donation permanently',
+                            onPressed: () async {
+                              await _deleteDonationForAll(docs[index].id);
+                            },
+                          ),
+                        if(
+                        (current.status=='delivered'||current.status=='delivering')
+                            &&!current.donorRated
+                        )
+                          IconButton(
+                            onPressed: () {
+                              _showRatingDialog(context, current.deleiveruid, current.did);
+                            },
+                            icon: const Icon(Icons.star_border, color: Colors.amber, size: 30),
+                            tooltip: 'Rate Order',
+                          ),
+
+                      ],),
+
 
                     ],
                   ),
@@ -278,5 +296,87 @@ class _my_donationsState extends State<my_donations> {
       );
     }
   }
+  
+  void _showRatingDialog(BuildContext context, uid, donid) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        int selectedStars = 0;
+
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+              title: Center(child: Text("Rate the delivery")),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Text("How was the delivery?", style: TextStyle(fontSize: 16)),
+                  const SizedBox(height: 20),
+
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(5, (index) {
+                      return IconButton(
+                        onPressed: () {
+                          setState(() {
+                            selectedStars = index + 1;
+                          });
+                        },
+                        icon: Icon(
+                          index < selectedStars ? Icons.star : Icons.star_border,
+                          color: index < selectedStars ? Colors.amber : Colors.grey,
+                          size: 32,
+                        ),
+                      );
+                    }),
+                  ),
+                ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text("Cancel", style: TextStyle(color: Colors.grey)),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.blue,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+                  ),
+                  onPressed: () async {
+                    if (selectedStars == 0) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Please select stars")),
+                      );
+                      return;
+                    }
+
+                    await submitRating(
+                    userId: uid,
+                    stars: selectedStars,
+                    );
+
+                    await FirebaseFirestore.instance
+                        .collection('donations')
+                        .doc(donid)
+                        .update({
+                      'donorRated': true,
+                    });
+
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("You rated $selectedStars stars for the delivery!")),
+                    );
+                  },
+                  child: const Text("Submit"),
+                )
+              ],
+            );
+          },
+        );
+      },
+    );
+  }
+
 
 }

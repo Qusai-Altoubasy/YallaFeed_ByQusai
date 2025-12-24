@@ -8,7 +8,7 @@ import 'package:qusai/classes/donation.dart';
 import 'package:qusai/classes/mainuser.dart';
 import 'package:qusai/classes/user.dart';
 import 'package:qusai/screens/base_screens/logo_screen.dart';
-import '../cubits/profile_cubit.dart';
+import '../cubits/profile/profile_cubit.dart';
 import '../screens/base_screens/login_screen.dart';
 import '../screens/common_screens/announcemnts.dart';
 import '../screens/common_screens/contact_us.dart';
@@ -132,6 +132,7 @@ Future<String?> getUserType(String uid) async {
 
   return null; // Not found in any collection
 }
+
 void navigatetoWithTransition(
     BuildContext context,
     Widget nextScreen, {
@@ -149,6 +150,29 @@ void navigatetoWithTransition(
     ),
   );
 }
+
+Future<void> submitRating({
+  required String userId,
+  required int stars,
+}) async {
+  final userRef =
+  FirebaseFirestore.instance.collection('users').doc(userId);
+
+  await FirebaseFirestore.instance.runTransaction((tx) async {
+    final snap = await tx.get(userRef);
+
+    final total = (snap['ratingTotal'] ?? 0) + stars;
+    final count = (snap['ratingCount'] ?? 0) + 1;
+    final avg = total / count;
+
+    tx.update(userRef, {
+      'ratingTotal': total,
+      'ratingCount': count,
+      'ratingAverage': avg,
+    });
+  });
+}
+
 
 
 

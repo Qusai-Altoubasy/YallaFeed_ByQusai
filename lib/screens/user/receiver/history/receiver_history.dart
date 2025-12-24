@@ -118,8 +118,11 @@ class _receiver_historyState extends State<receiver_history> {
                   fromlocation: item['fromlocation'],
                   description: item['description'],
                   donatetime: item['donatetime'].toDate(),
-                  did: item['did'],
+                  did: item.id,
                   tolocation: item['tolocation'],
+                  receiverRated: item['receiverRated'],
+                  donoruid: item['donoruid'],
+                  deleiveruid: item['deleiveruid'],
               );
 
               final statusColor = _statusColor(current.status);
@@ -247,9 +250,14 @@ class _receiver_historyState extends State<receiver_history> {
                               });
                             },
                           ),
-                          IconButton(
+                          if(
+                          (current.status=='delivered')
+                              &&!current.receiverRated
+                          )
+                            IconButton(
                             onPressed: () {
-                              _showRatingDialog(context, current.mealType);
+
+                              _showRatingDialog(context, current.donoruid, current.deleiveruid, current.did);
                             },
                             icon: const Icon(Icons.star_border, color: Colors.amber, size: 30),
                             tooltip: 'Rate Order',
@@ -267,40 +275,64 @@ class _receiver_historyState extends State<receiver_history> {
     );
   }
 
-  void _showRatingDialog(BuildContext context, String itemName) {
+  void _showRatingDialog(BuildContext context, donorid, deliverid, donid) {
     showDialog(
       context: context,
       builder: (context) {
-        int selectedStars = 0;
+        int donorStars  = 0;
+        int deliveryStars = 0;
+
 
         return StatefulBuilder(
           builder: (context, setState) {
             return AlertDialog(
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-              title: Center(child: Text("Rate $itemName")),
+              title: Center(child: Text("Rate the experience")),
               content: Column(
                 mainAxisSize: MainAxisSize.min,
                 children: [
-                  const Text("How was the quality?", style: TextStyle(fontSize: 16)),
+                  const Text("How was the meal?", style: TextStyle(fontSize: 16)),
                   const SizedBox(height: 20),
-
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: List.generate(5, (index) {
                       return IconButton(
                         onPressed: () {
                           setState(() {
-                            selectedStars = index + 1;
+                            donorStars = index + 1;
                           });
                         },
                         icon: Icon(
-                          index < selectedStars ? Icons.star : Icons.star_border,
-                          color: index < selectedStars ? Colors.amber : Colors.grey,
+                          index < donorStars ? Icons.star : Icons.star_border,
+                          color: index < donorStars ? Colors.amber : Colors.grey,
                           size: 32,
                         ),
                       );
                     }),
                   ),
+
+                  const SizedBox(height: 20),
+
+                  const Text("How was the deliver?", style: TextStyle(fontSize: 16)),
+                  const SizedBox(height: 20),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: List.generate(5, (index) {
+                      return IconButton(
+                        onPressed: () {
+                          setState(() {
+                            deliveryStars = index + 1;
+                          });
+                        },
+                        icon: Icon(
+                          index < deliveryStars ? Icons.star : Icons.star_border,
+                          color: index < deliveryStars ? Colors.amber : Colors.grey,
+                          size: 32,
+                        ),
+                      );
+                    }),
+                  ),
+
                 ],
               ),
               actions: [
@@ -313,13 +345,38 @@ class _receiver_historyState extends State<receiver_history> {
                     backgroundColor: Colors.blue,
                     shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
                   ),
-                  onPressed: () {
-                    Navigator.pop(context);
+                  onPressed: () async {
+                    if (donorStars == 0|| deliveryStars==0) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text("Please rate both meal and delivery")),
+                      );
+                      return;
+                    }
 
+                    await submitRating(
+                      userId: donorid,
+                      stars: donorStars,
+                    );
+
+                    await submitRating(
+                      userId: deliverid,
+                      stars: deliveryStars,
+                    );
+
+
+                    await FirebaseFirestore.instance
+                        .collection('donations')
+                        .doc(donid)
+                        .update({
+                      'receiverRated': true,
+                    });
+
+                    Navigator.pop(context);
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(content: Text("You rated $selectedStars stars for $itemName!")),
+                      SnackBar(content: Text("Thank you for your ratings!")),
                     );
                   },
+
                   child: const Text("Submit"),
                 )
               ],

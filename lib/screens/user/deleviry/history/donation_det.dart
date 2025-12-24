@@ -8,7 +8,7 @@ import 'package:flutter/services.dart';
 
 
 
-class accept extends StatelessWidget {
+class donation_det extends StatelessWidget {
   File? _image= File(receiverdonationdetails!.imagePath);
 
   String donorname;
@@ -18,8 +18,8 @@ class accept extends StatelessWidget {
   String receiverphone;
 
 
-  accept({required this.donorname, required this.donorphone, required this.receivername,
-      required this.receiverphone});
+  donation_det({required this.donorname, required this.donorphone, required this.receivername,
+    required this.receiverphone});
 
   @override
   Widget build(BuildContext context) {
@@ -310,21 +310,20 @@ class accept extends StatelessWidget {
                       .collection('donations')
                       .doc(receiverdonationdetails?.did)
                       .update({
-                    'deleiveruid': userid,
                     'deleviretime': FieldValue.serverTimestamp(),
-                    'status':'delivering',
+                    'status':'delivered',
                   });
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(
                         content:
-                        Text('You have accepted the delivery successfully. 🤍')),
+                        Text('Thank you for your cooperation. 🤍\nDon\'t forget the rating.')),
                   );
                   Navigator.pop(context);
 
 
                 },
                 child: const Text(
-                    "Accept", style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                    "Deliver", style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
               ),
             ),
 

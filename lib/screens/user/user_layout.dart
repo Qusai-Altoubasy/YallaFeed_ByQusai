@@ -1,4 +1,5 @@
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:qusai/classes/user.dart';
@@ -7,7 +8,14 @@ import 'package:qusai/cubits/user/user_states.dart';
 import 'package:qusai/screens/user/deleviry/deleviry_main_screen.dart';
 import 'package:qusai/screens/user/donor/donor_main_screen.dart';
 import 'package:qusai/screens/user/receiver/receiver_main_screen.dart';
+import 'package:qusai/screens/user/user_profile.dart';
 import 'package:qusai/shared/shared.dart';
+
+import '../../cubits/profile/profile_cubit.dart';
+import '../../cubits/profile/user_profile_cubit.dart';
+import '../base_screens/logo_screen.dart';
+import '../common_screens/announcemnts.dart';
+import '../common_screens/contact_us.dart';
 
 class user_layout extends StatelessWidget {
   final String uid;
@@ -38,7 +46,81 @@ class user_layout extends StatelessWidget {
               : const Color(0xFF2E7D32);
 
           return Scaffold(
-            drawer: menu(context, themeColor),
+            drawer: Padding(
+              padding: EdgeInsetsDirectional.only(
+                top: 30,
+                bottom: 55,
+              ),
+              child: NavigationDrawer(
+                backgroundColor: themeColor,
+                children:[
+                  Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 30,
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.person, size: 30,),
+                          title: const Text('Profile'),
+                          onTap: (){
+                            final uid = FirebaseAuth.instance.currentUser!.uid;
+                            navigateto(context, BlocProvider(
+                                create: (_) => user_profile_cubit()..loadUser(uid),
+                                child: user_profile()
+                            )
+                            );
+                          },
+                        ),
+                        Container(
+                          color: Colors.grey,
+                          height: 1,
+                          width: double.infinity,
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.notifications, size: 30,),
+                          title: const Text('Announcements'),
+                          onTap: () async {
+                            await navigateto(context, announcemnts_shared());
+                          },
+                        ),
+                        Container(
+                          color: Colors.grey,
+                          height: 2,
+                          width: double.infinity,
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.group, size: 30,),
+                          title: const Text('Contact us'),
+                          onTap: (){
+                            navigateto(context, contact_us());
+                          },
+                        ),
+                        Container(
+                          color: Colors.grey,
+                          height: 2,
+                          width: double.infinity,
+                        ),
+                        ListTile(
+                          leading: const Icon(Icons.logout, size: 30,),
+                          title: const Text('Log out'),
+                          onTap: ()async {
+                            await FirebaseAuth.instance.signOut();
+
+                            Navigator.pushAndRemoveUntil(
+                              context,
+                              MaterialPageRoute(builder: (context) => (logo_screen())),
+                                  (route) => false,
+                            );
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
             backgroundColor: const Color(0xFFF3F7F6),
 
 

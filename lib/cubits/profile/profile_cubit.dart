@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../classes/mainuser.dart';
+import '../../classes/mainuser.dart';
 
 class ProfileCubit extends Cubit<mainuser?> {
   ProfileCubit() : super(null);

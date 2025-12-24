@@ -73,6 +73,9 @@ class register_cubit extends Cubit<register_states> {
       "askpermission": false,
       "nameofcharity": null,
       "uid": uid,
+      "ratingTotal": 0,
+      "ratingCount": 0,
+      "ratingAverage": -1
     });
     await secondaryAuth.signOut();
     await secondaryApp.delete();

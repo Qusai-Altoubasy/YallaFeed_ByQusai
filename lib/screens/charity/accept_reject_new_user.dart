@@ -4,7 +4,8 @@ import 'package:qusai/screens/common_screens/another_profile.dart';
 import 'package:qusai/shared/shared.dart';
 
 class accept_reject_new_user extends StatelessWidget {
-  const accept_reject_new_user({super.key});
+  const accept_reject_new_user({super.key, required this.cid});
+  final String cid;
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +67,7 @@ class accept_reject_new_user extends StatelessWidget {
                 context: context,
                 uid: uid,
                 name: name,
+                cid: cid
               );
             },
           );
@@ -80,6 +82,7 @@ Widget _requestCard({
   required BuildContext context,
   required String uid,
   required String name,
+  required String cid
 }) {
   return Card(
     margin: const EdgeInsets.only(bottom: 14),
@@ -131,6 +134,7 @@ Widget _requestCard({
                     .update({
                   'havepermission': true,
                   'askpermission': false,
+                  'nameofcharity': cid,
                 });
 
                 await FirebaseFirestore.instance

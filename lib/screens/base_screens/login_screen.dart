@@ -6,7 +6,7 @@ import 'package:qusai/cubits/login/login_states.dart';
 import 'package:qusai/screens/register/register_options.dart';
 import 'package:qusai/shared/shared.dart';
 import '../../components/components.dart';
-import '../../cubits/profile_cubit.dart';
+import '../../cubits/profile/profile_cubit.dart';
 import '../admin/admin_main_screen.dart';
 import '../charity/charity_main_screen.dart';
 import '../user/user_layout.dart';

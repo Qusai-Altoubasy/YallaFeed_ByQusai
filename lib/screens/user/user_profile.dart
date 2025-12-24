@@ -3,18 +3,19 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:qusai/classes/user.dart';
 
 import '../../classes/mainuser.dart';
-import '../../cubits/profile/profile_cubit.dart';
+import '../../cubits/profile/user_profile_cubit.dart';
 
-class profile extends StatefulWidget {
-  const profile({super.key});
+class user_profile extends StatefulWidget {
+  const user_profile({super.key});
 
   @override
-  State<profile> createState() => _profileState();
+  State<user_profile> createState() => _user_profile();
 }
 
-class _profileState extends State<profile> {
+class _user_profile extends State<user_profile> {
   File? _image;
   bool editName = false;
   bool editEmail = false;
@@ -38,7 +39,7 @@ class _profileState extends State<profile> {
   void initState() {
     super.initState();
     final uid = FirebaseAuth.instance.currentUser!.uid;
-    ProfileCubit.get(context).loadUser(uid);
+    user_profile_cubit.get(context).loadUser(uid);
   }
 
   @override
@@ -59,7 +60,7 @@ class _profileState extends State<profile> {
         centerTitle: true,
         title: const Text('Your profile', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF0F172A))),
       ),
-      body: BlocBuilder<ProfileCubit, mainuser?>(
+      body: BlocBuilder<user_profile_cubit, user?>(
         builder: (context, user) {
           if (user == null) return const Center(child: CircularProgressIndicator());
 
@@ -68,6 +69,7 @@ class _profileState extends State<profile> {
           if (phoneC.text.isEmpty) phoneC.text = user.phone;
           if (idC.text.isEmpty) idC.text = user.ID;
 
+          double? userRating = user.ratingAverage;
 
           return Container(
             decoration: const BoxDecoration(
@@ -95,6 +97,10 @@ class _profileState extends State<profile> {
                         const SizedBox(height: 15),
                         Text(user.name, style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w800)),
                         const SizedBox(height: 10),
+                    if (userRating == null || userRating <= 0)
+                        const Text("No ratings yet"),
+                    if(userRating != null && userRating>0)
+                        _buildRatingBadge(userRating),
                       ],
                     ),
                   ),
@@ -149,6 +155,18 @@ class _profileState extends State<profile> {
     );
   }
 
+  Widget _buildRatingBadge(double rating) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+      decoration: BoxDecoration(color: Colors.white.withOpacity(0.8), borderRadius: BorderRadius.circular(30)),
+      child: Row(mainAxisSize: MainAxisSize.min, children: [
+        const Icon(Icons.star_rounded, color: Colors.amber, size: 28),
+        const SizedBox(width: 8),
+        Text("${rating.toStringAsFixed(2)}", style: const TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+        Text(" / 5.0", style: TextStyle(fontSize: 14, color: Colors.grey.shade600)),
+      ]),
+    );
+  }
 
   Widget _passwordDisplayField(BuildContext context) {
     return Container(
@@ -243,14 +261,14 @@ class _profileState extends State<profile> {
     );
   }
 
-  Widget _buildSaveButton(mainuser user) {
+  Widget _buildSaveButton(user U) {
     return SizedBox(
       width: double.infinity, height: 55,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF2F80ED), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18))),
         onPressed: () {
-          final updated = mainuser(name: nameC.text, username: emailC.text, password: user.password, phone: phoneC.text, ID: user.ID, imageUrl: user.imageUrl, type: user.type);
-          ProfileCubit.get(context).updateUser(updated, FirebaseAuth.instance.currentUser!.uid);
+          final updated = user(name: nameC.text, username: emailC.text, password: U.password, phone: phoneC.text, id: U.ID, imageUrl: U.imageUrl, );
+          user_profile_cubit.get(context).updateUser(updated, FirebaseAuth.instance.currentUser!.uid);
           setState(() { editName = editEmail = editPhone = false; });
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Profile Updated!")));
         },
