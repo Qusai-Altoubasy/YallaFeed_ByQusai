@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:qusai/classes/donation.dart';
 import 'package:qusai/classes/mainuser.dart';
+import 'package:qusai/classes/user.dart';
 import 'package:qusai/screens/base_screens/logo_screen.dart';
 import '../cubits/profile_cubit.dart';
 import '../screens/base_screens/login_screen.dart';
@@ -19,6 +20,7 @@ String ?usertype;
 String ?userid;
 mainuser ? current;
 donation ? receiverdonationdetails;
+
 
 
 Future<void> navigateto(context, Widget page) async {
