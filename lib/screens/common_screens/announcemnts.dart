@@ -206,7 +206,8 @@ class _announcemnts_sharedState extends State<announcemnts_shared> {
                 gradient: LinearGradient(
                   colors: target == 'users'
                       ? [Color(0xFF42A5F5), Color(0xFF64B5F6)]
-                      : [Color(0xFF66BB6A), Color(0xFF81C784)],
+                      :target == 'admin'?[Color(0xFFEF5350), Color(0xFFEF9A9A)]:
+                  [Color(0xFF66BB6A), Color(0xFF81C784)],
                 ),
                 borderRadius: BorderRadius.circular(16),
               ),
@@ -240,17 +241,20 @@ class _announcemnts_sharedState extends State<announcemnts_shared> {
                         decoration: BoxDecoration(
                           color: target == 'users'
                               ? Colors.blue.withOpacity(0.15)
-                              : Colors.green.withOpacity(0.15),
+                              :target == 'admin'?Colors.red.withOpacity(0.15):
+                          Colors.green.withOpacity(0.15),
                           borderRadius: BorderRadius.circular(12),
                         ),
                         child: Text(
-                          target == 'users' ? 'User' : 'Charity',
+                          target == 'users' ? 'User' :target == 'admin'?'admin': 'Charity',
                           style: TextStyle(
                             fontSize: 11,
                             fontWeight: FontWeight.w700,
                             color: target == 'users'
                                 ? Colors.blue
-                                : Colors.green,
+                                :
+                            target == 'admin'?Colors.red:
+                            Colors.green,
                           ),
                         ),
                       ),

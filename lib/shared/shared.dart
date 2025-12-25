@@ -4,6 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:qusai/classes/announcement.dart';
 import 'package:qusai/classes/donation.dart';
 import 'package:qusai/classes/mainuser.dart';
 import 'package:qusai/classes/user.dart';
@@ -170,10 +171,17 @@ Future<void> submitRating({
       'ratingCount': count,
       'ratingAverage': avg,
     });
+    if(avg<= 2.5){
+      announcement x = announcement(
+        title: '${snap['name']} rating',
+        message: 'The user ${snap['name']} have rating ${avg.toStringAsFixed(2)} so,'
+            ' you better delete his/her account',
+        sendTo: 'admin',
+        owener: '111',
+        id: 'ss',
+      );
+      x.svaeindatabase();
+    }
   });
 }
-
-
-
-
 
