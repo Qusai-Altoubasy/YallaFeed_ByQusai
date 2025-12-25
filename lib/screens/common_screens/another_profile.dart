@@ -110,17 +110,17 @@ class _profileState extends State<another_profile> {
                           ),
                           child: Row(
                             mainAxisSize: MainAxisSize.min,
-                            children: const [
-                              Icon(Icons.star_rounded,
+                            children: [
+                              const Icon(Icons.star_rounded,
                                   color: Colors.amber, size: 28),
-                              SizedBox(width: 8),
+                              const SizedBox(width: 8),
                               Text(
-                                "4.8",
-                                style: TextStyle(
+                                data['ratingAverage'].toStringAsFixed(2),
+                                style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold),
                               ),
-                              Text(
+                              const Text(
                                 " / 5.0",
                                 style: TextStyle(
                                     fontSize: 14, color: Colors.grey),
