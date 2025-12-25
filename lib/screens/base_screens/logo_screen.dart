@@ -123,7 +123,7 @@ class _logo_screen extends State<logo_screen>
                 ),
                 const SizedBox(height: 32),
                 Text(
-                  'Yalla Feed',
+                  'Nakhwa',
                   style: GoogleFonts.poppins(
                     fontSize: 40,
                     fontWeight: FontWeight.w700,
