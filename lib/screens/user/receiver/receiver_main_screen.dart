@@ -58,16 +58,24 @@ class receiver_main_screen extends StatelessWidget {
                       ),
                       child: Column(
                         children: [
-                          Text(
-                            'Welcome,\n${User?.name ?? ''}',
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontSize: 26,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700,
+                          // ===== ICON =====
+                          Container(
+                            padding: const EdgeInsets.all(18),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white.withOpacity(0.25),
                             ),
+                            child: const Icon(
+                              Icons.restaurant,
+                              size: 48,
+                              color: Colors.white,
+                            ),
+
                           ),
-                          const SizedBox(height: 10),
+
+                          const SizedBox(height: 12),
+
+                          // ===== MESSAGE =====
                           const Text(
                             'You are not alone.\nWe are here to support you 🤍',
                             textAlign: TextAlign.center,
@@ -125,9 +133,9 @@ class receiver_main_screen extends StatelessWidget {
                                   context,
                                   view_available_donation(),
                                   color: const Color(0xFF8E24AA),
-                                  message: 'Finding available donations...',
+                                  message:
+                                  'Finding available donations...',
                                 );
-
                               },
                             ),
 
@@ -149,7 +157,6 @@ class receiver_main_screen extends StatelessWidget {
                                   color: const Color(0xFF616161),
                                   message: 'Loading history...',
                                 );
-
                               },
                             ),
                           ],
@@ -222,8 +229,11 @@ class receiver_main_screen extends StatelessWidget {
                 ],
               ),
             ),
-            const Icon(Icons.arrow_forward_ios,
-                color: Colors.white, size: 18),
+            const Icon(
+              Icons.arrow_forward_ios,
+              color: Colors.white,
+              size: 18,
+            ),
           ],
         ),
       ),

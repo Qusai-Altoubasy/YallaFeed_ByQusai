@@ -59,16 +59,19 @@ class donor_main_screen extends StatelessWidget {
                       ),
                       child: Column(
                         children: [
-                          Text(
-                            'Welcome back,\n${User?.name}',
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              fontSize: 26,
+                          Container(
+                            padding: const EdgeInsets.all(18),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white.withOpacity(0.25),
+                            ),
+                            child: const Icon(
+                              Icons.volunteer_activism,
+                              size: 46,
                               color: Colors.white,
-                              fontWeight: FontWeight.w700,
                             ),
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 14),
                           const Text(
                             'Thank you for sharing your kindness\nEvery donation makes a difference',
                             textAlign: TextAlign.center,

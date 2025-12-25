@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:qusai/screens/user/deleviry/history/history.dart';
 import 'package:qusai/screens/user/deleviry/view_available_requests.dart';
 import 'package:qusai/shared/shared.dart';
-
 import '../../../classes/user.dart';
 
 class deleviry_main_screen extends StatelessWidget {
@@ -35,127 +34,136 @@ class deleviry_main_screen extends StatelessWidget {
           SafeArea(
             child: SingleChildScrollView(
               physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  // ===== HEADER =====
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                        vertical: 30, horizontal: 20),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(28),
-                      gradient: const LinearGradient(
-                        colors: [
-                          Color(0xFF1B5E20),
-                          Color(0xFF43A047),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  children: [
+                    // ===== HEADER (SAME STYLE AS RECEIVER) =====
+                    Container(
+                      width: double.infinity,
+                      margin: const EdgeInsets.only(top: 20),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 26, horizontal: 20),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(26),
+                        color: Colors.white.withOpacity(0.18),
+                        border: Border.all(color: Colors.white24),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.15),
+                            blurRadius: 18,
+                            offset: const Offset(0, 8),
+                          ),
                         ],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
                       ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.25),
-                          blurRadius: 18,
-                          offset: const Offset(0, 10),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      children: [
-                        Text(
-                          'Welcome back,\n${User?.name ?? ''}',
-                          textAlign: TextAlign.center,
-                          style: const TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.w700,
-                            color: Colors.white,
+                      child: Column(
+                        children: [
+                          // ===== ICON =====
+                          Container(
+                            padding: const EdgeInsets.all(18),
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.white.withOpacity(0.25),
+                            ),
+                            child: const Icon(
+                              Icons.delivery_dining,
+                              size: 48,
+                              color: Colors.white,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 10),
-                        const Text(
-                          'Your dedication helps meals reach\nthose who need them most.',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            color: Colors.white70,
-                            fontSize: 14,
+
+                          const SizedBox(height: 12),
+
+                          // ===== MESSAGE =====
+                          Text(
+                            'Your help delivers hope 🤍',
+                            textAlign: TextAlign.center,
+                            style: const TextStyle(
+                              color: Colors.white70,
+                              fontSize: 14,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
-                  ),
 
-                  const SizedBox(height: 30),
+                    const SizedBox(height: 28),
 
-                  // ===== ACTIONS CARD =====
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(22),
-                    decoration: BoxDecoration(
-                      color: Colors.white.withOpacity(0.9),
-                      borderRadius: BorderRadius.circular(30),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.08),
-                          blurRadius: 14,
-                          offset: const Offset(0, 8),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Actions',
-                          style: TextStyle(
-                            fontSize: 26,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xFF2E2E2E),
+                    // ===== ACTIONS =====
+                    Container(
+                      width: double.infinity,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(30),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Colors.black12,
+                            blurRadius: 12,
+                            offset: Offset(0, 6),
                           ),
-                        ),
-                        const SizedBox(height: 24),
+                        ],
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(22),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const Text(
+                              'Your Actions',
+                              style: TextStyle(
+                                fontWeight: FontWeight.w700,
+                                fontSize: 22,
+                                color: Color(0xFF1A202C),
+                              ),
+                            ),
+                            const SizedBox(height: 30),
 
-                        _buildModernButton(
-                          icon: Icons.assignment_rounded,
-                          text: 'View available requests',
-                          gradient: const [
-                            Color(0xFFF4511E),
-                            Color(0xFFBF360C),
+                            _deliveryActionButton(
+                              icon: Icons.assignment_outlined,
+                              title: 'Available Requests',
+                              subtitle:
+                              'Find delivery requests near you',
+                              gradient: const [
+                                Color(0xFFF4511E),
+                                Color(0xFFBF360C),
+                              ],
+                              onTap: () {
+                                navigatetoWithTransition(
+                                  context,
+                                  view_available_requests(),
+                                  color: const Color(0xFF2E7D32),
+                                  message:
+                                  'Loading delivery requests...',
+                                );
+                              },
+                            ),
+
+                            const SizedBox(height: 22),
+
+                            _deliveryActionButton(
+                              icon: Icons.history_outlined,
+                              title: 'Delivery History',
+                              subtitle:
+                              'Review your completed deliveries',
+                              gradient: const [
+                                Color(0xFF616161),
+                                Color(0xFF424242),
+                              ],
+                              onTap: () {
+                                navigatetoWithTransition(
+                                  context,
+                                  history(),
+                                  color: const Color(0xFF616161),
+                                  message: 'Loading history...',
+                                );
+                              },
+                            ),
                           ],
-                          onTap: () {
-                            navigatetoWithTransition(
-                              context,
-                              view_available_requests(),
-                              color: const Color(0xFF2E7D32),
-                              message: 'Loading delivery requests...',
-                            );
-
-                          },
                         ),
-
-                        const SizedBox(height: 22),
-
-                        _buildModernButton(
-                          icon: Icons.history_rounded,
-                          text: 'Delivery history',
-                          gradient: const [
-                            Color(0xFF616161),
-                            Color(0xFF424242),
-                          ],
-                          onTap: () {
-                            navigatetoWithTransition(
-                              context,
-                              history(),
-                              color: const Color(0xFF616161),
-                              message: 'Loading history...',
-                            );
-
-                          },
-                        ),
-                      ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
@@ -164,17 +172,19 @@ class deleviry_main_screen extends StatelessWidget {
     );
   }
 
-  // ===== MODERN BUTTON =====
-  Widget _buildModernButton({
+  // ===== DELIVERY BUTTON (SAME AS RECEIVER) =====
+  Widget _deliveryActionButton({
     required IconData icon,
-    required String text,
+    required String title,
+    required String subtitle,
     required List<Color> gradient,
     required VoidCallback onTap,
   }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        height: 72,
+        height: 78,
+        padding: const EdgeInsets.symmetric(horizontal: 18),
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: gradient,
@@ -185,36 +195,44 @@ class deleviry_main_screen extends StatelessWidget {
           boxShadow: [
             BoxShadow(
               color: gradient.last.withOpacity(0.45),
-              blurRadius: 14,
-              offset: const Offset(0, 6),
+              blurRadius: 16,
+              offset: const Offset(0, 8),
             ),
           ],
         ),
         child: Row(
           children: [
-            const SizedBox(width: 18),
-            Container(
-              padding: const EdgeInsets.all(12),
-              decoration: BoxDecoration(
-                color: Colors.white.withOpacity(0.2),
-                shape: BoxShape.circle,
-              ),
-              child: Icon(icon, color: Colors.white, size: 26),
-            ),
-            const SizedBox(width: 16),
+            Icon(icon, color: Colors.white, size: 34),
+            const SizedBox(width: 14),
             Expanded(
-              child: Text(
-                text,
-                style: const TextStyle(
-                  fontSize: 18,
-                  fontWeight: FontWeight.w600,
-                  color: Colors.white,
-                ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 17,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    subtitle,
+                    style: const TextStyle(
+                      color: Colors.white70,
+                      fontSize: 12,
+                    ),
+                  ),
+                ],
               ),
             ),
-            const Icon(Icons.arrow_forward_ios,
-                color: Colors.white70, size: 16),
-            const SizedBox(width: 18),
+            const Icon(
+              Icons.arrow_forward_ios,
+              color: Colors.white,
+              size: 18,
+            ),
           ],
         ),
       ),
