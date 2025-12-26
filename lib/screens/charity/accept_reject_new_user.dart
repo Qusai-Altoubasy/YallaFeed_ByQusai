@@ -2,10 +2,98 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:qusai/screens/common_screens/another_profile.dart';
 import 'package:qusai/shared/shared.dart';
+Future<int?> showFamilySizeDialog(BuildContext context) async {
+  final controller = TextEditingController();
+  int? result;
 
+  await showDialog(
+    context: context,
+    barrierDismissible: false,
+    builder: (context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(22),
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                'Family Size Required',
+                style: TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              const SizedBox(height: 10),
+              const Text(
+                'Please enter the number of family members for this receiver before accepting the request.',
+                style: TextStyle(
+                  fontSize: 14,
+                  color: Colors.grey,
+                  height: 1.4,
+                ),
+              ),
+              const SizedBox(height: 20),
+              TextField(
+                controller: controller,
+                keyboardType: TextInputType.number,
+                decoration: InputDecoration(
+                  labelText: 'Family members',
+                  prefixIcon: const Icon(Icons.people_outline),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 24),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text(
+                      'Cancel',
+                      style: TextStyle(color: Colors.grey),
+                    ),
+                  ),
+                  const SizedBox(width: 10),
+                  ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF1F7A5C),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(16),
+                      ),
+                    ),
+                    onPressed: () {
+                      final value = int.tryParse(controller.text);
+                      if (value != null && value > 0) {
+                        result = value;
+                        Navigator.pop(context);
+                      }
+                    },
+                    child: const Text(
+                      'Save',
+                      style: TextStyle(fontWeight: FontWeight.w600),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
+
+  return result;
+}
 class accept_reject_new_user extends StatelessWidget {
   const accept_reject_new_user({super.key, required this.cid});
   final String cid;
+
 
   @override
   Widget build(BuildContext context) {
@@ -128,6 +216,30 @@ Widget _requestCard({
                   color: Color(0xFF1F7A5C)),
               tooltip: 'Accept',
               onPressed: () async {
+                // Fetch receiver data
+                final userDoc = await FirebaseFirestore.instance
+                    .collection('users')
+                    .doc(uid)
+                    .get();
+
+                int familySize = userDoc.data()?['familySize'] ?? 0;
+
+                // If family size not set, force charity to enter it
+                if (familySize == 0) {
+                  final enteredSize = await showFamilySizeDialog(context);
+                  if (enteredSize == null) return;
+
+                  familySize = enteredSize;
+
+                  await FirebaseFirestore.instance
+                      .collection('users')
+                      .doc(uid)
+                      .update({
+                    'familySize': familySize,
+                  });
+                }
+
+                // Accept user
                 await FirebaseFirestore.instance
                     .collection('users')
                     .doc(uid)
@@ -144,10 +256,11 @@ Widget _requestCard({
 
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('User accepted successfully'),
+                    content: Text('Receiver accepted successfully'),
                   ),
                 );
               },
+
             ),
             IconButton(
               icon: const Icon(Icons.cancel,

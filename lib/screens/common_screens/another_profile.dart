@@ -18,6 +18,102 @@ class _profileState extends State<another_profile> {
   late final String uid;
 
   _profileState({required this.uid});
+  Future<void> editFamilySize(BuildContext context, String receiverUid, int? currentSize) async {
+    final controller = TextEditingController(
+      text: currentSize != null && currentSize > 0 ? currentSize.toString() : '',
+    );
+
+    await showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) {
+        return Dialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(22),
+          ),
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Edit Family Size',
+                  style: TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+                const SizedBox(height: 10),
+                const Text(
+                  'Update the number of family members for this receiver.',
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.grey,
+                    height: 1.4,
+                  ),
+                ),
+                const SizedBox(height: 20),
+                TextField(
+                  controller: controller,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    labelText: 'Family members',
+                    prefixIcon: const Icon(Icons.people_outline),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 24),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('Cancel'),
+                    ),
+                    const SizedBox(width: 10),
+                    ElevatedButton(
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF1F7A5C),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                      ),
+                      onPressed: () async {
+                        final value = int.tryParse(controller.text);
+                        if (value == null || value <= 0) return;
+
+                        await FirebaseFirestore.instance
+                            .collection('users')
+                            .doc(receiverUid)
+                            .update({
+                          'familySize': value,
+                        });
+
+                        Navigator.pop(context);
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Family size updated successfully'),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        'Save',
+                        style: TextStyle(fontWeight: FontWeight.w600),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +162,7 @@ class _profileState extends State<another_profile> {
               padding: const EdgeInsets.fromLTRB(18, 110, 18, 28),
               child: Column(
                 children: [
-                  // ===== Profile Card =====
+                  //  Profile Card
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.symmetric(
@@ -134,7 +230,7 @@ class _profileState extends State<another_profile> {
 
                   const SizedBox(height: 20),
 
-                  // ===== Info Card =====
+                  // Info Card
                   Container(
                     width: double.infinity,
                     padding: const EdgeInsets.all(18),
@@ -154,9 +250,40 @@ class _profileState extends State<another_profile> {
                         const SizedBox(height: 15),
                         _infoRow(
                             Icons.phone_outlined, "Phone", data['phone']),
+                        if (data['familySize'] != null)
+                          _infoRow(
+                            Icons.people_outline,
+                            'Family size',
+                            data['familySize'].toString(),
+                          ),
+
                       ],
+
                     ),
                   ),
+                  if (usertype == 'charity')
+                    Padding(
+                      padding: const EdgeInsets.only(top: 16),
+                      child: ElevatedButton.icon(
+                        icon: const Icon(Icons.edit),
+                        label: const Text('Edit family size'),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.green,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(18),
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
+                        ),
+                        onPressed: () {
+                          editFamilySize(
+                            context,
+                            uid,
+                            data['familySize'],
+                          );
+                        },
+                      ),
+                    ),
+
                 ],
               ),
             ),
