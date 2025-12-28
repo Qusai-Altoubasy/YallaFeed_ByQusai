@@ -252,7 +252,7 @@ class _history extends State<history> {
                                 ),
                                 child: Text(
                                   current.status=="delivered"?"delivered":
-                                  current.status=="delivering"?'You are delivering it':'delivered',
+                                  current.status=="delivering"?'You are delivering it':'Deliver by driver',
                                   style: TextStyle(
                                     color: statusColor,
                                     fontWeight: FontWeight.w600,
@@ -276,23 +276,23 @@ class _history extends State<history> {
                                 final donor = _usersCache[current.donoruid];
                                 final receiver = _usersCache[current.reciveruid];
 
-                                final donorName = donor?['name'] ?? 'Loading...';
+
                                 final donorPhone = donor?['phone'] ?? '';
 
-                                final receiverName = receiver?['name'] ?? 'Loading...';
+
                                 final receiverPhone = receiver?['phone'] ?? '';
 
                                 receiverdonationdetails = current;
                                 navigatetoWithTransition(
                                   context,
-                                  donation_det(donorname: donorName, donorphone: donorPhone, receivername: receiverName, receiverphone: receiverPhone),
+                                  donation_det( donorphone: donorPhone,  receiverphone: receiverPhone),
                                   color: const Color(0xFF5C6BC0),
                                   message: 'Loading donation details...',
                                 );
 
                               },
                             ),
-                            if(current.status=='delivered')
+                            if(current.status=='delivered' || current.status=='delivered by driver')
                               IconButton(
                                 icon: const Icon(Icons.remove_red_eye,
                                     color: Color(0xFF6A1B9A)),
@@ -301,23 +301,23 @@ class _history extends State<history> {
                                   final donor = _usersCache[current.donoruid];
                                   final receiver = _usersCache[current.reciveruid];
 
-                                  final donorName = donor?['name'] ?? 'Loading...';
+
                                   final donorPhone = donor?['phone'] ?? '';
 
-                                  final receiverName = receiver?['name'] ?? 'Loading...';
+
                                   final receiverPhone = receiver?['phone'] ?? '';
 
                                   receiverdonationdetails = current;
                                   navigatetoWithTransition(
                                     context,
-                                    delivered(donorname: donorName, donorphone: donorPhone, receivername: receiverName, receiverphone: receiverPhone),
+                                    delivered(donorphone: donorPhone, receiverphone: receiverPhone),
                                     color: const Color(0xFF5C6BC0),
                                     message: 'Loading donation details...',
                                   );
 
                                 },
                               ),
-                            if(current.status=='delivered')
+                            if(current.status=='delivered' || current.status=='delivered by driver')
                               IconButton(
                               icon: const Icon(
                                   Icons.delete_outline,

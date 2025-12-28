@@ -278,7 +278,7 @@ class _view_available_requests extends State<view_available_requests> {
 
                                 navigatetoWithTransition(
                                   context,
-                                  accept(donorname: donorName, donorphone: donorPhone, receivername: receiverName, receiverphone: receiverPhone,),
+                                  accept(donorphone: donorPhone,receiverphone: receiverPhone,),
                                   color: const Color(0xFF5C6BC0),
                                   message: 'Loading donation details...',
                                 );

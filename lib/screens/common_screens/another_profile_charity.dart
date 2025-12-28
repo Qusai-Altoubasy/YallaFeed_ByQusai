@@ -31,7 +31,7 @@ class _profileState extends State<another_profile_charity> {
         elevation: 0,
         centerTitle: true,
         title: const Text(
-          'Your profile',
+          'Charity profile',
           style: TextStyle(
             fontWeight: FontWeight.bold,
             color: Color(0xFF0F172A),
@@ -105,34 +105,8 @@ class _profileState extends State<another_profile_charity> {
                             fontWeight: FontWeight.w800,
                           ),
                         ),
-                        const SizedBox(height: 10),
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 16, vertical: 8),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.8),
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: const [
-                              Icon(Icons.star_rounded,
-                                  color: Colors.amber, size: 28),
-                              SizedBox(width: 8),
-                              Text(
-                                "4.8",
-                                style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              Text(
-                                " / 5.0",
-                                style: TextStyle(
-                                    fontSize: 14, color: Colors.grey),
-                              ),
-                            ],
-                          ),
-                        ),
+
+
                       ],
                     ),
                   ),

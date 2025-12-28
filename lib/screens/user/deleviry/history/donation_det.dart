@@ -11,14 +11,14 @@ import 'package:flutter/services.dart';
 class donation_det extends StatelessWidget {
   File? _image= File(receiverdonationdetails!.imagePath);
 
-  String donorname;
+
   String donorphone;
 
-  String receivername;
+
   String receiverphone;
 
 
-  donation_det({required this.donorname, required this.donorphone, required this.receivername,
+  donation_det({ required this.donorphone,
     required this.receiverphone});
 
   @override
@@ -126,7 +126,7 @@ class donation_det extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        'Donor name and phone',
+                        'Donor phone',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
@@ -134,14 +134,6 @@ class donation_det extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      Text(
-                        donorname,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey,
-                          height: 1.6,
-                        ),
-                      ),
                       Row(
                         children: [
                           Expanded(
@@ -220,7 +212,7 @@ class donation_det extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        'Receiver name and phone',
+                        'Receiver phone',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
@@ -228,14 +220,6 @@ class donation_det extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      Text(
-                        receivername,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey,
-                          height: 1.6,
-                        ),
-                      ),
                       Row(
                         children: [
                           Expanded(
@@ -311,7 +295,7 @@ class donation_det extends StatelessWidget {
                       .doc(receiverdonationdetails?.did)
                       .update({
                     'deleviretime': FieldValue.serverTimestamp(),
-                    'status':'delivered',
+                    'status':'delivered by driver',
                   });
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(

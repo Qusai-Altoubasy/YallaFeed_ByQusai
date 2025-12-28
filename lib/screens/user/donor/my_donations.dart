@@ -236,7 +236,7 @@ class _my_donationsState extends State<my_donations> {
                             },
                           ),
                         if(
-                        (current.status=='delivered'||current.status=='delivering')
+                        (current.status=='delivered'||current.status=='delivered by driver')
                             &&!current.donorRated
                         )
                           IconButton(

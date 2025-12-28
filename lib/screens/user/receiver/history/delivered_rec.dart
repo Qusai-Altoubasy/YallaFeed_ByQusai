@@ -10,14 +10,14 @@ import '../../../../components/components.dart';
 
 
 
-class donation_det extends StatefulWidget {
-  const donation_det({super.key});
+class delivered_rec extends StatefulWidget {
+  const delivered_rec({super.key});
 
   @override
-  State<donation_det> createState() => _donation_det();
+  State<delivered_rec> createState() => _delivered_rec();
 }
 
-class _donation_det extends State<donation_det> {
+class _delivered_rec extends State<delivered_rec> {
   File? _image= File(receiverdonationdetails!.imagePath);
 
 
@@ -181,33 +181,6 @@ class _donation_det extends State<donation_det> {
                     ],
                   ),
                 ),
-              ),
-            ),
-            const SizedBox(height: 15),
-
-            Container(
-              alignment: Alignment.center,
-              child: ElevatedButton(
-                style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF2F80ED), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18))),
-                onPressed: () async {
-                  await FirebaseFirestore.instance
-                      .collection('donations')
-                      .doc(receiverdonationdetails?.did)
-                      .update({
-                    'deleviretime': FieldValue.serverTimestamp(),
-                    'status':'delivered',
-                  });
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                        content:
-                        Text('Nice! Take care. 🤍\nDon\'t forget the rating.')),
-                  );
-                  Navigator.pop(context);
-
-
-                },
-                child: const Text(
-                    "Deliver", style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
               ),
             ),
 

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:qusai/screens/user/receiver/history/delivered_rec.dart';
 
 import '../../../../classes/donation.dart';
 import '../../../../shared/shared.dart';
@@ -203,7 +204,9 @@ class _receiver_historyState extends State<receiver_history> {
                               ),
                               child: Text(
                                 current.status=="accepted"?"Waiting for a driver":
-                                current.status=="delivering"?'On its way':'delivered',
+                                current.status=="delivering"?'On its way' :
+                                current.status=="delivered by driver"?'The driver has been delivered the meal':'delivered',
+
                                 style: TextStyle(
                                   color: statusColor,
                                   fontWeight: FontWeight.w600,
@@ -226,7 +229,7 @@ class _receiver_historyState extends State<receiver_history> {
                               receiverdonationdetails = current;
                               navigatetoWithTransition(
                                 context,
-                                donation_det(),
+                                delivered_rec(),
                                 color: const Color(0xFF5C6BC0),
                                 message: 'Loading donation details...',
                               );
@@ -248,6 +251,22 @@ class _receiver_historyState extends State<receiver_history> {
                               setState(() {
                                 Readreceiverhistory.add(docs[index].id);
                               });
+                            },
+                          ),
+                          if(current.status=='delivered by driver')
+                          IconButton(
+                            icon: const Icon(Icons.local_shipping,
+                                color: Color(0xFF6A1B9A)),
+                            tooltip: 'View details',
+                            onPressed: () {
+                              receiverdonationdetails = current;
+                              navigatetoWithTransition(
+                                context,
+                                donation_det(),
+                                color: const Color(0xFF5C6BC0),
+                                message: 'Loading donation details...',
+                              );
+
                             },
                           ),
                           if(

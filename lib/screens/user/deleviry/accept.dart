@@ -11,14 +11,12 @@ import 'package:flutter/services.dart';
 class accept extends StatelessWidget {
   File? _image= File(receiverdonationdetails!.imagePath);
 
-  String donorname;
   String donorphone;
 
-  String receivername;
   String receiverphone;
 
 
-  accept({required this.donorname, required this.donorphone, required this.receivername,
+  accept({required this.donorphone,
       required this.receiverphone});
 
   @override
@@ -126,7 +124,7 @@ class accept extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        'Donor name and phone',
+                        'Donor phone',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
@@ -134,14 +132,6 @@ class accept extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      Text(
-                        donorname,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey,
-                          height: 1.6,
-                        ),
-                      ),
                       Row(
                         children: [
                           Expanded(
@@ -220,7 +210,7 @@ class accept extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
-                        'Receiver name and phone',
+                        'Receiver phone',
                         style: TextStyle(
                           fontSize: 18,
                           fontWeight: FontWeight.w700,
@@ -228,14 +218,6 @@ class accept extends StatelessWidget {
                         ),
                       ),
                       const SizedBox(height: 10),
-                      Text(
-                        receivername,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.grey,
-                          height: 1.6,
-                        ),
-                      ),
                       Row(
                         children: [
                           Expanded(
