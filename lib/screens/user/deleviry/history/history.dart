@@ -3,11 +3,13 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:qusai/screens/user/deleviry/history/cancel.dart';
 import 'package:qusai/screens/user/deleviry/history/delivered.dart';
 import 'package:qusai/screens/user/deleviry/history/donation_det.dart';
 
 import '../../../../classes/donation.dart';
 import '../../../../shared/shared.dart';
+
 
 class history extends StatefulWidget {
   const history({super.key});
@@ -252,6 +254,7 @@ class _history extends State<history> {
                                 ),
                                 child: Text(
                                   current.status=="delivered"?"delivered":
+                                  current.status=="accepted"?'You are canceled the order':
                                   current.status=="delivering"?'You are delivering it':'Deliver by driver',
                                   style: TextStyle(
                                     color: statusColor,
@@ -292,7 +295,32 @@ class _history extends State<history> {
 
                               },
                             ),
-                            if(current.status=='delivered' || current.status=='delivered by driver')
+                            if(current.status=='delivering')
+                              IconButton(
+                                icon: const Icon(Icons.cancel,
+                                    color: Color(0xFF6A1B9A)),
+                                tooltip: 'Cancel the order',
+                                onPressed: () {
+                                  final donor = _usersCache[current.donoruid];
+                                  final receiver = _usersCache[current.reciveruid];
+
+
+                                  final donorPhone = donor?['phone'] ?? '';
+
+
+                                  final receiverPhone = receiver?['phone'] ?? '';
+
+                                  receiverdonationdetails = current;
+                                  navigatetoWithTransition(
+                                    context,
+                                    cancel(donorphone: donorPhone, receiverphone: receiverPhone),
+                                    color: const Color(0xFF5C6BC0),
+                                    message: 'Loading donation details...',
+                                  );
+
+                                },
+                              ),
+                            if(current.status=='delivered' || current.status=='delivered by driver' || current.status=='accepted')
                               IconButton(
                                 icon: const Icon(Icons.remove_red_eye,
                                     color: Color(0xFF6A1B9A)),
@@ -317,7 +345,7 @@ class _history extends State<history> {
 
                                 },
                               ),
-                            if(current.status=='delivered' || current.status=='delivered by driver')
+                            if(current.status=='delivered' || current.status=='delivered by driver' || current.status=='accepted')
                               IconButton(
                               icon: const Icon(
                                   Icons.delete_outline,
