@@ -1,15 +1,16 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:qusai/screens/base_screens/login_screen.dart';
 import 'package:qusai/screens/user/deleviry/history/cancel.dart';
 import 'package:qusai/screens/user/deleviry/history/delivered.dart';
 import 'package:qusai/screens/user/deleviry/history/donation_det.dart';
-
+import 'dart:async';
 import '../../../../classes/donation.dart';
 import '../../../../shared/shared.dart';
-
 
 class history extends StatefulWidget {
   const history({super.key});
@@ -19,12 +20,13 @@ class history extends StatefulWidget {
 }
 
 class _history extends State<history> {
-
   List<String> Readdeliveryhistory = [];
   bool loading = true;
 
   final Map<String, Map<String, dynamic>> _usersCache = {};
   final Set<String> _loadingUids = {};
+
+  final Set<String> _handledExpiries = {};
 
   Future<void> _ensureUserLoaded(String uid) async {
     if (uid.isEmpty) return;
@@ -33,10 +35,8 @@ class _history extends State<history> {
 
     _loadingUids.add(uid);
     try {
-      final doc = await FirebaseFirestore.instance
-          .collection('users')
-          .doc(uid)
-          .get();
+      final doc =
+      await FirebaseFirestore.instance.collection('users').doc(uid).get();
 
       final data = doc.data();
       if (data != null) {
@@ -63,15 +63,15 @@ class _history extends State<history> {
     if (mounted) setState(() {});
   }
 
-
-
   @override
   void initState() {
     super.initState();
     LoadReaddeliveryhistory();
   }
+
   Future<void> LoadReaddeliveryhistory() async {
-    final readSnapshot = await FirebaseFirestore.instance
+    final readSnapshot =
+    await FirebaseFirestore.instance
         .collection('read_delivery_history')
         .where('userId', isEqualTo: userid)
         .get();
@@ -90,266 +90,384 @@ class _history extends State<history> {
     return Colors.blue;
   }
 
-
   @override
   Widget build(BuildContext context) {
     if (loading) {
-      return const Scaffold(
-        body: Center(child: CircularProgressIndicator()),
-      );
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
-
     return StreamBuilder(
-        stream: FirebaseFirestore.instance
-            .collection('donations')
-            .where('deleiveruid', isEqualTo: userid)
-            .orderBy('deleviretime', descending: true)
-            .snapshots(),
-        builder: (context, snapshot) {
-          if (!snapshot.hasData) {
-            return const Scaffold(
-              body: Center(child: CircularProgressIndicator()),
-            );
-          }
-          final docs = snapshot.data!.docs
-              .where((doc) => !Readdeliveryhistory.contains(doc.id))
-              .toList();
+      stream:
+      FirebaseFirestore.instance
+          .collection('donations')
+          .where('deleiveruid', isEqualTo: userid)
+          .orderBy('deleviretime', descending: true)
+          .snapshots(),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) {
+          return const Scaffold(
+            body: Center(child: CircularProgressIndicator()),
+          );
+        }
+        final docs =
+        snapshot.data!.docs
+            .where((doc) => !Readdeliveryhistory.contains(doc.id))
+            .toList();
 
-          WidgetsBinding.instance.addPostFrameCallback((_) {
-            _preloadUsersForDocs(docs);
-          });
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          _preloadUsersForDocs(docs);
+        });
 
-
-          if (docs.isEmpty) {
-            return Scaffold(
-              appBar: AppBar(
-                elevation: 0,
-                backgroundColor: Colors.white,
-                iconTheme:
-                const IconThemeData(color: Color(0xFF1F7A5C)),
-                title: const Text(
-                  'History',
-                  style: TextStyle(
-                    color: Color(0xFF1A202C),
-                    fontWeight: FontWeight.w600,
-                  ),
-                ),
-              ),
-              body: const Center(
-                child: Text('There are no donations.'),
-              ),
-            );
-          }
-
-
+        if (docs.isEmpty) {
           return Scaffold(
-            backgroundColor: const Color(0xFFF4F6F8),
             appBar: AppBar(
               elevation: 0,
+              backgroundColor: Colors.white,
+              iconTheme: const IconThemeData(color: Color(0xFF1F7A5C)),
               title: const Text(
-                "History",
-                style: TextStyle(fontWeight: FontWeight.bold),
+                'History',
+                style: TextStyle(
+                  color: Color(0xFF1A202C),
+                  fontWeight: FontWeight.w600,
+                ),
               ),
-              backgroundColor: Colors.transparent,
-              foregroundColor: Colors.black,
             ),
+            body: const Center(child: Text('There are no donations.')),
+          );
+        }
 
-            body: ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: docs.length,
-              itemBuilder: (context, index) {
-                final item = docs[index];
-                donation current = donation(
-                  mealType: item['mealType'],
-                  numberOfPeople: item['numberOfPeople'],
-                  status: item['status'],
-                  imagePath: item['imagePath'],
-                  category: item['category'],
-                  fromlocation: item['fromlocation'],
-                  description: item['description'],
-                  donatetime: item['donatetime'].toDate(),
-                  did: item['did'],
-                  donoruid: item['donoruid'],
-                  reciveruid: item['reciveruid'],
-                  tolocation: item['tolocation'],
-                  deliverRated: item['deliverRated']
-                );
+        return Scaffold(
+          backgroundColor: const Color(0xFFF4F6F8),
+          appBar: AppBar(
+            elevation: 0,
+            title: const Text(
+              "History",
+              style: TextStyle(fontWeight: FontWeight.bold),
+            ),
+            backgroundColor: Colors.transparent,
+            foregroundColor: Colors.black,
+          ),
+          body: ListView.builder(
+            padding: const EdgeInsets.all(16),
+            itemCount: docs.length,
+            itemBuilder: (context, index) {
+              final item = docs[index];
 
-                final statusColor = _statusColor(current.status);
+              // Logic to calculate the time to deliver
+              final Timestamp? acceptTimestamp = item['deleviretime'];
+              final DateTime acceptTime =
+                  acceptTimestamp?.toDate() ?? DateTime.now();
+              final DateTime expiryTime = acceptTime.add(
+                const Duration(hours: 6),
+              );
+              final Duration remainingTime = expiryTime.difference(
+                DateTime.now(),
+              );
 
-                return Card(
-                  elevation: 6,
-                  shadowColor: Colors.black12,
-                  margin: const EdgeInsets.only(bottom: 16),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(22),
-                  ),
+              donation current = donation(
+                mealType: item['mealType'],
+                numberOfPeople: item['numberOfPeople'],
+                status: item['status'],
+                imagePath: item['imagePath'],
+                category: item['category'],
+                fromlocation: item['fromlocation'],
+                description: item['description'],
+                donatetime: item['donatetime'].toDate(),
+                did: item['did'],
+                donoruid: item['donoruid'],
+                reciveruid: item['reciveruid'],
+                tolocation: item['tolocation'],
+                deliverRated: item['deliverRated'],
+              );
 
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      children: [
-                        Container(
-                          width: 64,
-                          height: 64,
-                          decoration: BoxDecoration(
-                            color: statusColor.withOpacity(0.15),
-                            borderRadius: BorderRadius.circular(18),
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(18),
-                            child: FutureBuilder(
-                              future: getApplicationDocumentsDirectory(),
-                              builder: (context, snap) {
-                                if (!snap.hasData) {
-                                  return const Center(
-                                      child:
-                                      CircularProgressIndicator(strokeWidth: 2));
-                                }
+              final statusColor = _statusColor(current.status);
 
-                                final file = File(current.imagePath);
-                                if (!file.existsSync()) {
-                                  return Icon(Icons.fastfood_outlined,
-                                      color: statusColor);
-                                }
-
-                                return Image.file(file, fit: BoxFit.cover);
-                              },
-                            ),
-                          ),
+              return Card(
+                elevation: 6,
+                shadowColor: Colors.black12,
+                margin: const EdgeInsets.only(bottom: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(22),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    children: [
+                      Container(
+                        width: 64,
+                        height: 64,
+                        decoration: BoxDecoration(
+                          color: statusColor.withOpacity(0.15),
+                          borderRadius: BorderRadius.circular(18),
                         ),
-
-                        const SizedBox(width: 16),
-
-                        // Details
-                        Expanded(
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'From: ${current.fromlocation}',
-                                style: const TextStyle(
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w600,
-                                  color: Color(0xFF1A202C),
-                                ),
-                              ),
-                              const SizedBox(height: 6),
-                              Text(
-                                'To : ${current.tolocation}',
-                                style: const TextStyle(
-                                  fontSize: 13,
-                                  color: Colors.grey,
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 6),
-                                decoration: BoxDecoration(
-                                  color: statusColor.withOpacity(0.15),
-                                  borderRadius: BorderRadius.circular(14),
-                                ),
-                                child: Text(
-                                  current.status=="delivered"?"delivered":
-                                  current.status=="accepted"?'You are canceled the order':
-                                  current.status=="delivering"?'You are delivering it':'Deliver by driver',
-                                  style: TextStyle(
-                                    color: statusColor,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 12,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(18),
+                          child: FutureBuilder(
+                            future: getApplicationDocumentsDirectory(),
+                            builder: (context, snap) {
+                              if (!snap.hasData) {
+                                return const Center(
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
                                   ),
-                                ),
-                              ),
-                            ],
+                                );
+                              }
+
+                              final file = File(current.imagePath);
+                              if (!file.existsSync()) {
+                                return Icon(
+                                  Icons.fastfood_outlined,
+                                  color: statusColor,
+                                );
+                              }
+
+                              return Image.file(file, fit: BoxFit.cover);
+                            },
                           ),
                         ),
+                      ),
+                      const SizedBox(width: 16),
 
-                        // Actions
-                        Column(
+                      // Details
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            if(current.status=='delivering')
-                              IconButton(
-                              icon: const Icon(Icons.local_shipping,
-                                  color: Color(0xFF6A1B9A)),
+                            Text(
+                              'From: ${current.fromlocation}',
+                              style: const TextStyle(
+                                fontSize: 12,
+                                fontWeight: FontWeight.w600,
+                                color: Color(0xFF1A202C),
+                              ),
+                            ),
+                            const SizedBox(height: 6),
+                            Text(
+                              'To : ${current.tolocation}',
+                              style: const TextStyle(
+                                fontSize: 13,
+                                color: Colors.grey,
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 12,
+                                vertical: 6,
+                              ),
+                              decoration: BoxDecoration(
+                                color: statusColor.withOpacity(0.15),
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                              child: Text(
+                                current.status == "delivered"
+                                    ? "delivered"
+                                    : current.status == "accepted"
+                                    ? 'You are canceled the order'
+                                    : current.status == "delivering"
+                                    ? 'You are delivering it'
+                                    : 'Deliver by driver',
+                                style: TextStyle(
+                                  color: statusColor,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ),
+
+                            // Countdown Timer
+                            if (current.status == 'delivering' ||
+                                current.status == 'delivered by driver')
+                              Padding(
+                                padding: const EdgeInsets.only(top: 8.0),
+                                child: Builder(
+                                  builder: (context) {
+                                    final bool timerActive =
+                                        remainingTime > Duration.zero;
+
+                                    if (timerActive) {
+                                      return TweenAnimationBuilder<Duration>(
+                                        key: ValueKey(item.id),
+                                        duration: remainingTime,
+                                        tween: Tween(
+                                          begin: remainingTime,
+                                          end: Duration.zero,
+                                        ),
+                                        onEnd: () {
+                                          if (!_handledExpiries.contains(
+                                            item.id,
+                                          )) {
+                                            _handledExpiries.add(item.id);
+                                            _handleAccountDeletion(userid);
+                                          }
+                                        },
+                                        builder: (context, value, child) {
+                                          final hours = value.inHours;
+                                          final minutes = value.inMinutes % 60;
+                                          final seconds = value.inSeconds % 60;
+                                          final isUrgent = value.inMinutes < 15;
+
+                                          return Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            children: [
+                                              Text ('You must deliver the order before the time finished or you account will be deleted',
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons.timer_outlined,
+                                                    size: 16,
+                                                    color:
+                                                    isUrgent
+                                                        ? Colors.red
+                                                        : Colors.grey,
+                                                  ),
+                                                  const SizedBox(width: 5),
+                                                  Text(
+                                                    'Time Left: ${hours.toString().padLeft(2, '0')}:${minutes.toString().padLeft(2, '0')}:${seconds.toString().padLeft(2, '0')}',
+                                                    style: TextStyle(
+                                                      color:
+                                                      isUrgent
+                                                          ? Colors.red
+                                                          : Colors.black87,
+                                                      fontWeight: FontWeight.bold,
+                                                      fontSize: 13,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    }
+
+                                    WidgetsBinding.instance
+                                        .addPostFrameCallback((_) {
+                                      if (!_handledExpiries.contains(
+                                        item.id,
+                                      )) {
+                                        _handledExpiries.add(item.id);
+                                        _handleAccountDeletion(userid);
+                                      }
+                                    });
+
+                                    return Row(
+                                      children: [
+                                        const Icon(
+                                          Icons.timer_outlined,
+                                          size: 16,
+                                          color: Colors.grey,
+                                        ),
+                                        const SizedBox(width: 5),
+                                        const Text(
+                                          'Time Left: 00:00:00',
+                                          style: TextStyle(
+                                            color: Colors.black87,
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+
+                      // Actions
+                      Column(
+                        children: [
+                          if (current.status == 'delivering')
+                            IconButton(
+                              icon: const Icon(
+                                Icons.local_shipping,
+                                color: Color(0xFF6A1B9A),
+                              ),
                               tooltip: 'Finish the order',
                               onPressed: () {
                                 final donor = _usersCache[current.donoruid];
-                                final receiver = _usersCache[current.reciveruid];
-
-
+                                final receiver =
+                                _usersCache[current.reciveruid];
                                 final donorPhone = donor?['phone'] ?? '';
-
-
                                 final receiverPhone = receiver?['phone'] ?? '';
 
                                 receiverdonationdetails = current;
                                 navigatetoWithTransition(
                                   context,
-                                  donation_det( donorphone: donorPhone,  receiverphone: receiverPhone),
+                                  donation_det(
+                                    donorphone: donorPhone,
+                                    receiverphone: receiverPhone,
+                                  ),
                                   color: const Color(0xFF5C6BC0),
                                   message: 'Loading donation details...',
                                 );
-
                               },
                             ),
-                            if(current.status=='delivering')
-                              IconButton(
-                                icon: const Icon(Icons.cancel,
-                                    color: Color(0xFF6A1B9A)),
-                                tooltip: 'Cancel the order',
-                                onPressed: () {
-                                  final donor = _usersCache[current.donoruid];
-                                  final receiver = _usersCache[current.reciveruid];
-
-
-                                  final donorPhone = donor?['phone'] ?? '';
-
-
-                                  final receiverPhone = receiver?['phone'] ?? '';
-
-                                  receiverdonationdetails = current;
-                                  navigatetoWithTransition(
-                                    context,
-                                    cancel(donorphone: donorPhone, receiverphone: receiverPhone),
-                                    color: const Color(0xFF5C6BC0),
-                                    message: 'Loading donation details...',
-                                  );
-
-                                },
-                              ),
-                            if(current.status=='delivered' || current.status=='delivered by driver' || current.status=='accepted')
-                              IconButton(
-                                icon: const Icon(Icons.remove_red_eye,
-                                    color: Color(0xFF6A1B9A)),
-                                tooltip: 'View details',
-                                onPressed: () {
-                                  final donor = _usersCache[current.donoruid];
-                                  final receiver = _usersCache[current.reciveruid];
-
-
-                                  final donorPhone = donor?['phone'] ?? '';
-
-
-                                  final receiverPhone = receiver?['phone'] ?? '';
-
-                                  receiverdonationdetails = current;
-                                  navigatetoWithTransition(
-                                    context,
-                                    delivered(donorphone: donorPhone, receiverphone: receiverPhone),
-                                    color: const Color(0xFF5C6BC0),
-                                    message: 'Loading donation details...',
-                                  );
-
-                                },
-                              ),
-                            if(current.status=='delivered' || current.status=='delivered by driver' || current.status=='accepted')
-                              IconButton(
+                          if (current.status == 'delivering')
+                            IconButton(
                               icon: const Icon(
-                                  Icons.delete_outline,
-                                  color: Colors.redAccent),
+                                Icons.cancel,
+                                color: Color(0xFF6A1B9A),
+                              ),
+                              tooltip: 'Cancel the order',
+                              onPressed: () {
+                                final donor = _usersCache[current.donoruid];
+                                final receiver =
+                                _usersCache[current.reciveruid];
+                                final donorPhone = donor?['phone'] ?? '';
+                                final receiverPhone = receiver?['phone'] ?? '';
+
+                                receiverdonationdetails = current;
+                                navigatetoWithTransition(
+                                  context,
+                                  cancel(
+                                    donorphone: donorPhone,
+                                    receiverphone: receiverPhone,
+                                  ),
+                                  color: const Color(0xFF5C6BC0),
+                                  message: 'Loading donation details...',
+                                );
+                              },
+                            ),
+                          if (current.status == 'delivered' ||
+                              current.status == 'delivered by driver' ||
+                              current.status == 'accepted')
+                            IconButton(
+                              icon: const Icon(
+                                Icons.remove_red_eye,
+                                color: Color(0xFF6A1B9A),
+                              ),
+                              tooltip: 'View details',
+                              onPressed: () {
+                                final donor = _usersCache[current.donoruid];
+                                final receiver =
+                                _usersCache[current.reciveruid];
+                                final donorPhone = donor?['phone'] ?? '';
+                                final receiverPhone = receiver?['phone'] ?? '';
+
+                                receiverdonationdetails = current;
+                                navigatetoWithTransition(
+                                  context,
+                                  delivered(
+                                    donorphone: donorPhone,
+                                    receiverphone: receiverPhone,
+                                  ),
+                                  color: const Color(0xFF5C6BC0),
+                                  message: 'Loading donation details...',
+                                );
+                              },
+                            ),
+                          if (current.status == 'delivered' ||
+                              current.status == 'accepted')
+                            IconButton(
+                              icon: const Icon(
+                                Icons.delete_outline,
+                                color: Colors.redAccent,
+                              ),
                               onPressed: () async {
                                 await FirebaseFirestore.instance
                                     .collection('read_delivery_history')
@@ -364,27 +482,38 @@ class _history extends State<history> {
                                 });
                               },
                             ),
-                            if(current.status=='delivered'&&!current.deliverRated)
-                              IconButton(
+                          if (current.status == 'delivered' &&
+                              !current.deliverRated)
+                            IconButton(
                               onPressed: () {
-                                _showRatingDialog(context, current.donoruid, current.reciveruid, current.did);
+                                _showRatingDialog(
+                                  context,
+                                  current.donoruid,
+                                  current.reciveruid,
+                                  current.did,
+                                );
                               },
-                              icon: const Icon(Icons.star_border, color: Colors.amber, size: 30),
+                              icon: const Icon(
+                                Icons.star_border,
+                                color: Colors.amber,
+                                size: 30,
+                              ),
                               tooltip: 'Rate Order',
                             ),
-                          ],
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
+                    ],
                   ),
-                );
-              },
-            ),
-          );
-        }
+                ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 
+  //  function for rating
   void _showRatingDialog(BuildContext context, donorid, receiverid, donid) {
     showDialog(
       context: context,
@@ -495,5 +624,35 @@ class _history extends State<history> {
         );
       },
     );
+  }
+
+
+  //  function for deleting account
+  Future<void> _handleAccountDeletion(String? uID) async {
+    if (uID == null || uID.isEmpty) return;
+    try {
+      await FirebaseFirestore.instance.collection('users').doc(uID).delete();
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            backgroundColor: Colors.red,
+            duration: Duration(seconds: 4),
+            content: Text("Account Deleted: You failed to deliver on time."),
+          ),
+        );
+        Future.delayed(const Duration(seconds: 2), () {
+          FirebaseAuth.instance.signOut();
+
+          // Navigate to login screen and clear history
+          Navigator.of(context).pushAndRemoveUntil(
+            MaterialPageRoute(builder: (context) => login_screen()),
+                (route) => false,
+          );
+        });
+      }
+    } catch (e) {
+      debugPrint("Error during account deletion: $e");
+    }
   }
 }

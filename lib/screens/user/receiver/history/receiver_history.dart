@@ -236,6 +236,7 @@ class _receiver_historyState extends State<receiver_history> {
 
                             },
                           ),
+                          if(current.status=='delivered')
                           IconButton(
                             icon: const Icon(Icons.delete_outline,
                                 color: Colors.redAccent),
