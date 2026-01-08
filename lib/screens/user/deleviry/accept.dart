@@ -17,7 +17,7 @@ class accept extends StatelessWidget {
 
 
   accept({required this.donorphone,
-      required this.receiverphone});
+    required this.receiverphone});
 
   @override
   Widget build(BuildContext context) {

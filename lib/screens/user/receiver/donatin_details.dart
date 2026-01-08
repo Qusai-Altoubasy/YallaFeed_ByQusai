@@ -8,8 +8,6 @@ import 'package:intl/intl.dart';
 import '../../../components/components.dart';
 import '../../charity/accept_reject_new_user.dart';
 
-
-
 class donation_detalis extends StatefulWidget {
   const donation_detalis({super.key});
 
@@ -18,19 +16,25 @@ class donation_detalis extends StatefulWidget {
 }
 
 class _DonationDetailsState extends State<donation_detalis> {
-  File? _image= File(receiverdonationdetails!.imagePath);
+  File? _image = File(receiverdonationdetails!.imagePath);
   final cityController = TextEditingController();
   final districtController = TextEditingController();
   final streetController = TextEditingController();
   final buildingController = TextEditingController();
   final formKey = GlobalKey<FormState>();
+  int dailyLimit = 0;
+  int usedCapacityToday = 0;
+  int remainingCapacity = 0;
+  bool capacityLoaded = false;
 
-
-
+  @override
+  void initState() {
+    super.initState();
+    loadDailyCapacity();
+  }
 
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
       backgroundColor: const Color(0xFFF5F3FA),
       appBar: AppBar(
@@ -67,25 +71,30 @@ class _DonationDetailsState extends State<donation_detalis> {
                   ),
                   child: _image == null
                       ? const Center(
-                    child: Icon(
-                      Icons.fastfood_outlined,
-                      size: 80,
-                      color: Color(0xFF6A1B9A),
-                    ),
-                  )
+                      child: Icon(
+                        Icons.fastfood_outlined,
+                        size: 80,
+                        color: Color(0xFF6A1B9A),
+                      ))
                       : null,
                 ),
               ),
-
               const SizedBox(height: 30),
 
-              //  INFO CARDS
-              _infoCard(title: 'Meal Type', value: receiverdonationdetails!.mealType),
-              _infoCard(title: 'Persons', value: receiverdonationdetails!.numberOfPeople.toString()),
-              _infoCard(title: 'Donate time', value: DateFormat('dd/MM/yyyy – hh:mm a').format(receiverdonationdetails!.donatetime)),
+              // ===== INFO CARDS =====
+              _infoCard(
+                  title: 'Meal Type', value: receiverdonationdetails!.mealType),
+              _infoCard(
+                  title: 'Persons',
+                  value: receiverdonationdetails!.numberOfPeople.toString()),
+              _infoCard(
+                  title: 'Donate time',
+                  value: DateFormat('dd/MM/yyyy – hh:mm a')
+                      .format(receiverdonationdetails!.donatetime)),
 
               const SizedBox(height: 20),
 
+              // ===== DESCRIPTION =====
               Card(
                 elevation: 6,
                 shadowColor: Colors.black12,
@@ -121,6 +130,8 @@ class _DonationDetailsState extends State<donation_detalis> {
                   ),
                 ),
               ),
+
+              // ===== PICKUP LOCATION =====
               Card(
                 elevation: 6,
                 shadowColor: Colors.black12,
@@ -157,7 +168,7 @@ class _DonationDetailsState extends State<donation_detalis> {
                 ),
               ),
 
-
+              // ===== RECEIVE LOCATION =====
               _sectionCard(
                 title: 'Receive location',
                 children: [
@@ -166,8 +177,7 @@ class _DonationDetailsState extends State<donation_detalis> {
                     label: 'City',
                     prefix: Icons.location_city,
                     type: TextInputType.name,
-                    validate: (v) =>
-                    v.isEmpty ? 'Enter city' : null,
+                    validate: (v) => v.isEmpty ? 'Enter city' : null,
                   ),
                   const SizedBox(height: 10),
                   defaultFormField(
@@ -175,8 +185,7 @@ class _DonationDetailsState extends State<donation_detalis> {
                     label: 'District',
                     prefix: Icons.map,
                     type: TextInputType.name,
-                    validate: (v) =>
-                    v.isEmpty ? 'Enter district' : null,
+                    validate: (v) => v.isEmpty ? 'Enter district' : null,
                   ),
                   const SizedBox(height: 10),
                   defaultFormField(
@@ -184,8 +193,7 @@ class _DonationDetailsState extends State<donation_detalis> {
                     label: 'Street',
                     prefix: Icons.signpost_outlined,
                     type: TextInputType.name,
-                    validate: (v) =>
-                    v.isEmpty ? 'Enter street' : null,
+                    validate: (v) => v.isEmpty ? 'Enter street' : null,
                   ),
                   const SizedBox(height: 10),
                   defaultFormField(
@@ -193,24 +201,96 @@ class _DonationDetailsState extends State<donation_detalis> {
                     label: 'Building',
                     prefix: Icons.home_outlined,
                     type: TextInputType.name,
-                    validate: (v) =>
-                    v.isEmpty ? 'Enter building' : null,
+                    validate: (v) => v.isEmpty ? 'Enter building' : null,
                   ),
                 ],
               ),
-              const SizedBox(height: 15),
 
+              const SizedBox(height: 20),
+
+              // ===== DAILY CAPACITY =====
+              if (capacityLoaded)
+                Card(
+                  elevation: 6,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Daily Capacity',
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        LinearProgressIndicator(
+                          value: dailyLimit == 0
+                              ? 0
+                              : usedCapacityToday / dailyLimit,
+                          minHeight: 10,
+                          backgroundColor: Colors.grey.shade300,
+                          color: remainingCapacity <= 5
+                              ? Colors.red
+                              : Colors.orange,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        const SizedBox(height: 10),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Used: $usedCapacityToday',
+                              style: TextStyle(
+                                color: remainingCapacity <= 5
+                                    ? Colors.red
+                                    : Colors.orange,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              'Remaining: $remainingCapacity',
+                              style: TextStyle(
+                                color: remainingCapacity <= 5
+                                    ? Colors.red
+                                    : Colors.orange,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Text(
+                              'Limit: $dailyLimit',
+                              style: TextStyle(
+                                color: remainingCapacity <= 5
+                                    ? Colors.red
+                                    : Colors.orange,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+              const SizedBox(height: 20),
+
+              // ===== ACCEPT BUTTON =====
               Container(
                 alignment: Alignment.center,
                 child: ElevatedButton(
-                  style: ElevatedButton.styleFrom(backgroundColor: const Color(0xFF2F80ED), shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18))),
+                  style: ElevatedButton.styleFrom(
+                      backgroundColor: const Color(0xFF2F80ED),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(18))),
                   onPressed: () async {
                     print('ACCEPT BUTTON PRESSED');
 
                     if (!formKey.currentState!.validate()) return;
-
-                    // Get family size
-
 
                     final userDoc = await FirebaseFirestore.instance
                         .collection('users')
@@ -219,7 +299,6 @@ class _DonationDetailsState extends State<donation_detalis> {
 
                     int familySize = userDoc.data()?['familySize'] ?? 0;
 
-                    //  Family size not set
                     if (familySize == 0) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
@@ -239,7 +318,6 @@ class _DonationDetailsState extends State<donation_detalis> {
                       return;
                     }
 
-                    //  Single donation capacity check
                     final int currentDonationCapacity =
                         receiverdonationdetails!.numberOfPeople;
 
@@ -255,7 +333,8 @@ class _DonationDetailsState extends State<donation_detalis> {
                           margin: const EdgeInsets.all(16),
                           content: Row(
                             children: const [
-                              Icon(Icons.warning_amber_rounded, color: Colors.white),
+                              Icon(Icons.warning_amber_rounded,
+                                  color: Colors.white),
                               SizedBox(width: 10),
                               Expanded(
                                 child: Text(
@@ -270,14 +349,12 @@ class _DonationDetailsState extends State<donation_detalis> {
                       return;
                     }
 
-                    //  Calculate daily capacity
                     final now = DateTime.now();
                     final startOfDay = DateTime(now.year, now.month, now.day);
 
                     final todaySnapshot = await FirebaseFirestore.instance
                         .collection('donations')
                         .where('reciveruid', isEqualTo: userid)
-                        .where('status', isEqualTo: 'accepted')
                         .where(
                       'recivetime',
                       isGreaterThanOrEqualTo: Timestamp.fromDate(startOfDay),
@@ -292,53 +369,27 @@ class _DonationDetailsState extends State<donation_detalis> {
                     }
 
                     final int dailyLimit = familySize * 3;
-                    final messenger = ScaffoldMessenger.of(context);
+                    final int remainingCapacity = dailyLimit - usedCapacityToday;
 
-                    messenger.showSnackBar(
-                      SnackBar(
-                        behavior: SnackBarBehavior.floating,
-                        duration: const Duration(seconds: 2),
-                        backgroundColor: Colors.blueGrey,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(14),
-                        ),
-                        margin: const EdgeInsets.all(16),
-                        content: Text(
-                          'Today usage: $usedCapacityToday / $dailyLimit people',
-                          style: const TextStyle(color: Colors.white),
-                        ),
-                      ),
-                    );
-
-                    //  Daily capacity exceeded
-                    if (usedCapacityToday + currentDonationCapacity > dailyLimit) {
+                    if (currentDonationCapacity > remainingCapacity) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
                           behavior: SnackBarBehavior.floating,
                           duration: const Duration(seconds: 3),
-                          backgroundColor: const Color(0xFFF57C00),
+                          backgroundColor: const Color(0xFFD32F2F),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(14),
                           ),
                           margin: const EdgeInsets.all(16),
-                          content: Row(
-                            children: [
-                              const Icon(Icons.info_outline_rounded, color: Colors.white),
-                              const SizedBox(width: 10),
-                              Expanded(
-                                child: Text(
-                                  'Daily capacity exceeded. Maximum allowed today is $dailyLimit people.',
-                                  style: const TextStyle(color: Colors.white),
-                                ),
-                              ),
-                            ],
+                          content: const Text(
+                            'This donation exceeds your remaining daily capacity.',
+                            style: TextStyle(color: Colors.white),
                           ),
                         ),
                       );
                       return;
                     }
 
-                    //   Accept donation
                     await FirebaseFirestore.instance
                         .collection('donations')
                         .doc(receiverdonationdetails!.did)
@@ -361,7 +412,8 @@ class _DonationDetailsState extends State<donation_detalis> {
                         margin: const EdgeInsets.all(16),
                         content: Row(
                           children: const [
-                            Icon(Icons.check_circle_outline, color: Colors.white),
+                            Icon(Icons.check_circle_outline,
+                                color: Colors.white),
                             SizedBox(width: 10),
                             Expanded(
                               child: Text(
@@ -376,11 +428,11 @@ class _DonationDetailsState extends State<donation_detalis> {
 
                     Navigator.pop(context);
                   },
-
-
-
-                  child: const Text(
-                        "Accept", style: TextStyle(color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
+                  child: const Text("Accept",
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold)),
                 ),
               ),
 
@@ -428,6 +480,7 @@ class _DonationDetailsState extends State<donation_detalis> {
       ),
     );
   }
+
   Widget _sectionCard({
     required String title,
     required List<Widget> children,
@@ -458,5 +511,37 @@ class _DonationDetailsState extends State<donation_detalis> {
     );
   }
 
+  Future<void> loadDailyCapacity() async {
+    final userDoc = await FirebaseFirestore.instance
+        .collection('users')
+        .doc(userid)
+        .get();
 
+    int familySize = userDoc.data()?['familySize'] ?? 0;
+    if (familySize == 0) return;
+
+    final now = DateTime.now();
+    final startOfDay = DateTime(now.year, now.month, now.day);
+
+    final todaySnapshot = await FirebaseFirestore.instance
+        .collection('donations')
+        .where('reciveruid', isEqualTo: userid)
+        .where(
+      'recivetime',
+      isGreaterThanOrEqualTo: Timestamp.fromDate(startOfDay),
+    )
+        .get();
+
+    int used = 0;
+    for (var doc in todaySnapshot.docs) {
+      used += (doc.data()['numberOfPeople'] ?? 0) as int;
+    }
+
+    setState(() {
+      dailyLimit = familySize * 3;
+      usedCapacityToday = used;
+      remainingCapacity = dailyLimit - usedCapacityToday;
+      capacityLoaded = true;
+    });
+  }
 }

@@ -38,13 +38,16 @@ class _profileState extends State<profile> {
   final newPassController = TextEditingController();
   final confirmPassController = TextEditingController();
 
+
   @override
   void initState() {
     super.initState();
-    final uid = FirebaseAuth.instance.currentUser!.uid;
-    ProfileCubit.get(context).loadUser(uid);
+    final cubit = ProfileCubit.get(context);
+    if (cubit.state == null) {
+      final uid = FirebaseAuth.instance.currentUser!.uid;
+      cubit.loadUser(uid);
+    }
   }
-
   @override
   void dispose() {
     nameC.dispose(); emailC.dispose(); phoneC.dispose(); idC.dispose();
@@ -335,7 +338,7 @@ class _profileState extends State<profile> {
                             onPressed: () {
                               Navigator.pop(context);
                               _pickImage(ImageSource.camera);
-                              },
+                            },
                             icon: const Icon(
                                 Icons.camera_alt),
                             label: const Text("Camera")
@@ -343,7 +346,7 @@ class _profileState extends State<profile> {
                             onPressed: () {
                               Navigator.pop(context);
                               _pickImage(ImageSource.gallery);
-                              },
+                            },
                             icon: const Icon(Icons.photo),
                             label: const Text("Gallery")
                         ),
